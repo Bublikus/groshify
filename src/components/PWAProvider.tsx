@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PWAInstallGuide } from './PWAInstallGuide';
 import { isPWAEnabled, isPWAFeatureEnabled } from '@/config/pwa';
+import { getAssetUrl } from '@/config/env';
 
 interface PWAProviderProps {
   children: React.ReactNode;
@@ -28,7 +29,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
     // Register service worker
     if (isPWAFeatureEnabled('serviceWorker') && 'serviceWorker' in navigator) {
       navigator.serviceWorker
-        .register('/sw.js')
+        .register(getAssetUrl('/sw.js'))
         .then((registration) => {
           console.log('SW registered: ', registration);
         })

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PWAProvider } from "@/components/PWAProvider";
 import { isPWAEnabled } from "@/config/pwa";
+import { getAssetUrl } from "@/config/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -68,14 +69,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon/favicon.ico", sizes: "any" },
+      { url: getAssetUrl("/favicon/favicon-16x16.png"), sizes: "16x16", type: "image/png" },
+      { url: getAssetUrl("/favicon/favicon-32x32.png"), sizes: "32x32", type: "image/png" },
+      { url: getAssetUrl("/favicon/favicon.ico"), sizes: "any" },
     ],
-    shortcut: "/favicon/favicon.ico",
+    shortcut: getAssetUrl("/favicon/favicon.ico"),
     apple: [
       {
-        url: "/favicon/apple-touch-icon.png",
+        url: getAssetUrl("/favicon/apple-touch-icon.png"),
         sizes: "180x180",
         type: "image/png",
       },
@@ -83,17 +84,17 @@ export const metadata: Metadata = {
     other: [
       {
         rel: "android-chrome",
-        url: "/favicon/android-chrome-192x192.png",
+        url: getAssetUrl("/favicon/android-chrome-192x192.png"),
         sizes: "192x192",
       },
       {
         rel: "android-chrome",
-        url: "/favicon/android-chrome-512x512.png",
+        url: getAssetUrl("/favicon/android-chrome-512x512.png"),
         sizes: "512x512",
       },
     ],
   },
-  manifest: "/favicon/site.webmanifest",
+  manifest: getAssetUrl("/favicon/site.webmanifest"),
   other: {
     "theme-color": "#ffffff",
     "msapplication-TileColor": "#ffffff",

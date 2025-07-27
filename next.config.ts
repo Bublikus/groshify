@@ -1,5 +1,28 @@
 import type { NextConfig } from "next";
 
+// Extract base path from APP_URL
+const getBasePath = () => {
+  const appUrl = process.env.APP_URL || '';
+  console.log('appUrl', appUrl);
+  if (!appUrl) return '';
+  
+  // For localhost, always use empty base path
+  if (appUrl.includes('localhost') || appUrl.includes('127.0.0.1')) {
+    return '';
+  }
+  
+  // If it's a full URL, extract the path part
+  if (appUrl.startsWith('http')) {
+    const url = new URL(appUrl);
+    return url.pathname;
+  }
+  
+  // If it's already a path, return as is
+  return appUrl;
+};
+
+const basePath = getBasePath();
+
 const nextConfig: NextConfig = {
   // Enable optimizations for better performance
   experimental: {
@@ -12,11 +35,11 @@ const nextConfig: NextConfig = {
   // Enable trailing slash for consistent URLs
   trailingSlash: false,
   
-  // Base path for GitHub Pages
-  basePath: process.env.NODE_ENV === 'production' ? '/groshify' : '',
+  // Base path from environment
+  basePath: basePath,
   
-  // Asset prefix for GitHub Pages
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/groshify' : '',
+  // Asset prefix from environment
+  assetPrefix: basePath,
   
   // Configure headers for better SEO and security
   async headers() {

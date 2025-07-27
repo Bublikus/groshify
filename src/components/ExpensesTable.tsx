@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { documentParserService, ParseResult, FileInfo } from "@/lib/parsers";
 import { formatCurrency } from "@/lib/utils/number-format";
 
@@ -32,6 +33,8 @@ export function ExpensesTable() {
   const [error, setError] = useState<string | null>(null);
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [isFileInfoOpen, setIsFileInfoOpen] = useState(false);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -61,6 +64,44 @@ export function ExpensesTable() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const scrollToMonth = (direction: 'left' | 'right') => {
+    if (!tabsRef.current || monthlyData.length === 0) return;
+
+    const currentIndex = monthlyData.findIndex(month => month.month === selectedMonth);
+    if (currentIndex === -1) return;
+
+    let targetIndex: number;
+    if (direction === 'left') {
+      targetIndex = Math.max(0, currentIndex - 1);
+    } else {
+      targetIndex = Math.min(monthlyData.length - 1, currentIndex + 1);
+    }
+
+    const targetMonth = monthlyData[targetIndex];
+    setSelectedMonth(targetMonth.month);
+
+    // Scroll to center the target tab
+    setTimeout(() => {
+      if (tabsRef.current) {
+        const tabsContainer = tabsRef.current;
+        const tabElements = tabsContainer.querySelectorAll('[data-state]');
+        const targetTab = tabElements[targetIndex + 1]; // +1 because "All" tab is first
+        
+        if (targetTab) {
+          const containerWidth = tabsContainer.offsetWidth;
+          const tabLeft = (targetTab as HTMLElement).offsetLeft;
+          const tabWidth = (targetTab as HTMLElement).offsetWidth;
+          const scrollLeft = tabLeft - (containerWidth / 2) + (tabWidth / 2);
+          
+          tabsContainer.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, 100);
   };
 
   const supportedExtensions = documentParserService.getSupportedExtensions();
@@ -238,34 +279,59 @@ export function ExpensesTable() {
       </Card>
 
       {fileInfo && (
-        <Card>
-          <CardHeader>
-            <CardTitle>File Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <p className="font-medium">Columns ({fileInfo.headers.length}):</p>
-                <p className="text-sm text-muted-foreground">{fileInfo.headers.join(', ')}</p>
-              </div>
-              <div>
-                <p className="font-medium">Total Rows: {fileInfo.totalRows}</p>
-              </div>
-              {fileInfo.sampleData.length > 0 && (
-                <div>
-                  <p className="font-medium">Sample Data:</p>
-                  <div className="mt-2 space-y-2">
-                    {fileInfo.sampleData.map((row, index) => (
-                      <div key={index} className="text-sm bg-muted p-2 rounded">
-                        <pre className="whitespace-pre-wrap">{JSON.stringify(row, null, 2)}</pre>
-                      </div>
-                    ))}
+        <Collapsible open={isFileInfoOpen} onOpenChange={setIsFileInfoOpen}>
+          <Card className="py-0">
+            <CardHeader className="p-0 block">
+              <CollapsibleTrigger asChild>
+                <button className="w-full flex items-center justify-between text-left hover:bg-accent/50 rounded-md p-6 transition-colors cursor-pointer">
+                  <CardTitle>File Information</CardTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 15 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`transition-transform ${isFileInfoOpen ? 'rotate-180' : ''}`}
+                    >
+                      <path
+                        d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z"
+                        fill="currentColor"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
                   </div>
+                </button>
+              </CollapsibleTrigger>
+            </CardHeader>
+            <CollapsibleContent className="pb-6">
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <p className="font-medium">Columns ({fileInfo.headers.length}):</p>
+                    <p className="text-sm text-muted-foreground">{fileInfo.headers.join(', ')}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Total Rows: {fileInfo.totalRows}</p>
+                  </div>
+                  {fileInfo.sampleData.length > 0 && (
+                    <div>
+                      <p className="font-medium">Sample Data:</p>
+                      <div className="mt-2 space-y-2">
+                        {fileInfo.sampleData.map((row, index) => (
+                          <div key={index} className="text-sm bg-muted p-2 rounded">
+                            <pre className="whitespace-pre-wrap">{JSON.stringify(row, null, 2)}</pre>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
       {data.length > 0 && (
@@ -278,14 +344,45 @@ export function ExpensesTable() {
             {monthlyData.length > 0 && (
               <div className="mb-4">
                 <Tabs value={selectedMonth} onValueChange={setSelectedMonth} className="w-full">
-                  <TabsList className="grid w-full grid-cols-auto-fit">
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    {monthlyData.map((monthData) => (
-                      <TabsTrigger key={monthData.month} value={monthData.month}>
-                        {monthData.month}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
+                  <div className="relative flex items-center">
+                    {/* Left Arrow Button */}
+                    <button
+                      onClick={() => scrollToMonth('left')}
+                      disabled={selectedMonth === 'all' || monthlyData.findIndex(month => month.month === selectedMonth) === 0}
+                      className="absolute left-0 z-10 flex h-8 w-8 items-center justify-center rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94627 8.84182 3.13514Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                      </svg>
+                    </button>
+
+                    {/* Right Arrow Button */}
+                    <button
+                      onClick={() => scrollToMonth('right')}
+                      disabled={selectedMonth === 'all' || monthlyData.findIndex(month => month.month === selectedMonth) === monthlyData.length - 1}
+                      className="absolute right-0 z-10 flex h-8 w-8 items-center justify-center rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6758 5.94673 11.3594 6.1356 11.1579L9.56501 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                      </svg>
+                    </button>
+
+                    {/* Scrollable Tabs Container */}
+                    <div 
+                      ref={tabsRef}
+                      className="flex-1 overflow-x-auto scrollbar-hide mx-10"
+                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                      <TabsList className="flex w-max h-8">
+                        <TabsTrigger value="all" className="shrink-0 px-6">All</TabsTrigger>
+                        {monthlyData.map((monthData) => (
+                          <TabsTrigger key={monthData.month} value={monthData.month} className="shrink-0 px-6">
+                            {monthData.month}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                    </div>
+                  </div>
                 </Tabs>
               </div>
             )}

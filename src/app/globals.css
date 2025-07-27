@@ -125,4 +125,13 @@
   .grid-cols-auto-fit {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

@@ -16,19 +16,30 @@ import {
 
 interface RawData {
   id: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 }
+
+interface FileInfo {
+  headers: string[];
+  totalRows: number;
+  sampleData: Record<string, string | number | boolean | null | undefined>[];
+}
+
+interface ExcelParseResult {
+  data: RawData[];
+  headers: string[];
+  fileInfo: FileInfo;
+}
+
+type CellValue = string | number | boolean | null | undefined;
+type RowData = CellValue[];
 
 export function ExpensesTable() {
   const [data, setData] = useState<RawData[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fileInfo, setFileInfo] = useState<{
-    headers: string[];
-    totalRows: number;
-    sampleData: any[];
-  } | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -51,7 +62,7 @@ export function ExpensesTable() {
     }
   };
 
-  const readExcelFile = (file: File): Promise<{ data: RawData[], headers: string[], fileInfo: { headers: string[], totalRows: number, sampleData: any[] } }> => {
+  const readExcelFile = (file: File): Promise<ExcelParseResult> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -96,7 +107,7 @@ export function ExpensesTable() {
             header: 1,
             defval: "",
             blankrows: false
-          });
+          }) as RowData[];
 
           if (!jsonData || jsonData.length < 2) {
             reject(new Error("File appears to be empty or has no data rows"));
@@ -105,7 +116,7 @@ export function ExpensesTable() {
 
           // Get headers from first row
           const rawHeaders = jsonData[0] as string[];
-          const dataRows = jsonData.slice(1) as any[][];
+          const dataRows = jsonData.slice(1) as RowData[];
 
           // Clean headers (remove empty ones and provide defaults)
           const cleanHeaders = rawHeaders.map((header, index) => 
@@ -113,14 +124,14 @@ export function ExpensesTable() {
           );
 
           // Show file info
-          const fileInfo = {
+          const fileInfo: FileInfo = {
             headers: cleanHeaders,
             totalRows: dataRows.length,
             sampleData: dataRows.slice(0, 3).map(row => 
               cleanHeaders.reduce((obj, header, index) => {
                 obj[header] = row[index] || "";
                 return obj;
-              }, {} as any)
+              }, {} as Record<string, CellValue>)
             )
           };
 

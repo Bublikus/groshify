@@ -1,5 +1,7 @@
 import { ParseResult } from "@/lib/parsers";
-import { ExpenseCategory } from "./helpers";
+import { EXPENSE_CATEGORIES } from "@/constants/categories";
+
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
 
 export interface MonthData {
   month: string;
@@ -25,6 +27,7 @@ export interface ExpensesTableState {
   data: ParseResult["data"];
   headers: string[];
   isLoading: boolean;
+  isCategorizing: boolean;
   error: string | null;
   fileInfo: ParseResult["fileInfo"] | null;
   selectedMonth: string;

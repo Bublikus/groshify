@@ -3,14 +3,14 @@
 import { useState, useMemo, useRef } from "react";
 import { documentParserService } from "@/lib/parsers";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
-import { guessCategory, ExpenseCategory } from "./helpers";
-import { MonthData, CategorySummary, ExpensesTableState } from "./types";
+import { MonthData, CategorySummary, ExpensesTableState, ExpenseCategory } from "./types";
 
 export const useExpensesTable = () => {
   const [state, setState] = useState<ExpensesTableState>({
     data: [],
     headers: [],
     isLoading: false,
+    isCategorizing: false,
     error: null,
     fileInfo: null,
     selectedMonth: "all",
@@ -47,23 +47,61 @@ export const useExpensesTable = () => {
       // Parse the file
       const result = await documentParserService.parse(file);
 
-      // Initialize categories with guessed values based on column 4 (description)
-      const initialCategories: Record<string, ExpenseCategory> = {};
-      result.data.forEach((row) => {
-        const description = row[result.headers[3]]; // Column 4 (0-indexed)
-        if (description) {
-          initialCategories[row.id] = guessCategory(String(description));
-        }
-      });
+      // Prepare transactions for categorization (limit to first 10 to avoid timeout)
+      const transactions = result.data.slice(0, 10).map((row) => ({
+        id: row.id,
+        description: String(row[result.headers[3]] || ''), // Column 4 (0-indexed)
+      }));
 
+      // Get category names for categorization
+      const categoryNames = EXPENSE_CATEGORIES.map(cat => cat.name);
+
+      // Set categorizing state
       setState((prev) => ({
         ...prev,
         data: result.data,
         headers: result.headers,
         fileInfo: result.fileInfo,
         selectedMonth: "all", // Reset to show all data initially
-        categories: initialCategories,
         isLoading: false,
+        isCategorizing: true,
+      }));
+
+      // Call the categorization API
+      const categorizationResponse = await fetch('/api/categorize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          transactions,
+          categories: categoryNames,
+        }),
+      });
+
+      if (!categorizationResponse.ok) {
+        throw new Error('Failed to categorize transactions');
+      }
+
+      const { categorizedTransactions } = await categorizationResponse.json();
+
+      // Initialize categories with AI-determined values for first 10 transactions
+      const initialCategories: Record<string, ExpenseCategory> = {};
+      
+      // Add AI-categorized transactions
+      categorizedTransactions.forEach((categorized: { id: string; category: string }) => {
+        initialCategories[categorized.id] = categorized.category as ExpenseCategory;
+      });
+      
+      // Set default category for remaining transactions
+      result.data.slice(10).forEach((row) => {
+        initialCategories[row.id] = 'Інше';
+      });
+
+      setState((prev) => ({
+        ...prev,
+        categories: initialCategories,
+        isCategorizing: false,
       }));
     } catch (error) {
       console.error("Error reading file:", error);

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils/number-format";
 import { useExpensesTable } from "./hooks";
-import { ExpenseCategory } from "./helpers";
+import { ExpenseCategory } from "./types";
 
 export function ExpensesTable() {
   const {
@@ -63,12 +63,17 @@ export function ExpensesTable() {
                   type="file"
                   accept={supportedExtensions.join(",")}
                   onChange={handleFileUpload}
-                  disabled={state.isLoading}
+                  disabled={state.isLoading || state.isCategorizing}
                 />
               </div>
               {state.isLoading && (
                 <p className="text-sm text-muted-foreground">
                   Processing file...
+                </p>
+              )}
+              {state.isCategorizing && (
+                <p className="text-sm text-muted-foreground">
+                  🤖 AI is categorizing the first 10 transactions...
                 </p>
               )}
               {state.error && <p className="text-sm text-destructive">{state.error}</p>}
@@ -80,6 +85,9 @@ export function ExpensesTable() {
                 <p>
                   All columns and data will be displayed exactly as they appear
                   in your file.
+                </p>
+                <p>
+                  <strong>Note:</strong> AI categorization is applied to the first 10 transactions only to ensure fast processing.
                 </p>
               </div>
             </div>

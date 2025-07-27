@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { documentParserService, ParseResult, FileInfo } from "@/lib/parsers";
 import { formatCurrency } from "@/lib/utils/number-format";
 
@@ -27,6 +34,109 @@ interface MonthData {
   totalSum: number;
 }
 
+// Hardcoded expense categories
+const EXPENSE_CATEGORIES = [
+  "Food & Dining",
+  "Transportation",
+  "Shopping",
+  "Entertainment",
+  "Healthcare",
+  "Utilities",
+  "Housing",
+  "Education",
+  "Travel",
+  "Insurance",
+  "Investments",
+  "Salary",
+  "Freelance",
+  "Other Income",
+  "Other Expenses",
+];
+
+// Function to guess category based on description
+const guessCategory = (description: string): string => {
+  if (!description) return "Other Expenses";
+  
+  const desc = description.toLowerCase();
+  
+  // Food & Dining
+  if (desc.includes("restaurant") || desc.includes("cafe") || desc.includes("food") || 
+      desc.includes("grocery") || desc.includes("supermarket") || desc.includes("meal")) {
+    return "Food & Dining";
+  }
+  
+  // Transportation
+  if (desc.includes("uber") || desc.includes("taxi") || desc.includes("bus") || 
+      desc.includes("train") || desc.includes("gas") || desc.includes("fuel") ||
+      desc.includes("parking") || desc.includes("metro")) {
+    return "Transportation";
+  }
+  
+  // Shopping
+  if (desc.includes("amazon") || desc.includes("shop") || desc.includes("store") ||
+      desc.includes("mall") || desc.includes("clothing") || desc.includes("shoes")) {
+    return "Shopping";
+  }
+  
+  // Entertainment
+  if (desc.includes("movie") || desc.includes("cinema") || desc.includes("netflix") ||
+      desc.includes("spotify") || desc.includes("game") || desc.includes("concert")) {
+    return "Entertainment";
+  }
+  
+  // Healthcare
+  if (desc.includes("pharmacy") || desc.includes("doctor") || desc.includes("hospital") ||
+      desc.includes("medical") || desc.includes("dental")) {
+    return "Healthcare";
+  }
+  
+  // Utilities
+  if (desc.includes("electricity") || desc.includes("water") || desc.includes("internet") ||
+      desc.includes("phone") || desc.includes("utility")) {
+    return "Utilities";
+  }
+  
+  // Housing
+  if (desc.includes("rent") || desc.includes("mortgage") || desc.includes("home") ||
+      desc.includes("apartment")) {
+    return "Housing";
+  }
+  
+  // Education
+  if (desc.includes("school") || desc.includes("university") || desc.includes("course") ||
+      desc.includes("book") || desc.includes("education")) {
+    return "Education";
+  }
+  
+  // Travel
+  if (desc.includes("hotel") || desc.includes("flight") || desc.includes("airbnb") ||
+      desc.includes("vacation") || desc.includes("trip")) {
+    return "Travel";
+  }
+  
+  // Insurance
+  if (desc.includes("insurance") || desc.includes("premium")) {
+    return "Insurance";
+  }
+  
+  // Investments
+  if (desc.includes("investment") || desc.includes("stock") || desc.includes("crypto") ||
+      desc.includes("fund")) {
+    return "Investments";
+  }
+  
+  // Income categories
+  if (desc.includes("salary") || desc.includes("payroll") || desc.includes("income")) {
+    return "Salary";
+  }
+  
+  if (desc.includes("freelance") || desc.includes("contract") || desc.includes("consulting")) {
+    return "Freelance";
+  }
+  
+  return "Other Expenses";
+};
+
 export function ExpensesTable() {
   const [data, setData] = useState<ParseResult["data"]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
@@ -36,6 +146,7 @@ export function ExpensesTable() {
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
   const tabsRef = useRef<HTMLDivElement>(null);
   const [isFileInfoOpen, setIsFileInfoOpen] = useState(false);
+  const [categories, setCategories] = useState<Record<string, string>>({});
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -65,6 +176,16 @@ export function ExpensesTable() {
       setHeaders(result.headers);
       setFileInfo(result.fileInfo);
       setSelectedMonth("all"); // Reset to show all data initially
+      
+      // Initialize categories with guessed values based on column 4 (description)
+      const initialCategories: Record<string, string> = {};
+      result.data.forEach((row) => {
+        const description = row[result.headers[3]]; // Column 4 (0-indexed)
+        if (description) {
+          initialCategories[row.id] = guessCategory(String(description));
+        }
+      });
+      setCategories(initialCategories);
     } catch (error) {
       console.error("Error reading file:", error);
       setError(
@@ -118,6 +239,14 @@ export function ExpensesTable() {
   };
 
   const supportedExtensions = documentParserService.getSupportedExtensions();
+
+  // Handle category change
+  const handleCategoryChange = (rowId: string, category: string) => {
+    setCategories(prev => ({
+      ...prev,
+      [rowId]: category
+    }));
+  };
 
   // Group data by month
   const monthlyData = useMemo(() => {
@@ -302,8 +431,34 @@ export function ExpensesTable() {
       : { positiveSum: 0, negativeSum: 0, totalSum: 0 };
   }, [selectedMonth, monthlyData, overallSums]);
 
+  // Calculate category summaries
+  const categorySummaries = useMemo(() => {
+    const summaries: Record<string, { count: number; total: number }> = {};
+    
+    currentMonthData.forEach((row) => {
+      const category = categories[row.id] || "Other Expenses";
+      let amount = 0;
+      
+      if (headers.length >= 5) {
+        const column5Value = row[headers[4]];
+        if (column5Value !== null && column5Value !== undefined && column5Value !== "") {
+          amount = typeof column5Value === 'number' ? column5Value : parseFloat(String(column5Value)) || 0;
+        }
+      }
+      
+      if (!summaries[category]) {
+        summaries[category] = { count: 0, total: 0 };
+      }
+      summaries[category].count += 1;
+      summaries[category].total += amount;
+    });
+    
+    return Object.entries(summaries)
+      .sort(([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total));
+  }, [currentMonthData, categories, headers]);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -566,13 +721,14 @@ export function ExpensesTable() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <div className="grid grid-cols-3 gap-4 text-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
+                        className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">
                           Column 5 Positive Sum
                         </p>
                         <p className="text-lg font-bold text-green-600">
@@ -585,8 +741,9 @@ export function ExpensesTable() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
+                        className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">
                           Column 5 Negative Sum
                         </p>
                         <p className="text-lg font-bold text-red-600">
@@ -597,8 +754,9 @@ export function ExpensesTable() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
+                        className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">
                           Column 5 Total
                         </p>
                         <p
@@ -617,8 +775,45 @@ export function ExpensesTable() {
                   </motion.div>
                 )}
 
+                {/* Category Summary */}
+                {categorySummaries.length > 0 && (
+                  <motion.div
+                    className="mb-4 p-4 bg-muted/50 rounded-lg"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                      Category Breakdown
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {categorySummaries.map(([category, summary], index) => (
+                        <motion.div
+                          key={category}
+                          className="text-center p-3 bg-background rounded-lg border shadow-sm"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.5 + index * 0.05 }}
+                        >
+                          <p className="text-sm font-medium text-muted-foreground truncate mb-1">
+                            {category}
+                          </p>
+                          <p className="text-base font-bold mb-1">
+                            {formatCurrency(summary.total, {
+                              showPositiveSign: summary.total >= 0,
+                            })}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {summary.count} {summary.count === 1 ? 'item' : 'items'}
+                          </p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
                 <motion.div
-                  className="overflow-x-auto"
+                  className="sticky-table-container"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
@@ -626,28 +821,42 @@ export function ExpensesTable() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="sticky-left min-w-[200px] bg-background">
+                          Category
+                        </TableHead>
                         {headers.map((header) => (
                           <TableHead key={header}>{header}</TableHead>
                         ))}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {currentMonthData.map((row, index) => (
-                        <motion.tr
-                          key={row.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.5 + index * 0.02 }}
-                          className="border-b"
-                        >
+                      {currentMonthData.map((row) => (
+                        <TableRow key={row.id}>
+                          <TableCell className="sticky-left bg-background border-b">
+                            <Select
+                              value={categories[row.id] || "Other Expenses"}
+                              onValueChange={(value) => handleCategoryChange(row.id, value)}
+                            >
+                              <SelectTrigger className="w-full h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {EXPENSE_CATEGORIES.map((category) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
                           {headers.map((header) => (
-                            <TableCell key={header}>
+                            <TableCell key={header} className="border-b">
                               {row[header] !== null && row[header] !== undefined
                                 ? String(row[header])
                                 : ""}
                             </TableCell>
                           ))}
-                        </motion.tr>
+                        </TableRow>
                       ))}
                     </TableBody>
                   </Table>

@@ -93,19 +93,19 @@ export const metadata: Metadata = {
       },
     ],
   },
-  ...(isPWAEnabled() && { manifest: "/favicon/site.webmanifest" }),
+  manifest: "/favicon/site.webmanifest",
   other: {
     "theme-color": "#ffffff",
     "msapplication-TileColor": "#ffffff",
     viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
-    ...(isPWAEnabled() && {
+    ...(isPWAEnabled() ? {
       "apple-mobile-web-app-capable": "yes",
       "apple-mobile-web-app-status-bar-style": "default",
       "apple-mobile-web-app-title": "Groshify",
       "mobile-web-app-capable": "yes",
       "application-name": "Groshify",
       "msapplication-config": "/browserconfig.xml",
-    }),
+    } : {}),
   },
 };
 

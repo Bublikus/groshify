@@ -821,7 +821,7 @@ export function ExpensesTable() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="sticky-left min-w-[200px] bg-background">
+                        <TableHead className="sticky-left min-w-[140px] sm:min-w-[200px] bg-background">
                           Category
                         </TableHead>
                         {headers.map((header) => (
@@ -837,8 +837,8 @@ export function ExpensesTable() {
                               value={categories[row.id] || "Other Expenses"}
                               onValueChange={(value) => handleCategoryChange(row.id, value)}
                             >
-                              <SelectTrigger className="w-full h-8 text-xs">
-                                <SelectValue />
+                              <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
+                                <SelectValue className="truncate" />
                               </SelectTrigger>
                               <SelectContent>
                                 {EXPENSE_CATEGORIES.map((category) => (

@@ -160,11 +160,30 @@
     border-right: 1px solid var(--border) !important;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15) !important;
     backdrop-filter: blur(8px) !important;
+    min-width: 140px !important;
+  }
+  
+  @media (min-width: 640px) {
+    .sticky-table-container [data-slot="table-head"].sticky-left,
+    .sticky-table-container [data-slot="table-cell"].sticky-left {
+      min-width: 200px !important;
+    }
   }
   
   /* Enhanced hover effects for sticky column */
   .sticky-table-container [data-slot="table-cell"].sticky-left:hover {
     background: var(--accent) !important;
+  }
+  
+  /* Mobile-specific table styling */
+  @media (max-width: 639px) {
+    .sticky-table-container [data-slot="table-cell"] {
+      padding: 0.5rem 0.25rem !important;
+    }
+    
+    .sticky-table-container [data-slot="table-head"] {
+      padding: 0.5rem 0.25rem !important;
+    }
   }
   
   .sticky-table-container [data-slot="table-head"].sticky-left {

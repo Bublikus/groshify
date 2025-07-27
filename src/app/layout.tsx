@@ -122,6 +122,7 @@ export default function RootLayout({
           name="description"
           content="Your personal finance management app"
         />
+        <link rel="manifest" href={`${getAssetUrl("/favicon/site.webmanifest")}`} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

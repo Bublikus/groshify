@@ -416,7 +416,7 @@ export function ExpensesTable() {
                         <TableHead className="sticky-left min-w-[140px] sm:min-w-[200px] bg-background">
                           Category
                         </TableHead>
-                        {state.headers.map((header) => (
+                        {state.headerTitles.map((header) => (
                           <TableHead key={header}>{header}</TableHead>
                         ))}
                       </TableRow>

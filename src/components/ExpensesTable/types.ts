@@ -26,6 +26,7 @@ export interface CurrentSums {
 export interface ExpensesTableState {
   data: ParseResult["data"];
   headers: string[];
+  headerTitles: string[];
   isLoading: boolean;
   isCategorizing: boolean;
   error: string | null;

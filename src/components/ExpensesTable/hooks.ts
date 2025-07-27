@@ -3,7 +3,12 @@
 import { useState, useMemo, useRef } from "react";
 import { documentParserService } from "@/lib/parsers";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
-import { MonthData, CategorySummary, ExpensesTableState, ExpenseCategory } from "./types";
+import {
+  MonthData,
+  CategorySummary,
+  ExpensesTableState,
+  ExpenseCategory,
+} from "./types";
 
 export const useExpensesTable = () => {
   const [state, setState] = useState<ExpensesTableState>({
@@ -15,6 +20,7 @@ export const useExpensesTable = () => {
     fileInfo: null,
     selectedMonth: "all",
     isFileInfoOpen: false,
+    headerTitles: [],
     categories: {},
   });
 
@@ -47,20 +53,26 @@ export const useExpensesTable = () => {
       // Parse the file
       const result = await documentParserService.parse(file);
 
+      const headerTitles = Object.keys(result.data[0])
+        .filter((key) => key !== "id")
+        .map((key) => String(result.data[0][key] || ""));
+      const dataRows = result.data.slice(1);
+
       // Prepare transactions for categorization (limit to first 10 to avoid timeout)
-      const transactions = result.data.slice(0, 10).map((row) => ({
+      const transactions = dataRows.slice(0, 10).map((row) => ({
         id: row.id,
-        description: String(row[result.headers[3]] || ''), // Column 4 (0-indexed)
+        description: String(row[result.headers[3]] || ""), // Column 4 (0-indexed)
       }));
 
       // Get category names for categorization
-      const categoryNames = EXPENSE_CATEGORIES.map(cat => cat.name);
+      const categoryNames = EXPENSE_CATEGORIES.map((cat) => cat.name);
 
       // Set categorizing state
       setState((prev) => ({
         ...prev,
-        data: result.data,
+        data: dataRows,
         headers: result.headers,
+        headerTitles,
         fileInfo: result.fileInfo,
         selectedMonth: "all", // Reset to show all data initially
         isLoading: false,
@@ -68,10 +80,10 @@ export const useExpensesTable = () => {
       }));
 
       // Call the categorization API
-      const categorizationResponse = await fetch('/api/categorize', {
-        method: 'POST',
+      const categorizationResponse = await fetch("/api/categorize", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           transactions,
@@ -80,22 +92,25 @@ export const useExpensesTable = () => {
       });
 
       if (!categorizationResponse.ok) {
-        throw new Error('Failed to categorize transactions');
+        throw new Error("Failed to categorize transactions");
       }
 
       const { categorizedTransactions } = await categorizationResponse.json();
 
       // Initialize categories with AI-determined values for first 10 transactions
       const initialCategories: Record<string, ExpenseCategory> = {};
-      
+
       // Add AI-categorized transactions
-      categorizedTransactions.forEach((categorized: { id: string; category: string }) => {
-        initialCategories[categorized.id] = categorized.category as ExpenseCategory;
-      });
-      
+      categorizedTransactions.forEach(
+        (categorized: { id: string; category: string }) => {
+          initialCategories[categorized.id] =
+            categorized.category as ExpenseCategory;
+        }
+      );
+
       // Set default category for remaining transactions
-      result.data.slice(10).forEach((row) => {
-        initialCategories[row.id] = 'Інше';
+      dataRows.slice(10).forEach((row) => {
+        initialCategories[row.id] = "Інше";
       });
 
       setState((prev) => ({

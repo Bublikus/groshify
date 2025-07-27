@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useRef } from "react";
 import { documentParserService } from "@/lib/parsers";
-import { guessCategory, EXPENSE_CATEGORIES, ExpenseCategory } from "./helpers";
+import { EXPENSE_CATEGORIES } from "@/constants/categories";
+import { guessCategory, ExpenseCategory } from "./helpers";
 import { MonthData, CategorySummary, ExpensesTableState } from "./types";
 
 export const useExpensesTable = () => {
@@ -19,11 +20,18 @@ export const useExpensesTable = () => {
 
   const tabsRef = useRef<HTMLDivElement>(null);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setState(prev => ({ ...prev, isLoading: true, error: null, fileInfo: null }));
+    setState((prev) => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+      fileInfo: null,
+    }));
 
     try {
       // Check if file can be parsed
@@ -48,7 +56,7 @@ export const useExpensesTable = () => {
         }
       });
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         data: result.data,
         headers: result.headers,
@@ -59,7 +67,7 @@ export const useExpensesTable = () => {
       }));
     } catch (error) {
       console.error("Error reading file:", error);
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         error: `Error reading file: ${
           error instanceof Error ? error.message : "Unknown error"
@@ -70,12 +78,12 @@ export const useExpensesTable = () => {
   };
 
   const handleCategoryChange = (rowId: string, category: ExpenseCategory) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       categories: {
         ...prev.categories,
-        [rowId]: category
-      }
+        [rowId]: category,
+      },
     }));
   };
 
@@ -95,7 +103,7 @@ export const useExpensesTable = () => {
     }
 
     const targetMonth = monthlyData[targetIndex];
-    setState(prev => ({ ...prev, selectedMonth: targetMonth.month }));
+    setState((prev) => ({ ...prev, selectedMonth: targetMonth.month }));
 
     // Scroll to center the target tab
     setTimeout(() => {
@@ -281,7 +289,8 @@ export const useExpensesTable = () => {
       return state.data;
     }
     return (
-      monthlyData.find((month) => month.month === state.selectedMonth)?.data || []
+      monthlyData.find((month) => month.month === state.selectedMonth)?.data ||
+      []
     );
   }, [state.selectedMonth, monthlyData, state.data]);
 
@@ -305,27 +314,35 @@ export const useExpensesTable = () => {
   // Calculate category summaries
   const categorySummaries = useMemo(() => {
     const summaries: Record<string, CategorySummary> = {};
-    
+
     currentMonthData.forEach((row) => {
       const category = state.categories[row.id] || "Other Expenses";
       let amount = 0;
-      
+
       if (state.headers.length >= 5) {
         const column5Value = row[state.headers[4]];
-        if (column5Value !== null && column5Value !== undefined && column5Value !== "") {
-          amount = typeof column5Value === 'number' ? column5Value : parseFloat(String(column5Value)) || 0;
+        if (
+          column5Value !== null &&
+          column5Value !== undefined &&
+          column5Value !== ""
+        ) {
+          amount =
+            typeof column5Value === "number"
+              ? column5Value
+              : parseFloat(String(column5Value)) || 0;
         }
       }
-      
+
       if (!summaries[category]) {
         summaries[category] = { count: 0, total: 0 };
       }
       summaries[category].count += 1;
       summaries[category].total += amount;
     });
-    
-    return Object.entries(summaries)
-      .sort(([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total));
+
+    return Object.entries(summaries).sort(
+      ([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total)
+    );
   }, [currentMonthData, state.categories, state.headers]);
 
   const supportedExtensions = documentParserService.getSupportedExtensions();
@@ -344,4 +361,4 @@ export const useExpensesTable = () => {
     supportedExtensions,
     EXPENSE_CATEGORIES,
   };
-}; 
+};

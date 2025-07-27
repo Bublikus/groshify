@@ -426,8 +426,8 @@ export function ExpensesTable() {
                               </SelectTrigger>
                               <SelectContent>
                                 {EXPENSE_CATEGORIES.map((category) => (
-                                  <SelectItem key={category} value={category}>
-                                    {category}
+                                  <SelectItem key={category.name} value={category.name}>
+                                    {category.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>

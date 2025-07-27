@@ -3,6 +3,9 @@ export const env = {
   // App URL for base path configuration
   APP_URL: process.env.APP_URL || '',
 
+  // OpenAI API Key
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+
   // Check if we're in production
   IS_PRODUCTION: process.env.NODE_ENV === 'production',
   

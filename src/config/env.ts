@@ -16,7 +16,7 @@ export const env = {
     // If it's a full URL, extract the path part
     if (appUrl.startsWith('http')) {
       const url = new URL(appUrl);
-      return url.pathname;
+      return url.href;
     }
     
     // If it's already a path, return as is

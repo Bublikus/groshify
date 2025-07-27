@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,440 +21,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { documentParserService, ParseResult, FileInfo } from "@/lib/parsers";
 import { formatCurrency } from "@/lib/utils/number-format";
-
-interface MonthData {
-  month: string;
-  year: number;
-  data: ParseResult["data"];
-  positiveSum: number;
-  negativeSum: number;
-  totalSum: number;
-}
-
-// Hardcoded expense categories
-const EXPENSE_CATEGORIES = [
-  "Food & Dining",
-  "Transportation",
-  "Shopping",
-  "Entertainment",
-  "Healthcare",
-  "Utilities",
-  "Housing",
-  "Education",
-  "Travel",
-  "Insurance",
-  "Investments",
-  "Salary",
-  "Freelance",
-  "Other Income",
-  "Other Expenses",
-];
-
-// Function to guess category based on description
-const guessCategory = (description: string): string => {
-  if (!description) return "Other Expenses";
-  
-  const desc = description.toLowerCase();
-  
-  // Food & Dining
-  if (desc.includes("restaurant") || desc.includes("cafe") || desc.includes("food") || 
-      desc.includes("grocery") || desc.includes("supermarket") || desc.includes("meal")) {
-    return "Food & Dining";
-  }
-  
-  // Transportation
-  if (desc.includes("uber") || desc.includes("taxi") || desc.includes("bus") || 
-      desc.includes("train") || desc.includes("gas") || desc.includes("fuel") ||
-      desc.includes("parking") || desc.includes("metro")) {
-    return "Transportation";
-  }
-  
-  // Shopping
-  if (desc.includes("amazon") || desc.includes("shop") || desc.includes("store") ||
-      desc.includes("mall") || desc.includes("clothing") || desc.includes("shoes")) {
-    return "Shopping";
-  }
-  
-  // Entertainment
-  if (desc.includes("movie") || desc.includes("cinema") || desc.includes("netflix") ||
-      desc.includes("spotify") || desc.includes("game") || desc.includes("concert")) {
-    return "Entertainment";
-  }
-  
-  // Healthcare
-  if (desc.includes("pharmacy") || desc.includes("doctor") || desc.includes("hospital") ||
-      desc.includes("medical") || desc.includes("dental")) {
-    return "Healthcare";
-  }
-  
-  // Utilities
-  if (desc.includes("electricity") || desc.includes("water") || desc.includes("internet") ||
-      desc.includes("phone") || desc.includes("utility")) {
-    return "Utilities";
-  }
-  
-  // Housing
-  if (desc.includes("rent") || desc.includes("mortgage") || desc.includes("home") ||
-      desc.includes("apartment")) {
-    return "Housing";
-  }
-  
-  // Education
-  if (desc.includes("school") || desc.includes("university") || desc.includes("course") ||
-      desc.includes("book") || desc.includes("education")) {
-    return "Education";
-  }
-  
-  // Travel
-  if (desc.includes("hotel") || desc.includes("flight") || desc.includes("airbnb") ||
-      desc.includes("vacation") || desc.includes("trip")) {
-    return "Travel";
-  }
-  
-  // Insurance
-  if (desc.includes("insurance") || desc.includes("premium")) {
-    return "Insurance";
-  }
-  
-  // Investments
-  if (desc.includes("investment") || desc.includes("stock") || desc.includes("crypto") ||
-      desc.includes("fund")) {
-    return "Investments";
-  }
-  
-  // Income categories
-  if (desc.includes("salary") || desc.includes("payroll") || desc.includes("income")) {
-    return "Salary";
-  }
-  
-  if (desc.includes("freelance") || desc.includes("contract") || desc.includes("consulting")) {
-    return "Freelance";
-  }
-  
-  return "Other Expenses";
-};
+import { useExpensesTable } from "./hooks";
+import { ExpenseCategory } from "./helpers";
 
 export function ExpensesTable() {
-  const [data, setData] = useState<ParseResult["data"]>([]);
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<string>("all");
-  const tabsRef = useRef<HTMLDivElement>(null);
-  const [isFileInfoOpen, setIsFileInfoOpen] = useState(false);
-  const [categories, setCategories] = useState<Record<string, string>>({});
-
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsLoading(true);
-    setError(null);
-    setFileInfo(null);
-
-    try {
-      // Check if file can be parsed
-      if (!documentParserService.canParse(file)) {
-        const supportedExtensions = documentParserService
-          .getSupportedExtensions()
-          .join(", ");
-        throw new Error(
-          `Unsupported file type. Supported extensions: ${supportedExtensions}`
-        );
-      }
-
-      // Parse the file
-      const result = await documentParserService.parse(file);
-
-      setData(result.data);
-      setHeaders(result.headers);
-      setFileInfo(result.fileInfo);
-      setSelectedMonth("all"); // Reset to show all data initially
-      
-      // Initialize categories with guessed values based on column 4 (description)
-      const initialCategories: Record<string, string> = {};
-      result.data.forEach((row) => {
-        const description = row[result.headers[3]]; // Column 4 (0-indexed)
-        if (description) {
-          initialCategories[row.id] = guessCategory(String(description));
-        }
-      });
-      setCategories(initialCategories);
-    } catch (error) {
-      console.error("Error reading file:", error);
-      setError(
-        `Error reading file: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const scrollToMonth = (direction: "left" | "right") => {
-    if (!tabsRef.current || monthlyData.length === 0) return;
-
-    const currentIndex = monthlyData.findIndex(
-      (month) => month.month === selectedMonth
-    );
-    if (currentIndex === -1) return;
-
-    let targetIndex: number;
-    if (direction === "left") {
-      targetIndex = Math.max(0, currentIndex - 1);
-    } else {
-      targetIndex = Math.min(monthlyData.length - 1, currentIndex + 1);
-    }
-
-    const targetMonth = monthlyData[targetIndex];
-    setSelectedMonth(targetMonth.month);
-
-    // Scroll to center the target tab
-    setTimeout(() => {
-      if (tabsRef.current) {
-        const tabsContainer = tabsRef.current;
-        const tabElements = tabsContainer.querySelectorAll("[data-state]");
-        const targetTab = tabElements[targetIndex + 1]; // +1 because "All" tab is first
-
-        if (targetTab) {
-          const containerWidth = tabsContainer.offsetWidth;
-          const tabLeft = (targetTab as HTMLElement).offsetLeft;
-          const tabWidth = (targetTab as HTMLElement).offsetWidth;
-          const scrollLeft = tabLeft - containerWidth / 2 + tabWidth / 2;
-
-          tabsContainer.scrollTo({
-            left: scrollLeft,
-            behavior: "smooth",
-          });
-        }
-      }
-    }, 100);
-  };
-
-  const supportedExtensions = documentParserService.getSupportedExtensions();
-
-  // Handle category change
-  const handleCategoryChange = (rowId: string, category: string) => {
-    setCategories(prev => ({
-      ...prev,
-      [rowId]: category
-    }));
-  };
-
-  // Group data by month
-  const monthlyData = useMemo(() => {
-    if (!data.length || !headers.length) return [];
-
-    // Use first column for dates
-    const dateColumnIndex = 0;
-
-    // Group by month
-    const monthGroups = new Map<string, MonthData>();
-
-    data.forEach((row) => {
-      const dateValue = row[headers[dateColumnIndex]];
-      if (!dateValue) return;
-
-      let date: Date;
-      try {
-        // Handle DD.MM.YYYY HH:MM:SS format
-        if (typeof dateValue === "string") {
-          // Check if it matches DD.MM.YYYY HH:MM:SS format
-          const dateRegex =
-            /^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})$/;
-          const match = dateValue.match(dateRegex);
-
-          if (match) {
-            const [, day, month, year, hour, minute, second] = match;
-            // Create date with month-1 because JavaScript months are 0-indexed
-            date = new Date(
-              parseInt(year),
-              parseInt(month) - 1,
-              parseInt(day),
-              parseInt(hour),
-              parseInt(minute),
-              parseInt(second)
-            );
-          } else {
-            // Fallback to standard date parsing
-            date = new Date(dateValue);
-          }
-        } else if (typeof dateValue === "number") {
-          date = new Date(dateValue);
-        } else {
-          // For any other type, try to convert to string first
-          date = new Date(String(dateValue));
-        }
-
-        if (isNaN(date.getTime())) return; // Invalid date
-      } catch {
-        return; // Date parsing failed
-      }
-
-      const monthKey = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}`;
-      const monthName = date.toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      });
-
-      if (!monthGroups.has(monthKey)) {
-        monthGroups.set(monthKey, {
-          month: monthName,
-          year: date.getFullYear(),
-          data: [],
-          positiveSum: 0,
-          negativeSum: 0,
-          totalSum: 0,
-        });
-      }
-
-      const monthData = monthGroups.get(monthKey)!;
-      monthData.data.push(row);
-
-      // Calculate column 5 sums
-      if (headers.length >= 5) {
-        const column5Value = row[headers[4]];
-        if (
-          column5Value !== null &&
-          column5Value !== undefined &&
-          column5Value !== ""
-        ) {
-          const numValue =
-            typeof column5Value === "number"
-              ? column5Value
-              : parseFloat(String(column5Value));
-          if (!isNaN(numValue)) {
-            if (numValue > 0) {
-              monthData.positiveSum += numValue;
-            } else if (numValue < 0) {
-              monthData.negativeSum += numValue;
-            }
-            monthData.totalSum += numValue;
-          }
-        }
-      }
-    });
-
-    // Convert to array and sort by date (oldest first, left to right)
-    return Array.from(monthGroups.values()).sort((a, b) => {
-      if (a.year !== b.year) return a.year - b.year;
-      // Extract month number from month name for comparison
-      const monthOrder = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
-      const aMonthIndex = monthOrder.findIndex((month) =>
-        a.month.startsWith(month)
-      );
-      const bMonthIndex = monthOrder.findIndex((month) =>
-        b.month.startsWith(month)
-      );
-      return aMonthIndex - bMonthIndex;
-    });
-  }, [data, headers]);
-
-  // Calculate overall sums for all data
-  const overallSums = useMemo(() => {
-    if (!data.length || !headers.length || headers.length < 5)
-      return { positiveSum: 0, negativeSum: 0, totalSum: 0 };
-
-    const column5Data = data.map((row) => {
-      const column5Value = row[headers[4]];
-      if (
-        column5Value === null ||
-        column5Value === undefined ||
-        column5Value === ""
-      ) {
-        return 0;
-      }
-      const numValue =
-        typeof column5Value === "number"
-          ? column5Value
-          : parseFloat(String(column5Value));
-      return isNaN(numValue) ? 0 : numValue;
-    });
-
-    const positiveSum = column5Data
-      .filter((value) => value > 0)
-      .reduce((sum, value) => sum + value, 0);
-    const negativeSum = column5Data
-      .filter((value) => value < 0)
-      .reduce((sum, value) => sum + value, 0);
-    const totalSum = positiveSum + negativeSum;
-
-    return { positiveSum, negativeSum, totalSum };
-  }, [data, headers]);
-
-  // Get current month data or all data
-  const currentMonthData = useMemo(() => {
-    if (selectedMonth === "all") {
-      return data;
-    }
-    return (
-      monthlyData.find((month) => month.month === selectedMonth)?.data || []
-    );
-  }, [selectedMonth, monthlyData, data]);
-
-  // Get current sums
-  const currentSums = useMemo(() => {
-    if (selectedMonth === "all") {
-      return overallSums;
-    }
-    const monthData = monthlyData.find(
-      (month) => month.month === selectedMonth
-    );
-    return monthData
-      ? {
-          positiveSum: monthData.positiveSum,
-          negativeSum: monthData.negativeSum,
-          totalSum: monthData.totalSum,
-        }
-      : { positiveSum: 0, negativeSum: 0, totalSum: 0 };
-  }, [selectedMonth, monthlyData, overallSums]);
-
-  // Calculate category summaries
-  const categorySummaries = useMemo(() => {
-    const summaries: Record<string, { count: number; total: number }> = {};
-    
-    currentMonthData.forEach((row) => {
-      const category = categories[row.id] || "Other Expenses";
-      let amount = 0;
-      
-      if (headers.length >= 5) {
-        const column5Value = row[headers[4]];
-        if (column5Value !== null && column5Value !== undefined && column5Value !== "") {
-          amount = typeof column5Value === 'number' ? column5Value : parseFloat(String(column5Value)) || 0;
-        }
-      }
-      
-      if (!summaries[category]) {
-        summaries[category] = { count: 0, total: 0 };
-      }
-      summaries[category].count += 1;
-      summaries[category].total += amount;
-    });
-    
-    return Object.entries(summaries)
-      .sort(([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total));
-  }, [currentMonthData, categories, headers]);
+  const {
+    state,
+    setState,
+    tabsRef,
+    handleFileUpload,
+    handleCategoryChange,
+    scrollToMonth,
+    monthlyData,
+    currentMonthData,
+    currentSums,
+    categorySummaries,
+    supportedExtensions,
+    EXPENSE_CATEGORIES,
+  } = useExpensesTable();
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -479,15 +63,15 @@ export function ExpensesTable() {
                   type="file"
                   accept={supportedExtensions.join(",")}
                   onChange={handleFileUpload}
-                  disabled={isLoading}
+                  disabled={state.isLoading}
                 />
               </div>
-              {isLoading && (
+              {state.isLoading && (
                 <p className="text-sm text-muted-foreground">
                   Processing file...
                 </p>
               )}
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {state.error && <p className="text-sm text-destructive">{state.error}</p>}
               <div className="text-sm text-muted-foreground">
                 <p>
                   Upload any supported file to display its contents in a table
@@ -504,14 +88,14 @@ export function ExpensesTable() {
       </motion.div>
 
       <AnimatePresence>
-        {fileInfo && (
+        {state.fileInfo && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            <Collapsible open={isFileInfoOpen} onOpenChange={setIsFileInfoOpen}>
+            <Collapsible open={state.isFileInfoOpen} onOpenChange={(open) => setState(prev => ({ ...prev, isFileInfoOpen: open }))}>
               <Card className="py-0 gap-0">
                 <CardHeader className="p-0 block">
                   <CollapsibleTrigger asChild>
@@ -519,7 +103,7 @@ export function ExpensesTable() {
                       <CardTitle>File Information</CardTitle>
                       <motion.div
                         className="flex items-center gap-2 text-sm text-muted-foreground"
-                        animate={{ rotate: isFileInfoOpen ? 180 : 0 }}
+                        animate={{ rotate: state.isFileInfoOpen ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                       >
                         <svg
@@ -541,7 +125,7 @@ export function ExpensesTable() {
                   </CollapsibleTrigger>
                 </CardHeader>
                 <AnimatePresence>
-                  {isFileInfoOpen && (
+                  {state.isFileInfoOpen && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
@@ -553,22 +137,22 @@ export function ExpensesTable() {
                         <div className="space-y-4">
                           <div>
                             <p className="font-medium">
-                              Columns ({fileInfo.headers.length}):
+                              Columns ({state.fileInfo.headers.length}):
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {fileInfo.headers.join(", ")}
+                              {state.fileInfo.headers.join(", ")}
                             </p>
                           </div>
                           <div>
                             <p className="font-medium">
-                              Total Rows: {fileInfo.totalRows}
+                              Total Rows: {state.fileInfo.totalRows}
                             </p>
                           </div>
-                          {fileInfo.sampleData.length > 0 && (
+                          {state.fileInfo.sampleData.length > 0 && (
                             <div>
                               <p className="font-medium">Sample Data:</p>
                               <div className="mt-2 space-y-2">
-                                {fileInfo.sampleData.map((row, index) => (
+                                {state.fileInfo.sampleData.map((row, index) => (
                                   <motion.div
                                     key={index}
                                     className="text-sm bg-muted p-2 rounded"
@@ -597,7 +181,7 @@ export function ExpensesTable() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {data.length > 0 && (
+        {state.data.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -620,8 +204,8 @@ export function ExpensesTable() {
                     transition={{ delay: 0.2 }}
                   >
                     <Tabs
-                      value={selectedMonth}
-                      onValueChange={setSelectedMonth}
+                      value={state.selectedMonth}
+                      onValueChange={(value) => setState(prev => ({ ...prev, selectedMonth: value }))}
                       className="w-full"
                     >
                       <div className="relative flex items-center">
@@ -629,9 +213,9 @@ export function ExpensesTable() {
                         <motion.button
                           onClick={() => scrollToMonth("left")}
                           disabled={
-                            selectedMonth === "all" ||
+                            state.selectedMonth === "all" ||
                             monthlyData.findIndex(
-                              (month) => month.month === selectedMonth
+                              (month) => month.month === state.selectedMonth
                             ) === 0
                           }
                           className="absolute left-0 z-10 flex h-8 w-8 items-center justify-center rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
@@ -658,9 +242,9 @@ export function ExpensesTable() {
                         <motion.button
                           onClick={() => scrollToMonth("right")}
                           disabled={
-                            selectedMonth === "all" ||
+                            state.selectedMonth === "all" ||
                             monthlyData.findIndex(
-                              (month) => month.month === selectedMonth
+                              (month) => month.month === state.selectedMonth
                             ) ===
                               monthlyData.length - 1
                           }
@@ -714,7 +298,7 @@ export function ExpensesTable() {
                 )}
 
                 {/* Summary Row */}
-                {headers.length >= 5 && (
+                {state.headers.length >= 5 && (
                   <motion.div
                     className="mb-4 p-4 bg-muted rounded-lg"
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -824,7 +408,7 @@ export function ExpensesTable() {
                         <TableHead className="sticky-left min-w-[140px] sm:min-w-[200px] bg-background">
                           Category
                         </TableHead>
-                        {headers.map((header) => (
+                        {state.headers.map((header) => (
                           <TableHead key={header}>{header}</TableHead>
                         ))}
                       </TableRow>
@@ -834,8 +418,8 @@ export function ExpensesTable() {
                         <TableRow key={row.id}>
                           <TableCell className="sticky-left bg-background border-b">
                             <Select
-                              value={categories[row.id] || "Other Expenses"}
-                              onValueChange={(value) => handleCategoryChange(row.id, value)}
+                              value={state.categories[row.id] || "Other Expenses"}
+                              onValueChange={(value) => handleCategoryChange(row.id, value as ExpenseCategory)}
                             >
                               <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
                                 <SelectValue className="truncate" />
@@ -849,7 +433,7 @@ export function ExpensesTable() {
                               </SelectContent>
                             </Select>
                           </TableCell>
-                          {headers.map((header) => (
+                          {state.headers.map((header) => (
                             <TableCell key={header} className="border-b">
                               {row[header] !== null && row[header] !== undefined
                                 ? String(row[header])
@@ -868,4 +452,4 @@ export function ExpensesTable() {
       </AnimatePresence>
     </div>
   );
-}
+} 

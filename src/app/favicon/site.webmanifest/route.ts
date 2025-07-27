@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getAssetUrl } from '@/config/env';
 
+// Required for static export
+export const dynamic = 'force-static';
+export const revalidate = 3600; // Revalidate every hour
+
 export async function GET() {
   const manifest = {
     name: "Groshify - Personal Finance Management",

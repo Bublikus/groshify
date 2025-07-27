@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import * as XLSX from "xlsx";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,29 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-interface RawData {
-  id: string;
-  [key: string]: string | number | boolean | null | undefined;
-}
-
-interface FileInfo {
-  headers: string[];
-  totalRows: number;
-  sampleData: Record<string, string | number | boolean | null | undefined>[];
-}
-
-interface ExcelParseResult {
-  data: RawData[];
-  headers: string[];
-  fileInfo: FileInfo;
-}
-
-type CellValue = string | number | boolean | null | undefined;
-type RowData = CellValue[];
+import { documentParserService, ParseResult, FileInfo } from "@/lib/parsers";
+import { formatCurrency } from "@/lib/utils/number-format";
 
 export function ExpensesTable() {
-  const [data, setData] = useState<RawData[]>([]);
+  const [data, setData] = useState<ParseResult['data']>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +31,15 @@ export function ExpensesTable() {
     setFileInfo(null);
     
     try {
-      const result = await readExcelFile(file);
+      // Check if file can be parsed
+      if (!documentParserService.canParse(file)) {
+        const supportedExtensions = documentParserService.getSupportedExtensions().join(', ');
+        throw new Error(`Unsupported file type. Supported extensions: ${supportedExtensions}`);
+      }
+
+      // Parse the file
+      const result = await documentParserService.parse(file);
+      
       setData(result.data);
       setHeaders(result.headers);
       setFileInfo(result.fileInfo);
@@ -62,107 +51,27 @@ export function ExpensesTable() {
     }
   };
 
-  const readExcelFile = (file: File): Promise<ExcelParseResult> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        try {
-          const data = e.target?.result;
-          if (!data) {
-            reject(new Error("No data read from file"));
-            return;
-          }
+  const supportedExtensions = documentParserService.getSupportedExtensions();
 
-          let workbook: XLSX.WorkBook;
-          
-          if (typeof data === 'string') {
-            // Handle CSV or other text-based formats
-            workbook = XLSX.read(data, { type: 'string' });
-          } else {
-            // Handle binary formats (xlsx, xls)
-            workbook = XLSX.read(new Uint8Array(data as ArrayBuffer), { 
-              type: 'array',
-              cellDates: true,
-              cellNF: false,
-              cellText: false
-            });
-          }
+  // Calculate sums for column 5 (index 4)
+  const column5Data = data.map(row => {
+    const column5Value = row[headers[4]]; // Column 5 (index 4)
+    if (column5Value === null || column5Value === undefined || column5Value === '') {
+      return 0;
+    }
+    const numValue = typeof column5Value === 'number' ? column5Value : parseFloat(String(column5Value));
+    return isNaN(numValue) ? 0 : numValue;
+  });
 
-          if (!workbook.SheetNames.length) {
-            reject(new Error("No sheets found in the file"));
-            return;
-          }
+  const positiveSum = column5Data
+    .filter(value => value > 0)
+    .reduce((sum, value) => sum + value, 0);
 
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          
-          if (!worksheet) {
-            reject(new Error("Could not read the first sheet"));
-            return;
-          }
+  const negativeSum = column5Data
+    .filter(value => value < 0)
+    .reduce((sum, value) => sum + value, 0);
 
-          // Convert to JSON with header row
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-            header: 1,
-            defval: "",
-            blankrows: false
-          }) as RowData[];
-
-          if (!jsonData || jsonData.length < 2) {
-            reject(new Error("File appears to be empty or has no data rows"));
-            return;
-          }
-
-          // Get headers from first row
-          const rawHeaders = jsonData[0] as string[];
-          const dataRows = jsonData.slice(1) as RowData[];
-
-          // Clean headers (remove empty ones and provide defaults)
-          const cleanHeaders = rawHeaders.map((header, index) => 
-            header && header.trim() !== "" ? header.trim() : `Column ${index + 1}`
-          );
-
-          // Show file info
-          const fileInfo: FileInfo = {
-            headers: cleanHeaders,
-            totalRows: dataRows.length,
-            sampleData: dataRows.slice(0, 3).map(row => 
-              cleanHeaders.reduce((obj, header, index) => {
-                obj[header] = row[index] || "";
-                return obj;
-              }, {} as Record<string, CellValue>)
-            )
-          };
-
-          // Transform the data - keep everything as is
-          const tableData: RawData[] = dataRows
-            .filter(row => row.some(cell => cell !== "")) // Filter out completely empty rows
-            .map((row, index) => {
-              const rowData: RawData = {
-                id: `row-${index + 1}`,
-              };
-
-              // Add each column exactly as it appears
-              cleanHeaders.forEach((header, colIndex) => {
-                rowData[header] = row[colIndex] || "";
-              });
-
-              return rowData;
-            });
-
-          resolve({ data: tableData, headers: cleanHeaders, fileInfo });
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      reader.onerror = () => reject(new Error("Failed to read file"));
-      
-      // Read as ArrayBuffer for binary files
-      reader.readAsArrayBuffer(file);
-    });
-  };
+  const totalSum = positiveSum + negativeSum;
 
   return (
     <div className="space-y-6">
@@ -173,11 +82,13 @@ export function ExpensesTable() {
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="file-upload">Upload Excel File (.xlsx, .xls) or CSV</Label>
+              <Label htmlFor="file-upload">
+                Upload File ({supportedExtensions.join(', ')})
+              </Label>
               <Input
                 id="file-upload"
                 type="file"
-                accept=".xlsx,.xls,.csv"
+                accept={supportedExtensions.join(',')}
                 onChange={handleFileUpload}
                 disabled={isLoading}
               />
@@ -187,7 +98,7 @@ export function ExpensesTable() {
               <p className="text-sm text-destructive">{error}</p>
             )}
             <div className="text-sm text-muted-foreground">
-              <p>Upload any Excel or CSV file to display its contents in a table format.</p>
+              <p>Upload any supported file to display its contents in a table format.</p>
               <p>All columns and data will be displayed exactly as they appear in your file.</p>
             </div>
           </div>
@@ -231,6 +142,32 @@ export function ExpensesTable() {
             <CardTitle>Data Table ({data.length} rows)</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Summary Row */}
+            {headers.length >= 5 && (
+              <div className="mb-4 p-4 bg-muted rounded-lg">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Column 5 Positive Sum</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {formatCurrency(positiveSum, { showPositiveSign: true })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Column 5 Negative Sum</p>
+                    <p className="text-lg font-bold text-red-600">
+                      {formatCurrency(negativeSum)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Column 5 Total</p>
+                    <p className={`text-lg font-bold ${totalSum >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {formatCurrency(totalSum, { showPositiveSign: totalSum >= 0 })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

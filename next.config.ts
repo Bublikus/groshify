@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
   // Enable trailing slash for consistent URLs
   trailingSlash: false,
   
+  // Base path for GitHub Pages
+  basePath: process.env.NODE_ENV === 'production' ? '/groshify' : '',
+  
+  // Asset prefix for GitHub Pages
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/groshify' : '',
+  
   // Configure headers for better SEO and security
   async headers() {
     return [

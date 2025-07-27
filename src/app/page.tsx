@@ -1,4 +1,5 @@
 import Image from "next/image";
+import icon from "@/public/favicon/android-chrome-192x192.png";
 import { ExpensesTable } from "@/components/ExpensesTable";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -8,7 +9,7 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <header className="flex items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <Image src="/favicon/android-chrome-192x192.png" alt="Groshify" width={48} height={48} priority />
+            <Image src={icon} alt="Groshify" width={48} height={48} priority />
             <h1 className="text-3xl font-bold">Groshify</h1>
           </div>
           <ThemeToggle />

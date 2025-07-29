@@ -1,9 +1,12 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { CollapsibleCard } from "@/components/common/CollapsibleCard";
+import { DataTable } from "@/components/common/DataTable";
+import { Tabs } from "@/components/common/Tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -11,14 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatCurrency } from "@/lib/utils/number-format";
-import { CollapsibleCard } from "@/components/common/CollapsibleCard";
-import { DataTable } from "@/components/common/DataTable";
-import { Tabs } from "@/components/common/Tabs";
+import { Typography } from "@/components/ui/typography";
 import { ParsedRow } from "@/lib/parsers/types";
+import { formatCurrency } from "@/lib/utils/number-format";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
-import { Typography } from "@/components/ui/typography";
 
 export function ExpensesTable() {
   const {
@@ -48,9 +48,7 @@ export function ExpensesTable() {
           <CardContent>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="file-upload">
-                  Upload File ({supportedExtensions.join(", ")})
-                </Label>
+                <Label htmlFor="file-upload">Upload File ({supportedExtensions.join(", ")})</Label>
                 <Input
                   id="file-upload"
                   type="file"
@@ -60,31 +58,27 @@ export function ExpensesTable() {
                   className="cursor-pointer"
                 />
               </div>
-              {state.isLoading && (
-                <Typography variant="muted">
-                  Processing file...
-                </Typography>
-              )}
+              {state.isLoading && <Typography variant="muted">Processing file...</Typography>}
               {state.isCategorizing && (
                 <Typography variant="muted">
                   🤖 AI is categorizing the first 10 transactions...
                 </Typography>
               )}
               {state.error && (
-                <Typography variant="muted" className="text-destructive">{state.error}</Typography>
+                <Typography variant="muted" className="text-destructive">
+                  {state.error}
+                </Typography>
               )}
               <div className="text-sm text-muted-foreground">
                 <Typography variant="muted">
-                  Upload any supported file to display its contents in a table
-                  format.
+                  Upload any supported file to display its contents in a table format.
                 </Typography>
                 <Typography variant="muted">
-                  All columns and data will be displayed exactly as they appear
-                  in your file.
+                  All columns and data will be displayed exactly as they appear in your file.
                 </Typography>
                 <Typography variant="muted">
-                  <strong>Note:</strong> AI categorization is applied to the
-                  first 10 transactions only to ensure fast processing.
+                  <strong>Note:</strong> AI categorization is applied to the first 10 transactions
+                  only to ensure fast processing.
                 </Typography>
               </div>
             </div>
@@ -97,23 +91,15 @@ export function ExpensesTable() {
           <CollapsibleCard
             title="File Information"
             isOpen={state.isFileInfoOpen}
-            onOpenChange={(open) =>
-              setState((prev) => ({ ...prev, isFileInfoOpen: open }))
-            }
+            onOpenChange={(open) => setState((prev) => ({ ...prev, isFileInfoOpen: open }))}
           >
             <div className="space-y-4">
               <div>
-                <Typography variant="large">
-                  Columns ({state.fileInfo.headers.length}):
-                </Typography>
-                <Typography variant="muted">
-                  {state.fileInfo.headers.join(", ")}
-                </Typography>
+                <Typography variant="large">Columns ({state.fileInfo.headers.length}):</Typography>
+                <Typography variant="muted">{state.fileInfo.headers.join(", ")}</Typography>
               </div>
               <div>
-                <Typography variant="large">
-                  Total Rows: {state.fileInfo.totalRows}
-                </Typography>
+                <Typography variant="large">Total Rows: {state.fileInfo.totalRows}</Typography>
               </div>
               {state.fileInfo.sampleData.length > 0 && (
                 <div>
@@ -128,9 +114,7 @@ export function ExpensesTable() {
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ delay: index * 0.1 }}
                       >
-                        <pre className="whitespace-pre-wrap">
-                          {JSON.stringify(row, null, 2)}
-                        </pre>
+                        <pre className="whitespace-pre-wrap">{JSON.stringify(row, null, 2)}</pre>
                       </motion.div>
                     ))}
                   </div>
@@ -151,9 +135,7 @@ export function ExpensesTable() {
           >
             <Card>
               <CardHeader>
-                <CardTitle>
-                  Data Table ({currentMonthData.length} rows)
-                </CardTitle>
+                <CardTitle>Data Table ({currentMonthData.length} rows)</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* Month Tabs */}
@@ -222,9 +204,7 @@ export function ExpensesTable() {
                         <Typography
                           variant="large"
                           className={`font-bold ${
-                            currentSums.totalSum >= 0
-                              ? "text-green-600"
-                              : "text-red-600"
+                            currentSums.totalSum >= 0 ? "text-green-600" : "text-red-600"
                           }`}
                         >
                           {formatCurrency(currentSums.totalSum, {
@@ -265,8 +245,7 @@ export function ExpensesTable() {
                             })}
                           </Typography>
                           <Typography variant="small" className="text-muted-foreground">
-                            {summary.count}{" "}
-                            {summary.count === 1 ? "item" : "items"}
+                            {summary.count} {summary.count === 1 ? "item" : "items"}
                           </Typography>
                         </motion.div>
                       ))}
@@ -284,10 +263,7 @@ export function ExpensesTable() {
                         <Select
                           value={state.categories[row.id] || "Other Expenses"}
                           onValueChange={(value) =>
-                            handleCategoryChange(
-                              row.id,
-                              value as ExpenseCategory
-                            )
+                            handleCategoryChange(row.id, value as ExpenseCategory)
                           }
                         >
                           <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3 cursor-pointer">
@@ -309,9 +285,7 @@ export function ExpensesTable() {
                     },
                     ...state.headers.map((header) => ({
                       key: header satisfies keyof ParsedRow,
-                      title:
-                        state.headerTitles[state.headers.indexOf(header)] ||
-                        header,
+                      title: state.headerTitles[state.headers.indexOf(header)] || header,
                     })),
                   ]}
                   data={currentMonthData}

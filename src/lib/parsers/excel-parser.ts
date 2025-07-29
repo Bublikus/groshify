@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { DocumentParser, ParseResult, ParserOptions, ParsedRow, FileInfo, RowData } from "./types";
+import { DocumentParser, FileInfo, ParseResult, ParsedRow, ParserOptions, RowData } from "./types";
 
 export class ExcelParser implements DocumentParser {
   getSupportedExtensions(): string[] {
@@ -12,16 +12,11 @@ export class ExcelParser implements DocumentParser {
   }
 
   async parse(file: File, options: ParserOptions = {}): Promise<ParseResult> {
-    const {
-      sheetIndex = 0,
-      headerRow = 0,
-      skipEmptyRows = true,
-      trimHeaders = true
-    } = options;
+    const { sheetIndex = 0, headerRow = 0, skipEmptyRows = true, trimHeaders = true } = options;
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (e) => {
         try {
           const data = e.target?.result;
@@ -33,22 +28,22 @@ export class ExcelParser implements DocumentParser {
           const workbook = this.readWorkbook(data, file.name);
           const worksheet = this.getWorksheet(workbook, sheetIndex);
           const jsonData = this.convertToJson(worksheet);
-          
+
           if (!jsonData || jsonData.length < 2) {
             reject(new Error("File appears to be empty or has no data rows"));
             return;
           }
 
-                const headers = this.extractHeaders(jsonData[headerRow] as string[], trimHeaders);
-      const dataRows = jsonData.slice(headerRow + 1) as RowData[];
-          
+          const headers = this.extractHeaders(jsonData[headerRow] as string[], trimHeaders);
+          const dataRows = jsonData.slice(headerRow + 1) as RowData[];
+
           const fileInfo = this.createFileInfo(headers, dataRows);
           const parsedData = this.parseRows(dataRows, headers, skipEmptyRows);
 
           resolve({
             data: parsedData,
             headers,
-            fileInfo
+            fileInfo,
           });
         } catch (error) {
           // Provide more specific error messages
@@ -64,11 +59,11 @@ export class ExcelParser implements DocumentParser {
 
   private readWorkbook(data: string | ArrayBuffer, filename: string): XLSX.WorkBook {
     try {
-      if (typeof data === 'string') {
-        return XLSX.read(data, { type: 'string' });
+      if (typeof data === "string") {
+        return XLSX.read(data, { type: "string" });
       } else {
-        return XLSX.read(new Uint8Array(data), { 
-          type: 'array',
+        return XLSX.read(new Uint8Array(data), {
+          type: "array",
           cellDates: true,
           cellNF: false,
           cellText: false,
@@ -78,16 +73,16 @@ export class ExcelParser implements DocumentParser {
           bookFiles: false,
           bookVBA: false,
           bookSheets: false,
-          bookProps: false
+          bookProps: false,
         });
       }
     } catch (error) {
       // Try fallback parsing with more lenient options
-      if (typeof data !== 'string') {
+      if (typeof data !== "string") {
         try {
           console.warn(`Primary parsing failed for "${filename}", trying fallback method...`);
-          return XLSX.read(new Uint8Array(data), { 
-            type: 'array',
+          return XLSX.read(new Uint8Array(data), {
+            type: "array",
             cellDates: false,
             cellNF: false,
             cellText: false,
@@ -96,7 +91,7 @@ export class ExcelParser implements DocumentParser {
             bookFiles: false,
             bookVBA: false,
             bookSheets: false,
-            bookProps: false
+            bookProps: false,
           });
         } catch {
           // If fallback also fails, provide specific error message
@@ -104,17 +99,23 @@ export class ExcelParser implements DocumentParser {
           throw new Error(errorMessage);
         }
       }
-      
+
       // Handle specific xlsx library errors
       if (error instanceof Error) {
         if (error.message.includes("Bad uncompressed size")) {
-          throw new Error(`Excel file appears to be corrupted or in an unsupported format. Please try saving the file as a new .xlsx file.`);
+          throw new Error(
+            `Excel file appears to be corrupted or in an unsupported format. Please try saving the file as a new .xlsx file.`
+          );
         }
         if (error.message.includes("Invalid file")) {
-          throw new Error(`The file "${filename}" is not a valid Excel file. Please check the file format.`);
+          throw new Error(
+            `The file "${filename}" is not a valid Excel file. Please check the file format.`
+          );
         }
         if (error.message.includes("password")) {
-          throw new Error(`The Excel file "${filename}" appears to be password protected. Please remove the password protection.`);
+          throw new Error(
+            `The Excel file "${filename}" appears to be password protected. Please remove the password protection.`
+          );
         }
       }
       throw error;
@@ -127,12 +128,14 @@ export class ExcelParser implements DocumentParser {
     }
 
     if (sheetIndex >= workbook.SheetNames.length) {
-      throw new Error(`Sheet index ${sheetIndex} is out of range. File has ${workbook.SheetNames.length} sheet(s).`);
+      throw new Error(
+        `Sheet index ${sheetIndex} is out of range. File has ${workbook.SheetNames.length} sheet(s).`
+      );
     }
 
     const sheetName = workbook.SheetNames[sheetIndex];
     const worksheet = workbook.Sheets[sheetName];
-    
+
     if (!worksheet) {
       throw new Error(`Could not read sheet "${sheetName}" at index ${sheetIndex}`);
     }
@@ -142,13 +145,15 @@ export class ExcelParser implements DocumentParser {
 
   private convertToJson(worksheet: XLSX.WorkSheet): RowData[] {
     try {
-      return XLSX.utils.sheet_to_json(worksheet, { 
+      return XLSX.utils.sheet_to_json(worksheet, {
         header: 1,
         defval: "",
-        blankrows: false
+        blankrows: false,
       }) as RowData[];
     } catch (error) {
-      throw new Error(`Failed to convert worksheet to JSON: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to convert worksheet to JSON: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
   }
 
@@ -165,20 +170,23 @@ export class ExcelParser implements DocumentParser {
     return {
       headers,
       totalRows: dataRows.length,
-      sampleData: dataRows.slice(0, 3).map(row => 
-        headers.reduce((obj, header, index) => {
-          obj[header] = row[index] || "";
-          return obj;
-        }, {} as Record<string, string | number | boolean | null | undefined>)
-      )
+      sampleData: dataRows.slice(0, 3).map((row) =>
+        headers.reduce(
+          (obj, header, index) => {
+            obj[header] = row[index] || "";
+            return obj;
+          },
+          {} as Record<string, string | number | boolean | null | undefined>
+        )
+      ),
     };
   }
 
   private parseRows(dataRows: RowData[], headers: string[], skipEmptyRows: boolean): ParsedRow[] {
     let filteredRows = dataRows;
-    
+
     if (skipEmptyRows) {
-      filteredRows = dataRows.filter(row => row.some(cell => cell !== ""));
+      filteredRows = dataRows.filter((row) => row.some((cell) => cell !== ""));
     }
 
     return filteredRows.map((row, index) => {
@@ -195,14 +203,14 @@ export class ExcelParser implements DocumentParser {
   }
 
   private getFileExtension(filename: string): string {
-    const lastDotIndex = filename.lastIndexOf('.');
-    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
+    const lastDotIndex = filename.lastIndexOf(".");
+    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : "";
   }
 
   private getErrorMessage(error: unknown, filename: string): string {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
-      
+
       // Handle common xlsx library errors
       if (message.includes("bad uncompressed size")) {
         return `The Excel file "${filename}" appears to be corrupted or in an unsupported format. Please try saving it as a new .xlsx file.`;
@@ -219,10 +227,10 @@ export class ExcelParser implements DocumentParser {
       if (message.includes("end of central directory")) {
         return `The Excel file "${filename}" appears to be corrupted. Please try opening and resaving it.`;
       }
-      
+
       return error.message;
     }
-    
+
     return `Unknown error occurred while parsing "${filename}"`;
   }
-} 
+}

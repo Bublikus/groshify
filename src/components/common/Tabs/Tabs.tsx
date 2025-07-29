@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Tabs as UITabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useRef } from "react";
+import { TabsList, TabsTrigger, Tabs as UITabs } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import styles from "./Tabs.module.css";
 import { TabsProps } from "./types";
@@ -20,8 +20,7 @@ export function Tabs({
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const canNavigateLeft = tabs.findIndex((tab) => tab.value === value) > 0;
-  const canNavigateRight =
-    tabs.findIndex((tab) => tab.value === value) < tabs.length - 1;
+  const canNavigateRight = tabs.findIndex((tab) => tab.value === value) < tabs.length - 1;
 
   const scrollLeft = useCallback(() => {
     const currentIndex = tabs.findIndex((tab) => tab.value === value);
@@ -31,9 +30,7 @@ export function Tabs({
 
       // Scroll the previous tab into view
       if (tabsRef.current) {
-        const tabElement = tabsRef.current.querySelector(
-          `[data-value="${prevTab.value}"]`
-        );
+        const tabElement = tabsRef.current.querySelector(`[data-value="${prevTab.value}"]`);
         if (tabElement instanceof HTMLElement) {
           tabElement.scrollIntoView({
             behavior: "smooth",
@@ -53,9 +50,7 @@ export function Tabs({
 
       // Scroll the next tab into view
       if (tabsRef.current) {
-        const tabElement = tabsRef.current.querySelector(
-          `[data-value="${nextTab.value}"]`
-        );
+        const tabElement = tabsRef.current.querySelector(`[data-value="${nextTab.value}"]`);
         if (tabElement instanceof HTMLElement) {
           tabElement.scrollIntoView({
             behavior: "smooth",
@@ -74,21 +69,14 @@ export function Tabs({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <UITabs
-        value={value}
-        onValueChange={onValueChange}
-        className={styles.tabsContainer}
-      >
+      <UITabs value={value} onValueChange={onValueChange} className={styles.tabsContainer}>
         <div className={styles.navigationContainer}>
           {/* Left Arrow Button */}
           {showNavigationArrows && (
             <motion.button
               onClick={scrollLeft}
               disabled={!canNavigateLeft}
-              className={cn(
-                styles.navigationButton,
-                styles.navigationButtonLeft
-              )}
+              className={cn(styles.navigationButton, styles.navigationButtonLeft)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -101,10 +89,7 @@ export function Tabs({
             <motion.button
               onClick={scrollRight}
               disabled={!canNavigateRight}
-              className={cn(
-                styles.navigationButton,
-                styles.navigationButtonRight
-              )}
+              className={cn(styles.navigationButton, styles.navigationButtonRight)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >

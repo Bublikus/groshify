@@ -33,4 +33,4 @@ export interface DocumentParser {
   canParse(file: File): boolean;
   parse(file: File, options?: ParserOptions): Promise<ParseResult>;
   getSupportedExtensions(): string[];
-} 
+}

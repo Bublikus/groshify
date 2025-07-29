@@ -15,7 +15,7 @@ A modern personal finance management application built with Next.js that helps y
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - OpenAI API key for expense categorization
 
 ### Environment Setup
@@ -61,6 +61,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### File Format
 
 Your expense file should have the following columns:
+
 - Column 1: Date
 - Column 2: Amount
 - Column 3: Currency

@@ -95,4 +95,4 @@ function App() {
 - Memoized calculations
 - Efficient re-renders
 - Lazy loading of data
-- Optimized animations 
+- Optimized animations

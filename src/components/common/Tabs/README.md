@@ -5,18 +5,18 @@ A generic, reusable tabs component with navigation arrows that select previous/n
 ## Usage
 
 ```tsx
-import { Tabs } from '@/components/common/Tabs';
+import { Tabs } from "@/components/common/Tabs";
 
 const tabs = [
-  { value: 'all', label: 'All' },
-  { value: 'january', label: 'January' },
-  { value: 'february', label: 'February' },
-  { value: 'march', label: 'March' },
+  { value: "all", label: "All" },
+  { value: "january", label: "January" },
+  { value: "february", label: "February" },
+  { value: "march", label: "March" },
   // ... more tabs
 ];
 
 function MyComponent() {
-  const [selectedTab, setSelectedTab] = useState('all');
+  const [selectedTab, setSelectedTab] = useState("all");
 
   return (
     <Tabs
@@ -56,4 +56,4 @@ function MyComponent() {
 - **Disabled state support** for individual tabs
 - **TypeScript support** with proper interfaces
 - **Accessible** with proper ARIA attributes
-- **Automatic cleanup** of event listeners 
+- **Automatic cleanup** of event listeners

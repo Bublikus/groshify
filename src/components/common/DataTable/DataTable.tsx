@@ -9,32 +9,26 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import { HTMLAttributes, forwardRef, useState } from "react";
-import { TableVirtuoso } from "react-virtuoso";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { TableVirtuoso } from "react-virtuoso";
+import { HTMLAttributes, forwardRef, useState } from "react";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import styles from "./DataTable.module.css";
-import { 
-  ColumnMeta, 
-  SortingIndicatorProps, 
-  DataTableProps 
-} from "./types";
+import { ColumnMeta, DataTableProps, SortingIndicatorProps } from "./types";
 
 // Original Table is wrapped with a <div> (see https://ui.shadcn.com/docs/components/table#radix-:r24:-content-manual),
 // but here we don't want it, so let's use a new component with only <table> tag
-const TableComponent = forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <table
-    ref={ref}
-    className={cn("w-full caption-bottom text-sm", className)}
-    style={{ tableLayout: "auto" }}
-    {...props}
-  />
-));
+const TableComponent = forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
+  ({ className, ...props }, ref) => (
+    <table
+      ref={ref}
+      className={cn("w-full caption-bottom text-sm", className)}
+      style={{ tableLayout: "auto" }}
+      {...props}
+    />
+  )
+);
 TableComponent.displayName = "TableComponent";
 
 const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
@@ -46,11 +40,7 @@ const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
     if (!row) return null;
 
     return (
-      <TableRow
-        key={row.id}
-        data-state={row.getIsSelected() && "selected"}
-        {...props}
-      >
+      <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} {...props}>
         {row.getVisibleCells().map((cell) => {
           const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
           return (
@@ -85,8 +75,6 @@ function SortingIndicator({ isSorted }: SortingIndicatorProps) {
   );
 }
 
-
-
 export function DataTable<TData extends Record<string, unknown>>({
   columns,
   data,
@@ -106,8 +94,7 @@ export function DataTable<TData extends Record<string, unknown>>({
   // Convert our column format to TanStack Table format
   const tableColumns: ColumnDef<TData, unknown>[] = columns.map((column, index) => {
     const safeKey = `col_${index}`;
-    const isSticky =
-      column.sticky || (stickyFirstColumn && column === columns[0]);
+    const isSticky = column.sticky || (stickyFirstColumn && column === columns[0]);
 
     return {
       id: safeKey,
@@ -185,14 +172,9 @@ export function DataTable<TData extends Record<string, unknown>>({
                           }}
                         >
                           <span>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
-                          <SortingIndicator
-                            isSorted={header.column.getIsSorted()}
-                          />
+                          <SortingIndicator isSorted={header.column.getIsSorted()} />
                         </div>
                       )}
                     </TableHead>

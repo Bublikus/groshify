@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { documentParserService } from "@/lib/parsers";
+import { useMemo, useState } from "react";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
-import {
-  MonthData,
-  CategorySummary,
-  ExpensesTableState,
-  ExpenseCategory,
-} from "./types";
+import { documentParserService } from "@/lib/parsers";
+import { CategorySummary, ExpenseCategory, ExpensesTableState, MonthData } from "./types";
 
 export const useExpensesTable = () => {
   const [state, setState] = useState<ExpensesTableState>({
@@ -24,9 +19,7 @@ export const useExpensesTable = () => {
     categories: {},
   });
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -40,12 +33,8 @@ export const useExpensesTable = () => {
     try {
       // Check if file can be parsed
       if (!documentParserService.canParse(file)) {
-        const supportedExtensions = documentParserService
-          .getSupportedExtensions()
-          .join(", ");
-        throw new Error(
-          `Unsupported file type. Supported extensions: ${supportedExtensions}`
-        );
+        const supportedExtensions = documentParserService.getSupportedExtensions().join(", ");
+        throw new Error(`Unsupported file type. Supported extensions: ${supportedExtensions}`);
       }
 
       // Parse the file
@@ -99,12 +88,9 @@ export const useExpensesTable = () => {
       const initialCategories: Record<string, ExpenseCategory> = {};
 
       // Add AI-categorized transactions
-      categorizedTransactions.forEach(
-        (categorized: { id: string; category: string }) => {
-          initialCategories[categorized.id] =
-            categorized.category as ExpenseCategory;
-        }
-      );
+      categorizedTransactions.forEach((categorized: { id: string; category: string }) => {
+        initialCategories[categorized.id] = categorized.category as ExpenseCategory;
+      });
 
       // Set default category for remaining transactions
       dataRows.slice(10).forEach((row) => {
@@ -120,9 +106,7 @@ export const useExpensesTable = () => {
       console.error("Error reading file:", error);
       setState((prev) => ({
         ...prev,
-        error: `Error reading file: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
+        error: `Error reading file: ${error instanceof Error ? error.message : "Unknown error"}`,
         isLoading: false,
       }));
     }
@@ -157,8 +141,7 @@ export const useExpensesTable = () => {
         // Handle DD.MM.YYYY HH:MM:SS format
         if (typeof dateValue === "string") {
           // Check if it matches DD.MM.YYYY HH:MM:SS format
-          const dateRegex =
-            /^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+          const dateRegex = /^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})$/;
           const match = dateValue.match(dateRegex);
 
           if (match) {
@@ -188,9 +171,7 @@ export const useExpensesTable = () => {
         return; // Date parsing failed
       }
 
-      const monthKey = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}`;
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       const monthName = date.toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
@@ -213,15 +194,9 @@ export const useExpensesTable = () => {
       // Calculate column 5 sums
       if (state.headers.length >= 5) {
         const column5Value = row[state.headers[4]];
-        if (
-          column5Value !== null &&
-          column5Value !== undefined &&
-          column5Value !== ""
-        ) {
+        if (column5Value !== null && column5Value !== undefined && column5Value !== "") {
           const numValue =
-            typeof column5Value === "number"
-              ? column5Value
-              : parseFloat(String(column5Value));
+            typeof column5Value === "number" ? column5Value : parseFloat(String(column5Value));
           if (!isNaN(numValue)) {
             if (numValue > 0) {
               monthData.positiveSum += numValue;
@@ -252,12 +227,8 @@ export const useExpensesTable = () => {
         "November",
         "December",
       ];
-      const aMonthIndex = monthOrder.findIndex((month) =>
-        a.month.startsWith(month)
-      );
-      const bMonthIndex = monthOrder.findIndex((month) =>
-        b.month.startsWith(month)
-      );
+      const aMonthIndex = monthOrder.findIndex((month) => a.month.startsWith(month));
+      const bMonthIndex = monthOrder.findIndex((month) => b.month.startsWith(month));
       return aMonthIndex - bMonthIndex;
     });
   }, [state.data, state.headers]);
@@ -269,17 +240,11 @@ export const useExpensesTable = () => {
 
     const column5Data = state.data.map((row) => {
       const column5Value = row[state.headers[4]];
-      if (
-        column5Value === null ||
-        column5Value === undefined ||
-        column5Value === ""
-      ) {
+      if (column5Value === null || column5Value === undefined || column5Value === "") {
         return 0;
       }
       const numValue =
-        typeof column5Value === "number"
-          ? column5Value
-          : parseFloat(String(column5Value));
+        typeof column5Value === "number" ? column5Value : parseFloat(String(column5Value));
       return isNaN(numValue) ? 0 : numValue;
     });
 
@@ -299,10 +264,7 @@ export const useExpensesTable = () => {
     if (state.selectedMonth === "all") {
       return state.data;
     }
-    return (
-      monthlyData.find((month) => month.month === state.selectedMonth)?.data ||
-      []
-    );
+    return monthlyData.find((month) => month.month === state.selectedMonth)?.data || [];
   }, [state.selectedMonth, monthlyData, state.data]);
 
   // Get current sums
@@ -310,9 +272,7 @@ export const useExpensesTable = () => {
     if (state.selectedMonth === "all") {
       return overallSums;
     }
-    const monthData = monthlyData.find(
-      (month) => month.month === state.selectedMonth
-    );
+    const monthData = monthlyData.find((month) => month.month === state.selectedMonth);
     return monthData
       ? {
           positiveSum: monthData.positiveSum,
@@ -332,15 +292,9 @@ export const useExpensesTable = () => {
 
       if (state.headers.length >= 5) {
         const column5Value = row[state.headers[4]];
-        if (
-          column5Value !== null &&
-          column5Value !== undefined &&
-          column5Value !== ""
-        ) {
+        if (column5Value !== null && column5Value !== undefined && column5Value !== "") {
           amount =
-            typeof column5Value === "number"
-              ? column5Value
-              : parseFloat(String(column5Value)) || 0;
+            typeof column5Value === "number" ? column5Value : parseFloat(String(column5Value)) || 0;
         }
       }
 
@@ -351,9 +305,7 @@ export const useExpensesTable = () => {
       summaries[category].total += amount;
     });
 
-    return Object.entries(summaries).sort(
-      ([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total)
-    );
+    return Object.entries(summaries).sort(([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total));
   }, [currentMonthData, state.categories, state.headers]);
 
   const supportedExtensions = documentParserService.getSupportedExtensions();

@@ -1,5 +1,5 @@
-import { ParseResult } from "@/lib/parsers";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
+import { ParseResult } from "@/lib/parsers";
 
 export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
 
@@ -34,4 +34,4 @@ export interface ExpensesTableState {
   selectedMonth: string;
   isFileInfoOpen: boolean;
   categories: Record<string, ExpenseCategory>;
-} 
+}

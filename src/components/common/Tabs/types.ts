@@ -12,4 +12,4 @@ export interface TabsProps {
   className?: string;
   tabsListClassName?: string;
   tabTriggerClassName?: string;
-} 
+}

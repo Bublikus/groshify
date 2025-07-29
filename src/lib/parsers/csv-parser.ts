@@ -1,4 +1,11 @@
-import { DocumentParser, ParseResult, ParserOptions, ParsedRow, FileInfo, CellValue } from "./types";
+import {
+  CellValue,
+  DocumentParser,
+  FileInfo,
+  ParseResult,
+  ParsedRow,
+  ParserOptions,
+} from "./types";
 
 export class CSVParser implements DocumentParser {
   getSupportedExtensions(): string[] {
@@ -11,15 +18,11 @@ export class CSVParser implements DocumentParser {
   }
 
   async parse(file: File, options: ParserOptions = {}): Promise<ParseResult> {
-    const {
-      headerRow = 0,
-      skipEmptyRows = true,
-      trimHeaders = true
-    } = options;
+    const { headerRow = 0, skipEmptyRows = true, trimHeaders = true } = options;
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (e) => {
         try {
           const content = e.target?.result as string;
@@ -28,8 +31,8 @@ export class CSVParser implements DocumentParser {
             return;
           }
 
-          const lines = content.split('\n').filter(line => line.trim() !== '');
-          
+          const lines = content.split("\n").filter((line) => line.trim() !== "");
+
           if (lines.length < 2) {
             reject(new Error("File appears to be empty or has no data rows"));
             return;
@@ -37,14 +40,14 @@ export class CSVParser implements DocumentParser {
 
           const headers = this.parseHeaders(lines[headerRow], trimHeaders);
           const dataRows = lines.slice(headerRow + 1);
-          
+
           const fileInfo = this.createFileInfo(headers, dataRows);
           const parsedData = this.parseRows(dataRows, headers, skipEmptyRows);
 
           resolve({
             data: parsedData,
             headers,
-            fileInfo
+            fileInfo,
           });
         } catch (error) {
           reject(error);
@@ -68,22 +71,22 @@ export class CSVParser implements DocumentParser {
 
   private parseCSVLine(line: string): string[] {
     const result: string[] = [];
-    let current = '';
+    let current = "";
     let inQuotes = false;
-    
+
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         inQuotes = !inQuotes;
-      } else if (char === ',' && !inQuotes) {
+      } else if (char === "," && !inQuotes) {
         result.push(current.trim());
-        current = '';
+        current = "";
       } else {
         current += char;
       }
     }
-    
+
     result.push(current.trim());
     return result;
   }
@@ -92,21 +95,24 @@ export class CSVParser implements DocumentParser {
     return {
       headers,
       totalRows: dataRows.length,
-      sampleData: dataRows.slice(0, 3).map(row => {
+      sampleData: dataRows.slice(0, 3).map((row) => {
         const values = this.parseCSVLine(row);
-        return headers.reduce((obj, header, index) => {
-          obj[header] = values[index] || "";
-          return obj;
-        }, {} as Record<string, CellValue>);
-      })
+        return headers.reduce(
+          (obj, header, index) => {
+            obj[header] = values[index] || "";
+            return obj;
+          },
+          {} as Record<string, CellValue>
+        );
+      }),
     };
   }
 
   private parseRows(dataRows: string[], headers: string[], skipEmptyRows: boolean): ParsedRow[] {
     let filteredRows = dataRows;
-    
+
     if (skipEmptyRows) {
-      filteredRows = dataRows.filter(row => row.trim() !== '');
+      filteredRows = dataRows.filter((row) => row.trim() !== "");
     }
 
     return filteredRows.map((row, index) => {
@@ -124,7 +130,7 @@ export class CSVParser implements DocumentParser {
   }
 
   private getFileExtension(filename: string): string {
-    const lastDotIndex = filename.lastIndexOf('.');
-    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
+    const lastDotIndex = filename.lastIndexOf(".");
+    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : "";
   }
-} 
+}

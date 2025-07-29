@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { PWAInstallGuide } from './PWAInstallGuide';
-import { isPWAEnabled, isPWAFeatureEnabled } from '@/config/pwa';
-import { getAssetUrl } from '@/config/env';
-import { AlertTriangle, Smartphone, X } from 'lucide-react';
-import { Typography } from '@/components/ui/typography';
+import { AlertTriangle, Smartphone, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Typography } from "@/components/ui/typography";
+import { getAssetUrl } from "@/config/env";
+import { isPWAEnabled, isPWAFeatureEnabled } from "@/config/pwa";
+import { PWAInstallGuide } from "./PWAInstallGuide";
 
 interface PWAProviderProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ interface PWAProviderProps {
 // Type for the BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
 export function PWAProvider({ children }: PWAProviderProps) {
@@ -29,14 +29,14 @@ export function PWAProvider({ children }: PWAProviderProps) {
     }
 
     // Register service worker
-    if (isPWAFeatureEnabled('serviceWorker') && 'serviceWorker' in navigator) {
+    if (isPWAFeatureEnabled("serviceWorker") && "serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register(getAssetUrl('/sw.js'))
+        .register(getAssetUrl("/sw.js"))
         .then((registration) => {
-          console.log('SW registered: ', registration);
+          console.log("SW registered: ", registration);
         })
         .catch((registrationError) => {
-          console.log('SW registration failed: ', registrationError);
+          console.log("SW registration failed: ", registrationError);
         });
     }
 
@@ -44,43 +44,43 @@ export function PWAProvider({ children }: PWAProviderProps) {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    if (isPWAFeatureEnabled('offlineIndicator')) {
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
+    if (isPWAFeatureEnabled("offlineIndicator")) {
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
     }
 
     // Handle PWA install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
-      if (!isPWAFeatureEnabled('installPrompt')) return;
-      
+      if (!isPWAFeatureEnabled("installPrompt")) return;
+
       e.preventDefault();
-      if (e instanceof Event && 'prompt' in e && 'userChoice' in e) {
+      if (e instanceof Event && "prompt" in e && "userChoice" in e) {
         setDeferredPrompt(e as BeforeInstallPromptEvent);
       }
       setShowInstallPrompt(true);
     };
 
-    if (isPWAFeatureEnabled('installPrompt')) {
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    if (isPWAFeatureEnabled("installPrompt")) {
+      window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     }
 
     // Handle app installed
     const handleAppInstalled = () => {
-      console.log('PWA was installed');
+      console.log("PWA was installed");
       setShowInstallPrompt(false);
     };
 
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      if (isPWAFeatureEnabled('offlineIndicator')) {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
+      if (isPWAFeatureEnabled("offlineIndicator")) {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
       }
-      if (isPWAFeatureEnabled('installPrompt')) {
-        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      if (isPWAFeatureEnabled("installPrompt")) {
+        window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       }
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
@@ -88,10 +88,10 @@ export function PWAProvider({ children }: PWAProviderProps) {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
+      if (outcome === "accepted") {
+        console.log("User accepted the install prompt");
       } else {
-        console.log('User dismissed the install prompt');
+        console.log("User dismissed the install prompt");
       }
       setDeferredPrompt(null);
       setShowInstallPrompt(false);
@@ -101,19 +101,21 @@ export function PWAProvider({ children }: PWAProviderProps) {
   return (
     <>
       {children}
-      
+
       {/* Offline indicator */}
-      {isPWAEnabled() && isPWAFeatureEnabled('offlineIndicator') && !isOnline && (
+      {isPWAEnabled() && isPWAFeatureEnabled("offlineIndicator") && !isOnline && (
         <div className="fixed top-0 left-0 right-0 bg-amber-500 text-amber-900 text-center py-3 px-4 z-50 shadow-lg border-b border-amber-600">
           <div className="flex items-center justify-center space-x-2">
             <AlertTriangle className="w-5 h-5" />
-            <Typography variant="large" className="font-semibold">You are currently offline. Some features may be limited.</Typography>
+            <Typography variant="large" className="font-semibold">
+              You are currently offline. Some features may be limited.
+            </Typography>
           </div>
         </div>
       )}
 
       {/* Install prompt */}
-      {isPWAEnabled() && isPWAFeatureEnabled('installPrompt') && showInstallPrompt && (
+      {isPWAEnabled() && isPWAFeatureEnabled("installPrompt") && showInstallPrompt && (
         <div className="fixed bottom-4 left-4 right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-2xl border border-blue-500 z-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -121,8 +123,12 @@ export function PWAProvider({ children }: PWAProviderProps) {
                 <Smartphone className="w-6 h-6" />
               </div>
               <div>
-                <Typography variant="h3" className="font-bold text-lg">Install Groshify</Typography>
-                <Typography variant="muted" className="text-blue-100 text-sm">Add to home screen for quick access</Typography>
+                <Typography variant="h3" className="font-bold text-lg">
+                  Install Groshify
+                </Typography>
+                <Typography variant="muted" className="text-blue-100 text-sm">
+                  Add to home screen for quick access
+                </Typography>
               </div>
             </div>
             <div className="flex gap-3">
@@ -145,7 +151,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
       )}
 
       {/* PWA Install Guide */}
-      {isPWAEnabled() && isPWAFeatureEnabled('installGuide') && <PWAInstallGuide />}
+      {isPWAEnabled() && isPWAFeatureEnabled("installGuide") && <PWAInstallGuide />}
     </>
   );
-} 
+}

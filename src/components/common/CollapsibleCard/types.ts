@@ -6,4 +6,4 @@ export interface CollapsibleCardProps {
   onOpenChange: (open: boolean) => void;
   children: ReactNode;
   className?: string;
-} 
+}

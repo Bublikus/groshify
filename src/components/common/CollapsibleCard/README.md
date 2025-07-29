@@ -5,17 +5,13 @@ A generic, reusable collapsible card component with smooth animations.
 ## Usage
 
 ```tsx
-import { CollapsibleCard } from '@/components/common/CollapsibleCard';
+import { CollapsibleCard } from "@/components/common/CollapsibleCard";
 
 function MyComponent() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <CollapsibleCard
-      title="My Collapsible Section"
-      isOpen={isOpen}
-      onOpenChange={setIsOpen}
-    >
+    <CollapsibleCard title="My Collapsible Section" isOpen={isOpen} onOpenChange={setIsOpen}>
       <div>Your content here</div>
     </CollapsibleCard>
   );
@@ -36,4 +32,4 @@ function MyComponent() {
 - Rotating chevron icon that indicates the current state
 - Hover effects on the trigger button
 - Fully accessible with proper ARIA attributes
-- Responsive design 
+- Responsive design

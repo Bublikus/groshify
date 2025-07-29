@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
 import { SortDirection } from "@tanstack/react-table";
+import { ReactNode } from "react";
 
 export interface ColumnMeta {
   sticky?: boolean;
@@ -24,4 +24,4 @@ export interface DataTableProps<TData = Record<string, unknown>> {
   stickyFirstColumn?: boolean;
   className?: string;
   height?: string;
-} 
+}

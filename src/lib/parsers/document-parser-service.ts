@@ -1,6 +1,6 @@
-import { DocumentParser, ParseResult, ParserOptions } from "./types";
-import { ExcelParser } from "./excel-parser";
 import { CSVParser } from "./csv-parser";
+import { ExcelParser } from "./excel-parser";
+import { DocumentParser, ParseResult, ParserOptions } from "./types";
 
 export class DocumentParserService {
   private parsers: DocumentParser[] = [];
@@ -23,8 +23,8 @@ export class DocumentParserService {
    */
   getSupportedExtensions(): string[] {
     const extensions = new Set<string>();
-    this.parsers.forEach(parser => {
-      parser.getSupportedExtensions().forEach(ext => extensions.add(ext));
+    this.parsers.forEach((parser) => {
+      parser.getSupportedExtensions().forEach((ext) => extensions.add(ext));
     });
     return Array.from(extensions);
   }
@@ -33,14 +33,14 @@ export class DocumentParserService {
    * Check if a file can be parsed
    */
   canParse(file: File): boolean {
-    return this.parsers.some(parser => parser.canParse(file));
+    return this.parsers.some((parser) => parser.canParse(file));
   }
 
   /**
    * Get the appropriate parser for a file
    */
   private getParser(file: File): DocumentParser | null {
-    return this.parsers.find(parser => parser.canParse(file)) || null;
+    return this.parsers.find((parser) => parser.canParse(file)) || null;
   }
 
   /**
@@ -48,10 +48,12 @@ export class DocumentParserService {
    */
   async parse(file: File, options?: ParserOptions): Promise<ParseResult> {
     const parser = this.getParser(file);
-    
+
     if (!parser) {
-      const supportedExtensions = this.getSupportedExtensions().join(', ');
-      throw new Error(`No parser found for file type. Supported extensions: ${supportedExtensions}`);
+      const supportedExtensions = this.getSupportedExtensions().join(", ");
+      throw new Error(
+        `No parser found for file type. Supported extensions: ${supportedExtensions}`
+      );
     }
 
     return parser.parse(file, options);
@@ -62,14 +64,14 @@ export class DocumentParserService {
    */
   getParserInfo(file: File): { parser: DocumentParser; supportedExtensions: string[] } | null {
     const parser = this.getParser(file);
-    
+
     if (!parser) {
       return null;
     }
 
     return {
       parser,
-      supportedExtensions: parser.getSupportedExtensions()
+      supportedExtensions: parser.getSupportedExtensions(),
     };
   }
 
@@ -84,7 +86,7 @@ export class DocumentParserService {
    * Remove a parser by type
    */
   removeParser(parserType: new (...args: unknown[]) => DocumentParser): void {
-    this.parsers = this.parsers.filter(parser => !(parser instanceof parserType));
+    this.parsers = this.parsers.filter((parser) => !(parser instanceof parserType));
   }
 
   /**
@@ -96,4 +98,4 @@ export class DocumentParserService {
 }
 
 // Export a singleton instance
-export const documentParserService = new DocumentParserService(); 
+export const documentParserService = new DocumentParserService();

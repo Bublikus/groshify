@@ -1,21 +1,21 @@
-import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 interface TypographyProps {
   children: ReactNode;
   className?: string;
-  variant?: 
-    | "h1" 
-    | "h2" 
-    | "h3" 
-    | "h4" 
-    | "h5" 
+  variant?:
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
     | "h6"
-    | "p" 
-    | "lead" 
-    | "large" 
-    | "small" 
+    | "p"
+    | "lead"
+    | "large"
+    | "small"
     | "muted"
     | "code"
     | "blockquote"
@@ -44,7 +44,7 @@ const variantStyles = {
 
 const defaultElements = {
   h1: "h1",
-  h2: "h2", 
+  h2: "h2",
   h3: "h3",
   h4: "h4",
   h5: "h5",
@@ -60,21 +60,21 @@ const defaultElements = {
   listItem: "li",
 };
 
-export function Typography({ 
-  children, 
-  className, 
-  variant = "p", 
+export function Typography({
+  children,
+  className,
+  variant = "p",
   as,
-  ...props 
+  ...props
 }: TypographyProps & React.HTMLAttributes<HTMLElement>) {
   const Component = as || defaultElements[variant];
-  
+
   return React.createElement(
     Component,
     {
       className: cn(variantStyles[variant], className),
-      ...props
+      ...props,
     },
     children
   );
-} 
+}

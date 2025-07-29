@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import styles from "./CollapsibleCard.module.css";
 import { CollapsibleCardProps } from "./types";
@@ -26,9 +26,7 @@ export function CollapsibleCard({
         <Card className={cn(styles.card, className)}>
           <CardHeader className={styles.cardHeader}>
             <CollapsibleTrigger asChild>
-              <motion.button
-                className={cn(styles.triggerButton, "hover:bg-accent/50")}
-              >
+              <motion.button className={cn(styles.triggerButton, "hover:bg-accent/50")}>
                 <CardTitle>{title}</CardTitle>
                 <motion.div
                   className={styles.triggerIcon}

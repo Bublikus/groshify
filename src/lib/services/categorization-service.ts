@@ -1,4 +1,4 @@
-import { env } from '@/config/env';
+import { env } from "@/config/env";
 
 export interface Transaction {
   id: string;
@@ -20,7 +20,7 @@ export interface CategoryPrediction {
 const OPENAI_API_KEY = env.OPENAI_API_KEY;
 
 if (!OPENAI_API_KEY) {
-  console.warn('OPENAI_API_KEY is not set. Category determination will not work.');
+  console.warn("OPENAI_API_KEY is not set. Category determination will not work.");
 }
 
 export async function categorizeTransactions(
@@ -28,12 +28,12 @@ export async function categorizeTransactions(
   categories: string[]
 ): Promise<CategorizedTransaction[]> {
   if (!OPENAI_API_KEY) {
-    console.warn('OPENAI_API_KEY is not set. Using fallback categorization.');
+    console.warn("OPENAI_API_KEY is not set. Using fallback categorization.");
     // Fallback to "Інше" category if API key is not available
-    return transactions.map(transaction => ({
+    return transactions.map((transaction) => ({
       id: transaction.id,
       description: transaction.description,
-      category: 'Інше',
+      category: "Інше",
       confidence: 0,
     }));
   }
@@ -46,12 +46,12 @@ export async function categorizeTransactions(
     // Process all transactions at once (limited to 10 by client)
     return await categorizeBatch(transactions, categories);
   } catch (error) {
-    console.error('Error categorizing transactions:', error);
+    console.error("Error categorizing transactions:", error);
     // Fallback to "Інше" category on error
-    return transactions.map(transaction => ({
+    return transactions.map((transaction) => ({
       id: transaction.id,
       description: transaction.description,
-      category: 'Інше',
+      category: "Інше",
       confidence: 0,
     }));
   }
@@ -61,31 +61,32 @@ async function categorizeBatch(
   transactions: Transaction[],
   categories: string[]
 ): Promise<CategorizedTransaction[]> {
-  const descriptions = transactions.map(t => t.description);
-  
+  const descriptions = transactions.map((t) => t.description);
+
   const prompt = createCategorizationPrompt(descriptions, categories);
-  
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: "gpt-3.5-turbo",
         messages: [
           {
-            role: 'system',
-            content: 'You are a financial categorization expert. Analyze transaction descriptions and assign them to the most appropriate category with confidence scores.'
+            role: "system",
+            content:
+              "You are a financial categorization expert. Analyze transaction descriptions and assign them to the most appropriate category with confidence scores.",
           },
           {
-            role: 'user',
-            content: prompt
-          }
+            role: "user",
+            content: prompt,
+          },
         ],
         temperature: 0.1,
         max_tokens: 2000,
@@ -93,7 +94,7 @@ async function categorizeBatch(
       signal: controller.signal,
     });
 
-        clearTimeout(timeoutId);
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
@@ -101,24 +102,24 @@ async function categorizeBatch(
 
     const data = await response.json();
     const content = data.choices[0]?.message?.content;
-    
+
     if (!content) {
-      throw new Error('No response content from OpenAI API');
+      throw new Error("No response content from OpenAI API");
     }
 
     return parseCategorizationResponse(transactions, content);
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request timeout - categorization took too long');
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("Request timeout - categorization took too long");
     }
     throw error;
   }
 }
 
 function createCategorizationPrompt(descriptions: string[], categories: string[]): string {
-  const categoryList = categories.map(cat => `- ${cat}`).join('\n');
-  
+  const categoryList = categories.map((cat) => `- ${cat}`).join("\n");
+
   return `Please categorize the following transaction descriptions into the most appropriate category from the list below.
 
 Available categories:
@@ -131,7 +132,7 @@ For each transaction, provide:
 If a transaction doesn't clearly fit any category or confidence is below 0.8, use "Інше" category.
 
 Transaction descriptions:
-${descriptions.map((desc, index) => `${index + 1}. ${desc}`).join('\n')}
+${descriptions.map((desc, index) => `${index + 1}. ${desc}`).join("\n")}
 
 Please respond in the following JSON format:
 [
@@ -154,7 +155,7 @@ function parseCategorizationResponse(
     // Clean the response to extract JSON
     const jsonMatch = response.match(/\[[\s\S]*\]/);
     if (!jsonMatch) {
-      throw new Error('No JSON array found in response');
+      throw new Error("No JSON array found in response");
     }
 
     const predictions = JSON.parse(jsonMatch[0]) as Array<{
@@ -164,13 +165,13 @@ function parseCategorizationResponse(
     }>;
 
     return transactions.map((transaction, index) => {
-      const prediction = predictions.find(p => p.index === index + 1);
-      
+      const prediction = predictions.find((p) => p.index === index + 1);
+
       if (!prediction || prediction.confidence < 0.8) {
         return {
           id: transaction.id,
           description: transaction.description,
-          category: 'Інше',
+          category: "Інше",
           confidence: 0,
         };
       }
@@ -183,13 +184,13 @@ function parseCategorizationResponse(
       };
     });
   } catch (error) {
-    console.error('Error parsing categorization response:', error);
+    console.error("Error parsing categorization response:", error);
     // Fallback to "Інше" category
-    return transactions.map(transaction => ({
+    return transactions.map((transaction) => ({
       id: transaction.id,
       description: transaction.description,
-      category: 'Інше',
+      category: "Інше",
       confidence: 0,
     }));
   }
-} 
+}

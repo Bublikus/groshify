@@ -5,7 +5,7 @@ A virtualized, generic, reusable data table component with support for custom re
 ## Usage
 
 ```tsx
-import { DataTable } from '@/components/common/DataTable';
+import { DataTable } from "@/components/common/DataTable";
 
 interface ExpenseData {
   id: string;
@@ -17,24 +17,36 @@ interface ExpenseData {
 
 const columns = [
   {
-    key: 'name' as keyof ExpenseData,
-    title: 'Name',
+    key: "name" as keyof ExpenseData,
+    title: "Name",
   },
   {
-    key: 'amount' as keyof ExpenseData,
-    title: 'Amount',
+    key: "amount" as keyof ExpenseData,
+    title: "Amount",
     render: (value: number) => `$${value}`,
   },
   {
-    key: 'category' as keyof ExpenseData,
-    title: 'Category',
+    key: "category" as keyof ExpenseData,
+    title: "Category",
     sticky: true, // Makes this column sticky
   },
 ];
 
 const data: ExpenseData[] = [
-  { id: '1', name: 'Item 1', amount: 100, category: 'Food', date: '2024-01-01' },
-  { id: '2', name: 'Item 2', amount: 200, category: 'Transport', date: '2024-01-02' },
+  {
+    id: "1",
+    name: "Item 1",
+    amount: 100,
+    category: "Food",
+    date: "2024-01-01",
+  },
+  {
+    id: "2",
+    name: "Item 2",
+    amount: 200,
+    category: "Transport",
+    date: "2024-01-02",
+  },
 ];
 
 function MyComponent() {
@@ -79,4 +91,4 @@ function MyComponent() {
 - **Responsive design**
 - **Flexible row key configuration**
 - **Built-in null/undefined handling**
-- **Performance optimized** for large datasets 
+- **Performance optimized** for large datasets

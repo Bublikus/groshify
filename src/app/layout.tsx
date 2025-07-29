@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PWAProvider } from "@/components/PWAProvider";
 import { ThemeProvider } from "@/components/theme-provider";
-import { isPWAEnabled } from "@/config/pwa";
 import { getAssetUrl } from "@/config/env";
+import { isPWAEnabled } from "@/config/pwa";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,13 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Take control of your finances with Groshify. Track expenses, manage budgets, and achieve your financial goals with our intuitive personal finance management app.",
-  keywords: [
-    "finance",
-    "budgeting",
-    "expense tracking",
-    "money management",
-    "personal finance",
-  ],
+  keywords: ["finance", "budgeting", "expense tracking", "money management", "personal finance"],
   authors: [{ name: "Bublik" }],
   creator: "Groshify",
   publisher: "Groshify",
@@ -70,8 +64,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: getAssetUrl("/favicon/favicon-16x16.png"), sizes: "16x16", type: "image/png" },
-      { url: getAssetUrl("/favicon/favicon-32x32.png"), sizes: "32x32", type: "image/png" },
+      {
+        url: getAssetUrl("/favicon/favicon-16x16.png"),
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: getAssetUrl("/favicon/favicon-32x32.png"),
+        sizes: "32x32",
+        type: "image/png",
+      },
       { url: getAssetUrl("/favicon/favicon.ico"), sizes: "any" },
     ],
     shortcut: getAssetUrl("/favicon/favicon.ico"),
@@ -100,14 +102,16 @@ export const metadata: Metadata = {
     "theme-color": "#ffffff",
     "msapplication-TileColor": "#ffffff",
     viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
-    ...(isPWAEnabled() ? {
-      "apple-mobile-web-app-capable": "yes",
-      "apple-mobile-web-app-status-bar-style": "default",
-      "apple-mobile-web-app-title": "Groshify",
-      "mobile-web-app-capable": "yes",
-      "application-name": "Groshify",
-      "msapplication-config": "/browserconfig.xml",
-    } : {}),
+    ...(isPWAEnabled()
+      ? {
+          "apple-mobile-web-app-capable": "yes",
+          "apple-mobile-web-app-status-bar-style": "default",
+          "apple-mobile-web-app-title": "Groshify",
+          "mobile-web-app-capable": "yes",
+          "application-name": "Groshify",
+          "msapplication-config": "/browserconfig.xml",
+        }
+      : {}),
   },
 };
 
@@ -119,28 +123,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta
-          name="description"
-          content="Your personal finance management app"
-        />
+        <meta name="description" content="Your personal finance management app" />
         <link rel="manifest" href={`${getAssetUrl("/favicon/site.webmanifest")}`} />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {isPWAEnabled() ? (
-            <PWAProvider>
-              {children}
-            </PWAProvider>
-          ) : (
-            children
-          )}
+          {isPWAEnabled() ? <PWAProvider>{children}</PWAProvider> : children}
         </ThemeProvider>
       </body>
     </html>

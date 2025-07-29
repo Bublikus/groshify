@@ -48,8 +48,8 @@ export function Tabs({
       if (tabsRef.current) {
         const tabElement = tabsRef.current.querySelector(
           `[data-value="${prevTab.value}"]`
-        ) as HTMLElement;
-        if (tabElement) {
+        );
+        if (tabElement instanceof HTMLElement) {
           tabElement.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
@@ -70,8 +70,8 @@ export function Tabs({
       if (tabsRef.current) {
         const tabElement = tabsRef.current.querySelector(
           `[data-value="${nextTab.value}"]`
-        ) as HTMLElement;
-        if (tabElement) {
+        );
+        if (tabElement instanceof HTMLElement) {
           tabElement.scrollIntoView({
             behavior: "smooth",
             block: "nearest",

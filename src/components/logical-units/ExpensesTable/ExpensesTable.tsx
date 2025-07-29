@@ -277,7 +277,7 @@ export function ExpensesTable() {
                 <DataTable<ParsedRow>
                   columns={[
                     {
-                      key: "category" as keyof ParsedRow,
+                      key: "category" satisfies keyof ParsedRow,
                       title: "Category",
                       sticky: true,
                       render: (_, row) => (
@@ -308,7 +308,7 @@ export function ExpensesTable() {
                       ),
                     },
                     ...state.headers.map((header) => ({
-                      key: header as keyof ParsedRow,
+                      key: header satisfies keyof ParsedRow,
                       title:
                         state.headerTitles[state.headers.indexOf(header)] ||
                         header,

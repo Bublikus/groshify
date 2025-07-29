@@ -18,6 +18,11 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import styles from "./DataTable.module.css";
 
+interface ColumnMeta {
+  sticky?: boolean;
+  className?: string;
+}
+
 // Original Table is wrapped with a <div> (see https://ui.shadcn.com/docs/components/table#radix-:r24:-content-manual),
 // but here we don't want it, so let's use a new component with only <table> tag
 const TableComponent = forwardRef<
@@ -48,7 +53,7 @@ const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
         {...props}
       >
         {row.getVisibleCells().map((cell) => {
-          const meta = cell.column.columnDef.meta as { sticky?: boolean; className?: string };
+          const meta = cell.column.columnDef.meta as ColumnMeta | undefined;
           return (
             <TableCell
               key={cell.id}
@@ -126,7 +131,7 @@ export function DataTable<TData extends Record<string, unknown>>({
       cell: ({ row }) => {
         const value = row.original[column.key];
         if (column.render) {
-          return column.render(value as TData[keyof TData], row.original);
+          return column.render(value, row.original);
         }
         return value !== null && value !== undefined ? String(value) : "";
       },
@@ -169,7 +174,7 @@ export function DataTable<TData extends Record<string, unknown>>({
             table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="bg-card hover:bg-muted" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as { sticky?: boolean; className?: string };
+                  const meta = header.column.columnDef.meta as ColumnMeta | undefined;
                   return (
                     <TableHead
                       key={header.id}

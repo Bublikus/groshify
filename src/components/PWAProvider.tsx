@@ -54,7 +54,9 @@ export function PWAProvider({ children }: PWAProviderProps) {
       if (!isPWAFeatureEnabled('installPrompt')) return;
       
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      if (e instanceof Event && 'prompt' in e && 'userChoice' in e) {
+        setDeferredPrompt(e as BeforeInstallPromptEvent);
+      }
       setShowInstallPrompt(true);
     };
 

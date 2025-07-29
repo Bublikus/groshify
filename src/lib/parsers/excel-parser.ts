@@ -39,8 +39,8 @@ export class ExcelParser implements DocumentParser {
             return;
           }
 
-          const headers = this.extractHeaders(jsonData[headerRow] as string[], trimHeaders);
-          const dataRows = jsonData.slice(headerRow + 1) as RowData[];
+                const headers = this.extractHeaders(jsonData[headerRow] as string[], trimHeaders);
+      const dataRows = jsonData.slice(headerRow + 1) as RowData[];
           
           const fileInfo = this.createFileInfo(headers, dataRows);
           const parsedData = this.parseRows(dataRows, headers, skipEmptyRows);

@@ -24,8 +24,13 @@ This is a Next.js 14+ TypeScript project with shadcn/ui components, focusing on 
 - Prefer interfaces over types for object shapes
 - Use generic types for reusable components (e.g., DataTable<TData>)
 - Avoid `any` types - use proper type inference or explicit typing
+- Avoid using `as` keyword for type assertions - prefer proper type definitions and type guards
 - Use `ReactNode` for component children
 - Use proper event types (e.g., `React.ChangeEvent<HTMLInputElement>`)
+- Acceptable use cases for `as`:
+  - When working with external APIs that return `unknown` or defined a generic interface
+  - When dealing with DOM elements that need specific typing
+  - When the type assertion is safer than the alternative (e.g., `as const` for literal types) 
 
 ### Component Architecture
 - Create reusable, stateless components in `src/components/common/`
@@ -223,6 +228,14 @@ export function ComponentName({
 - Prefer Prettier for formatting
 - Use consistent import ordering
 - Remove unused imports and variables
+- **Always run ESLint to fix all mistakes before committing:**
+  ```bash
+  npx eslint src --ext .ts,.tsx --fix
+  ```
+- **Run TypeScript check to ensure type safety:**
+  ```bash
+  npx tsc --noEmit
+  ```
 
 ### Testing
 - Write unit tests for utilities

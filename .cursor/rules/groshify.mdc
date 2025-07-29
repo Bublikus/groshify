@@ -1,0 +1,394 @@
+---
+description: Cursor Rules for Groshify Project
+alwaysApply: true
+---
+
+# Cursor Rules for Groshify Project
+
+## Project Overview
+This is a Next.js 14+ TypeScript project with shadcn/ui components, focusing on personal finance management with PWA capabilities.
+
+## Core Technologies
+- Next.js 14+ (App Router)
+- TypeScript (strict mode)
+- Tailwind CSS
+- shadcn/ui components
+- Framer Motion for animations
+- Lucide React for icons
+- React Virtuoso for virtualization
+
+## Code Style & Architecture
+
+### TypeScript Best Practices
+- Use strict TypeScript configuration
+- Prefer interfaces over types for object shapes
+- Use generic types for reusable components (e.g., DataTable<TData>)
+- Avoid `any` types - use proper type inference or explicit typing
+- Use `ReactNode` for component children
+- Use proper event types (e.g., `React.ChangeEvent<HTMLInputElement>`)
+
+### Component Architecture
+- Create reusable, stateless components in `src/components/common/`
+- Create entity-related components in `src/components/logical-units/`
+- Use folder structure for complex components with their own logic
+- Prefer composition over inheritance
+- Use proper prop interfaces with optional properties
+- Implement proper error boundaries and loading states
+
+### Logical Units Directory
+The `src/components/logical-units/` directory contains entity-related components that represent business logic entities:
+
+#### Structure for Each Entity:
+```
+EntityName/
+├── EntityName.tsx          # Main entity component
+├── EntityNameList.tsx      # List/table view of entities
+├── EntityNameForm.tsx      # Create/edit form
+├── EntityNameCard.tsx      # Card representation
+├── hooks/
+│   └── useEntityName.ts    # Entity-specific hooks
+├── types.ts                # Entity-specific types
+├── index.ts                # Exports
+└── README.md               # Documentation
+```
+
+#### Examples:
+- `ExpensesTable/` - Expense management components
+- `Categories/` - Category management components
+- `Transactions/` - Transaction-related components
+- `Reports/` - Reporting and analytics components
+
+#### Guidelines:
+- Each entity should have its own folder
+- Include related components (list, form, card, etc.)
+- Use entity-specific hooks for business logic
+- Keep entity types separate from common types
+- Document entity-specific patterns and usage
+
+### File Organization
+```
+src/
+├── app/                    # Next.js App Router pages
+├── components/
+│   ├── common/            # Reusable components
+│   │   ├── ComponentName/
+│   │   │   ├── ComponentName.tsx
+│   │   │   ├── ComponentName.module.css
+│   │   │   ├── index.ts
+│   │   │   └── README.md
+│   │   └── ...
+│   ├── logical-units/     # Entity-related components
+│   │   ├── EntityName/
+│   │   │   ├── EntityName.tsx
+│   │   │   ├── EntityNameList.tsx
+│   │   │   ├── EntityNameForm.tsx
+│   │   │   ├── EntityNameCard.tsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useEntityName.ts
+│   │   │   ├── types.ts
+│   │   │   ├── index.ts
+│   │   │   └── README.md
+│   │   └── ...
+│   └── ui/                # shadcn/ui components
+├── lib/                   # Utilities and services
+├── constants/             # App constants
+└── config/                # Configuration files
+```
+
+## Component Guidelines
+
+### Creating New Components
+1. Use PascalCase for component names
+2. Create folder structure for complex components
+3. Include proper TypeScript interfaces
+4. Add CSS modules for component-specific styles
+5. Export from index.ts for clean imports
+6. Include README.md with usage examples
+
+### Component Structure
+```typescript
+"use client";
+
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import styles from "./ComponentName.module.css";
+
+interface ComponentNameProps {
+  children: ReactNode;
+  className?: string;
+  // Add other props
+}
+
+export function ComponentName({ 
+  children, 
+  className,
+  ...props 
+}: ComponentNameProps) {
+  return (
+    <div className={cn(styles.container, className)} {...props}>
+      {children}
+    </div>
+  );
+}
+```
+
+### CSS Modules Best Practices
+- Use CSS modules for component-specific styles
+- Keep global styles minimal
+- Use CSS variables for theming
+- Prefer Tailwind classes for simple styling
+- Use CSS modules for complex component-specific styles
+
+## State Management
+
+### Local State
+- Use `useState` for component-local state
+- Use `useReducer` for complex state logic
+- Prefer custom hooks for reusable state logic
+
+### Custom Hooks
+- Create hooks in component folders when specific to that component
+- Use descriptive names (e.g., `useExpensesTable`)
+- Return objects with clear property names
+- Include proper TypeScript types
+
+## Performance Best Practices
+
+### Optimization
+- Use `React.memo` for expensive components
+- Implement virtualization for large lists/tables
+- Use `useCallback` and `useMemo` appropriately
+- Lazy load components when possible
+- Optimize images with Next.js Image component
+
+### Virtualization
+- Use React Virtuoso for large datasets
+- Implement proper row heights and item sizes
+- Handle dynamic content appropriately
+
+## UI/UX Guidelines
+
+### Design System
+- Use shadcn/ui components as the foundation
+- Follow consistent spacing and typography
+- Use Lucide React icons exclusively
+- Implement proper loading and error states
+- Ensure accessibility compliance
+
+### Animations
+- Use Framer Motion for smooth animations
+- Keep animations subtle and purposeful
+- Implement proper exit animations
+- Use `AnimatePresence` for conditional rendering
+
+### Responsive Design
+- Mobile-first approach
+- Use Tailwind responsive classes
+- Test on various screen sizes
+- Ensure touch-friendly interactions
+
+## Error Handling
+
+### Error Boundaries
+- Implement error boundaries for major sections
+- Provide meaningful error messages
+- Log errors appropriately
+- Graceful degradation for features
+
+### API Error Handling
+- Handle network errors gracefully
+- Show user-friendly error messages
+- Implement retry mechanisms where appropriate
+- Validate data before processing
+
+## Accessibility
+
+### Standards
+- Follow WCAG 2.1 AA guidelines
+- Use semantic HTML elements
+- Implement proper ARIA labels
+- Ensure keyboard navigation
+- Provide alt text for images
+
+### Testing
+- Test with screen readers
+- Verify keyboard-only navigation
+- Check color contrast ratios
+- Validate form accessibility
+
+## Code Quality
+
+### Linting & Formatting
+- Use ESLint with TypeScript rules
+- Prefer Prettier for formatting
+- Use consistent import ordering
+- Remove unused imports and variables
+
+### Testing
+- Write unit tests for utilities
+- Test component behavior
+- Mock external dependencies
+- Use React Testing Library
+
+### Documentation
+- Document complex functions
+- Include JSDoc for public APIs
+- Maintain README files
+- Document component props
+
+## Security Best Practices
+
+### Data Handling
+- Validate all user inputs
+- Sanitize data before rendering
+- Use proper Content Security Policy
+- Implement proper authentication if needed
+
+### File Uploads
+- Validate file types and sizes
+- Scan for malicious content
+- Use secure file handling
+- Implement proper error handling
+
+## PWA Specific Guidelines
+
+### Service Worker
+- Implement proper caching strategies
+- Handle offline functionality
+- Update service worker appropriately
+- Test PWA installation
+
+### Performance
+- Optimize bundle sizes
+- Implement code splitting
+- Use proper caching headers
+- Monitor Core Web Vitals
+
+## Git Workflow
+
+### Commit Messages
+- Use conventional commit format
+- Be descriptive and concise
+- Reference issues when applicable
+- Use present tense
+
+### Branch Strategy
+- Use feature branches
+- Keep branches focused
+- Review code before merging
+- Maintain clean git history
+
+## Development Workflow
+
+### Environment Setup
+- Use Node.js 18+ 
+- Install dependencies with npm
+- Use proper environment variables
+- Follow consistent development setup
+
+### Debugging
+- Use React DevTools
+- Implement proper logging
+- Use browser dev tools effectively
+- Test in different environments
+
+## Common Patterns
+
+### Data Fetching
+```typescript
+const [data, setData] = useState<DataType[]>([]);
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+const fetchData = async () => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const response = await fetch('/api/endpoint');
+    const result = await response.json();
+    setData(result);
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Unknown error');
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+### Form Handling
+```typescript
+const [formData, setFormData] = useState<FormData>({});
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  // Handle form submission
+};
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setFormData(prev => ({
+    ...prev,
+    [e.target.name]: e.target.value
+  }));
+};
+```
+
+### Custom Hook Pattern
+```typescript
+export const useCustomHook = () => {
+  const [state, setState] = useState<StateType>(initialState);
+  
+  const actions = useMemo(() => ({
+    action1: () => { /* implementation */ },
+    action2: () => { /* implementation */ }
+  }), [state]);
+  
+  return {
+    state,
+    ...actions
+  };
+};
+```
+
+## Anti-Patterns to Avoid
+
+### Don't
+- Use `any` types
+- Create deeply nested components
+- Mix CSS-in-JS with CSS modules
+- Use inline styles
+- Ignore accessibility
+- Skip error handling
+- Use deprecated React patterns
+- Create overly complex state management
+- Ignore performance implications
+- Skip TypeScript types
+
+### Do
+- Use proper TypeScript types
+- Create focused, stateless, single-responsibility components
+- Use CSS modules for component styles
+- Implement proper error boundaries
+- Follow accessibility guidelines
+- Handle loading and error states
+- Use modern React patterns
+- Keep state management simple
+- Optimize for performance
+- Write comprehensive tests
+
+## Performance Monitoring
+
+### Metrics to Track
+- First Contentful Paint (FCP)
+- Largest Contentful Paint (LCP)
+- First Input Delay (FID)
+- Cumulative Layout Shift (CLS)
+- Bundle size
+- Memory usage
+
+### Tools
+- Lighthouse for performance audits
+- React DevTools Profiler
+- Bundle analyzer
+- Performance monitoring tools
+
+This document should be updated as the project evolves and new patterns emerge. 

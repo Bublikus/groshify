@@ -24,8 +24,6 @@ export const useExpensesTable = () => {
     categories: {},
   });
 
-  const tabsRef = useRef<HTMLDivElement>(null);
-
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -138,46 +136,6 @@ export const useExpensesTable = () => {
         [rowId]: category,
       },
     }));
-  };
-
-  const scrollToMonth = (direction: "left" | "right") => {
-    if (!tabsRef.current || monthlyData.length === 0) return;
-
-    const currentIndex = monthlyData.findIndex(
-      (month) => month.month === state.selectedMonth
-    );
-    if (currentIndex === -1) return;
-
-    let targetIndex: number;
-    if (direction === "left") {
-      targetIndex = Math.max(0, currentIndex - 1);
-    } else {
-      targetIndex = Math.min(monthlyData.length - 1, currentIndex + 1);
-    }
-
-    const targetMonth = monthlyData[targetIndex];
-    setState((prev) => ({ ...prev, selectedMonth: targetMonth.month }));
-
-    // Scroll to center the target tab
-    setTimeout(() => {
-      if (tabsRef.current) {
-        const tabsContainer = tabsRef.current;
-        const tabElements = tabsContainer.querySelectorAll("[data-state]");
-        const targetTab = tabElements[targetIndex + 1]; // +1 because "All" tab is first
-
-        if (targetTab) {
-          const containerWidth = tabsContainer.offsetWidth;
-          const tabLeft = (targetTab as HTMLElement).offsetLeft;
-          const tabWidth = (targetTab as HTMLElement).offsetWidth;
-          const scrollLeft = tabLeft - containerWidth / 2 + tabWidth / 2;
-
-          tabsContainer.scrollTo({
-            left: scrollLeft,
-            behavior: "smooth",
-          });
-        }
-      }
-    }, 100);
   };
 
   // Group data by month
@@ -403,10 +361,8 @@ export const useExpensesTable = () => {
   return {
     state,
     setState,
-    tabsRef,
     handleFileUpload,
     handleCategoryChange,
-    scrollToMonth,
     monthlyData,
     currentMonthData,
     currentSums,

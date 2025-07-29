@@ -24,10 +24,8 @@ export function ExpensesTable() {
   const {
     state,
     setState,
-    tabsRef,
     handleFileUpload,
     handleCategoryChange,
-    scrollToMonth,
     monthlyData,
     currentMonthData,
     currentSums,

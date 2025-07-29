@@ -29,9 +29,14 @@
   backdrop-filter: blur(8px) !important;
 }
 
-/* Row styling - lighter background */
+/* Row styling - darker background for better contrast */
 .stickyTableContainer [data-slot="table-cell"] {
-  background: var(--muted) !important;
+  background: hsl(var(--muted) / 0.8) !important;
+}
+
+/* Row hover effects - works for both pinned and non-pinned cells */
+.stickyTableContainer [data-slot="table-row"]:hover [data-slot="table-cell"] {
+  background: var(--accent) !important;
 }
 
 /* Enhanced hover effects for sticky column */

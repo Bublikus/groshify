@@ -13,7 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Select,
   SelectContent,
@@ -22,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils/number-format";
+import { CollapsibleCard } from "@/components/common/CollapsibleCard";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
 
@@ -97,94 +97,48 @@ export function ExpensesTable() {
 
       <AnimatePresence>
         {state.fileInfo && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
+          <CollapsibleCard
+            title="File Information"
+            isOpen={state.isFileInfoOpen}
+            onOpenChange={(open) => setState(prev => ({ ...prev, isFileInfoOpen: open }))}
           >
-            <Collapsible open={state.isFileInfoOpen} onOpenChange={(open) => setState(prev => ({ ...prev, isFileInfoOpen: open }))}>
-              <Card className="py-0 gap-0">
-                <CardHeader className="p-0 block">
-                  <CollapsibleTrigger asChild>
-                    <motion.button className="w-full flex items-center justify-between text-left hover:bg-accent/50 rounded-md p-6 transition-colors cursor-pointer">
-                      <CardTitle>File Information</CardTitle>
+            <div className="space-y-4">
+              <div>
+                <p className="font-medium">
+                  Columns ({state.fileInfo.headers.length}):
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {state.fileInfo.headers.join(", ")}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium">
+                  Total Rows: {state.fileInfo.totalRows}
+                </p>
+              </div>
+              {state.fileInfo.sampleData.length > 0 && (
+                <div>
+                  <p className="font-medium">Sample Data:</p>
+                  <div className="mt-2 space-y-2">
+                    {state.fileInfo.sampleData.map((row, index) => (
                       <motion.div
-                        className="flex items-center gap-2 text-sm text-muted-foreground"
-                        animate={{ rotate: state.isFileInfoOpen ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
+                        key={index}
+                        className="text-sm bg-muted p-2 rounded"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ delay: index * 0.1 }}
                       >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 15 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z"
-                            fill="currentColor"
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
+                        <pre className="whitespace-pre-wrap">
+                          {JSON.stringify(row, null, 2)}
+                        </pre>
                       </motion.div>
-                    </motion.button>
-                  </CollapsibleTrigger>
-                </CardHeader>
-                <AnimatePresence>
-                  {state.isFileInfoOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      style={{ overflow: "hidden" }}
-                    >
-                      <CardContent className="py-6">
-                        <div className="space-y-4">
-                          <div>
-                            <p className="font-medium">
-                              Columns ({state.fileInfo.headers.length}):
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {state.fileInfo.headers.join(", ")}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="font-medium">
-                              Total Rows: {state.fileInfo.totalRows}
-                            </p>
-                          </div>
-                          {state.fileInfo.sampleData.length > 0 && (
-                            <div>
-                              <p className="font-medium">Sample Data:</p>
-                              <div className="mt-2 space-y-2">
-                                {state.fileInfo.sampleData.map((row, index) => (
-                                  <motion.div
-                                    key={index}
-                                    className="text-sm bg-muted p-2 rounded"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ delay: index * 0.1 }}
-                                  >
-                                    <pre className="whitespace-pre-wrap">
-                                      {JSON.stringify(row, null, 2)}
-                                    </pre>
-                                  </motion.div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Card>
-            </Collapsible>
-          </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CollapsibleCard>
         )}
       </AnimatePresence>
 

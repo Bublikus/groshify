@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { TabsList, TabsTrigger, Tabs as UITabs } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import styles from "./Tabs.module.css";
 import { useTabs } from "./hooks";
 import { TabsProps } from "./types";

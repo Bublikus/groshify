@@ -4,7 +4,7 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import styles from "./ErrorBoundary.module.css";
 import { ErrorOverlayProps } from "./types";
 

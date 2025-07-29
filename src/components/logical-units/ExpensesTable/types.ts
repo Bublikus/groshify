@@ -1,5 +1,5 @@
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
-import { ParseResult } from "@/lib/parsers";
+import { ParseResult } from "@/parsers";
 
 export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
 

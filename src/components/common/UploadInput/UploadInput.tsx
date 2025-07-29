@@ -6,7 +6,7 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import styles from "./UploadInput.module.css";
 import { useUploadInput } from "./hooks";
 import { UploadInputProps } from "./types";

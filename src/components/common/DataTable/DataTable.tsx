@@ -6,7 +6,7 @@ import { TableVirtuoso } from "react-virtuoso";
 import { HTMLAttributes, forwardRef } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import styles from "./DataTable.module.css";
 import { useDataTable } from "./hooks";
 import { ColumnMeta, DataTableProps } from "./types";

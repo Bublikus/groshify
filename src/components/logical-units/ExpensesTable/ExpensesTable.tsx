@@ -15,8 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Typography } from "@/components/ui/typography";
-import { ParsedRow } from "@/lib/parsers/types";
-import { formatCurrency } from "@/lib/utils/number-format";
+import { ParsedRow } from "@/parsers/types";
+import { formatCurrency } from "@/utils/number-format";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
 

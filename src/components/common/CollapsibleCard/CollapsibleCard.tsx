@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import styles from "./CollapsibleCard.module.css";
 import { CollapsibleCardProps } from "./types";
 

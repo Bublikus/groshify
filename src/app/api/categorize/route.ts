@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { categorizeTransactions } from "@/lib/services/categorization-service";
+import { categorizeTransactions } from "@/services/categorization-service";
 
 export async function POST(request: NextRequest) {
   try {

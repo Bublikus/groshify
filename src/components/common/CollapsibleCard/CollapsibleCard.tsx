@@ -3,18 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import styles from "./CollapsibleCard.module.css";
-
-interface CollapsibleCardProps {
-  title: string;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  children: ReactNode;
-  className?: string;
-}
+import { CollapsibleCardProps } from "./types";
 
 export function CollapsibleCard({
   title,

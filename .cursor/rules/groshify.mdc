@@ -79,6 +79,7 @@ src/
 │   │   ├── ComponentName/
 │   │   │   ├── ComponentName.tsx
 │   │   │   ├── ComponentName.module.css
+│   │   │   ├── types.ts
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...

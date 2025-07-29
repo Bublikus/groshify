@@ -3,7 +3,6 @@
 import {
   ColumnDef,
   Row,
-  SortDirection,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -12,16 +11,16 @@ import {
 } from "@tanstack/react-table";
 
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import { HTMLAttributes, forwardRef, useState, ReactNode } from "react";
+import { HTMLAttributes, forwardRef, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import styles from "./DataTable.module.css";
-
-interface ColumnMeta {
-  sticky?: boolean;
-  className?: string;
-}
+import { 
+  ColumnMeta, 
+  SortingIndicatorProps, 
+  DataTableProps 
+} from "./types";
 
 // Original Table is wrapped with a <div> (see https://ui.shadcn.com/docs/components/table#radix-:r24:-content-manual),
 // but here we don't want it, so let's use a new component with only <table> tag
@@ -72,7 +71,7 @@ const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
     );
   };
 
-function SortingIndicator({ isSorted }: { isSorted: SortDirection | false }) {
+function SortingIndicator({ isSorted }: SortingIndicatorProps) {
   if (!isSorted) return null;
   return (
     <div className="ml-2">
@@ -86,21 +85,7 @@ function SortingIndicator({ isSorted }: { isSorted: SortDirection | false }) {
   );
 }
 
-export interface DataTableColumn<TData = Record<string, unknown>> {
-  key: keyof TData;
-  title: string;
-  render?: (value: TData[keyof TData], row: TData) => ReactNode;
-  className?: string;
-  sticky?: boolean;
-}
 
-export interface DataTableProps<TData = Record<string, unknown>> {
-  columns: DataTableColumn<TData>[];
-  data: TData[];
-  stickyFirstColumn?: boolean;
-  className?: string;
-  height?: string;
-}
 
 export function DataTable<TData extends Record<string, unknown>>({
   columns,

@@ -6,22 +6,7 @@ import { useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import styles from "./Tabs.module.css";
-
-export interface TabItem {
-  value: string;
-  label: string;
-  disabled?: boolean;
-}
-
-export interface TabsProps {
-  value: string;
-  onValueChange: (value: string) => void;
-  tabs: TabItem[];
-  showNavigationArrows?: boolean;
-  className?: string;
-  tabsListClassName?: string;
-  tabTriggerClassName?: string;
-}
+import { TabsProps } from "./types";
 
 export function Tabs({
   value,

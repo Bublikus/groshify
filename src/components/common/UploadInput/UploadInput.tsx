@@ -113,7 +113,12 @@ export function UploadInput({
                         <FileText className={styles.fileIcon} />
                       </div>
                       <div className={styles.fileDetails}>
-                        <Typography variant="large" className={styles.fileName}>
+                        <Typography
+                          variant="large"
+                          className={styles.fileName}
+                          ellipsis
+                          title={selectedFile.name}
+                        >
                           {selectedFile.name}
                         </Typography>
                         <Typography variant="muted" className={styles.fileSize}>

@@ -22,6 +22,7 @@ interface TypographyProps {
     | "list"
     | "listItem";
   as?: keyof HTMLElementTagNameMap;
+  ellipsis?: boolean;
 }
 
 const variantStyles = {
@@ -65,6 +66,7 @@ export function Typography({
   className,
   variant = "p",
   as,
+  ellipsis = false,
   ...props
 }: TypographyProps & React.HTMLAttributes<HTMLElement>) {
   const Component = as || defaultElements[variant];
@@ -72,7 +74,7 @@ export function Typography({
   return React.createElement(
     Component,
     {
-      className: cn(variantStyles[variant], className),
+      className: cn(variantStyles[variant], ellipsis && "truncate", className),
       ...props,
     },
     children

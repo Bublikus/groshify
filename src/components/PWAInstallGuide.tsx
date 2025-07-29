@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Smartphone, X, Menu, Download } from 'lucide-react';
 
 export function PWAInstallGuide() {
   const [isVisible, setIsVisible] = useState(false);
@@ -15,9 +16,7 @@ export function PWAInstallGuide() {
         className="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
         title="Install App"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
+        <Smartphone className="w-6 h-6" />
       </button>
     );
   }
@@ -32,18 +31,14 @@ export function PWAInstallGuide() {
             className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
             aria-label="Close"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-6 h-6" />
           </button>
         </div>
         
         <div className="space-y-6">
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
             <h3 className="font-semibold text-blue-900 mb-3 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-              </svg>
+              <Menu className="w-5 h-5 mr-2" />
               Chrome / Edge
             </h3>
             <ol className="list-decimal list-inside text-sm space-y-2 text-blue-800">
@@ -55,9 +50,7 @@ export function PWAInstallGuide() {
           
           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
             <h3 className="font-semibold text-green-900 mb-3 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
+              <Download className="w-5 h-5 mr-2" />
               Safari (iOS)
             </h3>
             <ol className="list-decimal list-inside text-sm space-y-2 text-green-800">
@@ -69,9 +62,7 @@ export function PWAInstallGuide() {
           
           <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
             <h3 className="font-semibold text-orange-900 mb-3 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-              </svg>
+              <Menu className="w-5 h-5 mr-2" />
               Firefox
             </h3>
             <ol className="list-decimal list-inside text-sm space-y-2 text-orange-800">

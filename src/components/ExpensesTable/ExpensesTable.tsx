@@ -4,14 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -22,6 +14,8 @@ import {
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils/number-format";
 import { CollapsibleCard } from "@/components/common/CollapsibleCard";
+import { DataTable } from "@/components/common/DataTable";
+import { ParsedRow } from "@/lib/parsers/types";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
 
@@ -358,55 +352,38 @@ export function ExpensesTable() {
                   </motion.div>
                 )}
 
-                <motion.div
-                  className="sticky-table-container"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="sticky-left min-w-[140px] sm:min-w-[200px] bg-background">
-                          Category
-                        </TableHead>
-                        {state.headerTitles.map((header) => (
-                          <TableHead key={header}>{header}</TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {currentMonthData.map((row) => (
-                        <TableRow key={row.id}>
-                          <TableCell className="sticky-left bg-background border-b">
-                            <Select
-                              value={state.categories[row.id] || "Other Expenses"}
-                              onValueChange={(value) => handleCategoryChange(row.id, value as ExpenseCategory)}
-                            >
-                              <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
-                                <SelectValue className="truncate" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {EXPENSE_CATEGORIES.map((category) => (
-                                  <SelectItem key={category.name} value={category.name}>
-                                    {category.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </TableCell>
-                          {state.headers.map((header) => (
-                            <TableCell key={header} className="border-b">
-                              {row[header] !== null && row[header] !== undefined
-                                ? String(row[header])
-                                : ""}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </motion.div>
+                <DataTable<ParsedRow>
+                  columns={[
+                    {
+                      key: "category" as keyof ParsedRow,
+                      title: "Category",
+                      sticky: true,
+                      render: (_, row) => (
+                        <Select
+                          value={state.categories[row.id] || "Other Expenses"}
+                          onValueChange={(value) => handleCategoryChange(row.id, value as ExpenseCategory)}
+                        >
+                          <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
+                            <SelectValue className="truncate" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {EXPENSE_CATEGORIES.map((category) => (
+                              <SelectItem key={category.name} value={category.name}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ),
+                    },
+                    ...state.headers.map((header) => ({
+                      key: header as keyof ParsedRow,
+                      title: state.headerTitles[state.headers.indexOf(header)] || header,
+                    })),
+                  ]}
+                  data={currentMonthData}
+                  stickyFirstColumn={true}
+                />
               </CardContent>
             </Card>
           </motion.div>

@@ -314,6 +314,7 @@ export function ExpensesTable() {
                   ]}
                   data={currentMonthData}
                   stickyFirstColumn={true}
+                  height="600px"
                 />
               </CardContent>
             </Card>

@@ -1,0 +1,91 @@
+/* Table component styles */
+.tableContainer {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  caption-side: bottom;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.tableHeader {
+  /* [&_tr]:border-b */
+}
+
+.tableHeader tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.tableBody {
+  /* [&_tr:last-child]:border-0 */
+}
+
+.tableBody tr:last-child {
+  border: 0;
+}
+
+.tableFooter {
+  background-color: hsl(var(--muted) / 0.5);
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.tableFooter > tr:last-child {
+  border-bottom: 0;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+.tableRow[data-state="selected"] {
+  background-color: hsl(var(--muted));
+}
+
+.tableHead {
+  color: hsl(var(--foreground));
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tableHead:has([role="checkbox"]) {
+  padding-right: 0;
+}
+
+.tableHead > [role="checkbox"] {
+  transform: translateY(2px);
+}
+
+.tableCell {
+  padding: 0.5rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tableCell:has([role="checkbox"]) {
+  padding-right: 0;
+}
+
+.tableCell > [role="checkbox"] {
+  transform: translateY(2px);
+}
+
+.tableCaption {
+  color: hsl(var(--muted-foreground));
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+} 

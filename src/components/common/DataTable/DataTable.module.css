@@ -1,0 +1,55 @@
+/* Sticky table column styles for DataTable component */
+.stickyTableContainer {
+  position: relative;
+  max-width: 100%;
+}
+
+.stickyTableContainer [data-slot="table-container"] {
+  overflow-x: auto;
+}
+
+.stickyTableContainer [data-slot="table"] {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: max-content;
+}
+
+/* Header styling */
+.stickyTableContainer [data-slot="table-head"] {
+  background: var(--background) !important;
+}
+
+.stickyTableContainer [data-slot="table-head"].stickyLeft,
+.stickyTableContainer [data-slot="table-cell"].stickyLeft {
+  position: sticky !important;
+  left: 0 !important;
+  background: var(--background) !important;
+  border-right: 1px solid var(--border) !important;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Row styling - lighter background */
+.stickyTableContainer [data-slot="table-cell"] {
+  background: var(--muted) !important;
+}
+
+/* Enhanced hover effects for sticky column */
+.stickyTableContainer [data-slot="table-cell"].stickyLeft:hover {
+  background: var(--accent) !important;
+}
+
+/* Mobile-specific table styling */
+@media (max-width: 639px) {
+  .stickyTableContainer [data-slot="table-cell"] {
+    padding: 0.5rem 0.25rem !important;
+  }
+
+  .stickyTableContainer [data-slot="table-head"] {
+    padding: 0.5rem 0.25rem !important;
+  }
+}
+
+.stickyTableContainer [data-slot="table-head"].stickyLeft {
+  z-index: 20 !important;
+}

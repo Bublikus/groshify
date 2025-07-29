@@ -1,0 +1,73 @@
+/* Tabs component styles */
+.container {
+  margin-bottom: 1rem;
+}
+
+.tabsContainer {
+  width: 100%;
+}
+
+.navigationContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navigationButton {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background: var(--background);
+  transition: background-color 0.2s;
+}
+
+.navigationButton:hover {
+  background: var(--accent);
+}
+
+.navigationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navigationButtonLeft {
+  left: 0;
+}
+
+.navigationButtonRight {
+  right: 0;
+}
+
+.scrollableContainer {
+  flex: 1;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollableContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollableContainerWithArrows {
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
+}
+
+.tabsList {
+  display: flex;
+  width: max-content;
+  height: 2rem;
+}
+
+.tabTrigger {
+  flex-shrink: 0;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}

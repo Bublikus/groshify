@@ -1,15 +1,85 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ReactNode } from "react";
+  ColumnDef,
+  Row,
+  SortDirection,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { HTMLAttributes, forwardRef, useState, ReactNode } from "react";
+import { TableVirtuoso } from "react-virtuoso";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import styles from "./DataTable.module.css";
+
+// Original Table is wrapped with a <div> (see https://ui.shadcn.com/docs/components/table#radix-:r24:-content-manual),
+// but here we don't want it, so let's use a new component with only <table> tag
+const TableComponent = forwardRef<
+  HTMLTableElement,
+  React.HTMLAttributes<HTMLTableElement>
+>(({ className, ...props }, ref) => (
+  <table
+    ref={ref}
+    className={cn("w-full caption-bottom text-sm", className)}
+    style={{ tableLayout: "auto" }}
+    {...props}
+  />
+));
+TableComponent.displayName = "TableComponent";
+
+const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
+  function getTableRow(props: HTMLAttributes<HTMLTableRowElement>) {
+    // @ts-expect-error data-index is a valid attribute
+    const index = props["data-index"];
+    const row = rows[index];
+
+    if (!row) return null;
+
+    return (
+      <TableRow
+        key={row.id}
+        data-state={row.getIsSelected() && "selected"}
+        {...props}
+      >
+        {row.getVisibleCells().map((cell) => {
+          const meta = cell.column.columnDef.meta as any;
+          return (
+            <TableCell
+              key={cell.id}
+              data-slot="table-cell"
+              className={cn(
+                meta?.sticky && styles.stickyLeft,
+                "bg-background border-b",
+                meta?.className
+              )}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          );
+        })}
+      </TableRow>
+    );
+  };
+
+function SortingIndicator({ isSorted }: { isSorted: SortDirection | false }) {
+  if (!isSorted) return null;
+  return (
+    <div className="ml-2">
+      {
+        {
+          asc: "↑",
+          desc: "↓",
+        }[isSorted]
+      }
+    </div>
+  );
+}
 
 export interface DataTableColumn<TData = Record<string, unknown>> {
   key: keyof TData;
@@ -25,6 +95,7 @@ export interface DataTableProps<TData = Record<string, unknown>> {
   stickyFirstColumn?: boolean;
   className?: string;
   rowKey?: keyof TData | ((row: TData) => string);
+  height?: string;
 }
 
 export function DataTable<TData extends Record<string, unknown>>({
@@ -33,62 +104,117 @@ export function DataTable<TData extends Record<string, unknown>>({
   stickyFirstColumn = false,
   className = "",
   rowKey = "id" as keyof TData,
+  height = "400px",
 }: DataTableProps<TData>) {
-  const getRowKey = (row: TData, index: number): string => {
-    if (typeof rowKey === "function") {
-      return rowKey(row);
-    }
-    const keyValue = row[rowKey];
-    return keyValue !== null && keyValue !== undefined ? String(keyValue) : `row-${index}`;
-  };
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Create a mapping from original keys to safe keys for TanStack Table
+  const keyMapping = new Map<string, string>();
+  columns.forEach((column, index) => {
+    const safeKey = `col_${index}`;
+    keyMapping.set(String(column.key), safeKey);
+  });
+
+  // Convert our column format to TanStack Table format
+  const tableColumns: ColumnDef<TData, any>[] = columns.map((column, index) => {
+    const safeKey = `col_${index}`;
+    const isSticky =
+      column.sticky || (stickyFirstColumn && column === columns[0]);
+
+    return {
+      id: safeKey,
+      accessorFn: (row: TData) => row[column.key],
+      header: column.title,
+      cell: ({ row }) => {
+        const value = row.original[column.key];
+        if (column.render) {
+          return column.render(value as TData[keyof TData], row.original);
+        }
+        return value !== null && value !== undefined ? String(value) : "";
+      },
+      meta: {
+        className: column.className,
+        sticky: isSticky,
+      },
+    };
+  });
+
+  const table = useReactTable({
+    data,
+    columns: tableColumns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const { rows } = table.getRowModel();
 
   return (
     <motion.div
-      className={`sticky-table-container ${className}`}
+      className={cn(styles.stickyTableContainer, className)}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
     >
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableHead
-                key={String(column.key)}
-                className={`${
-                  column.sticky || (stickyFirstColumn && column === columns[0])
-                    ? "sticky-left min-w-[140px] sm:min-w-[200px] bg-background"
-                    : ""
-                } ${column.className || ""}`}
-              >
-                {column.title}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={getRowKey(row, index)}>
-              {columns.map((column) => (
-                <TableCell
-                  key={String(column.key)}
-                  className={`${
-                    column.sticky || (stickyFirstColumn && column === columns[0])
-                      ? "sticky-left bg-background border-b"
-                      : "border-b"
-                  } ${column.className || ""}`}
-                >
-                  {column.render
-                    ? column.render(row[column.key], row)
-                    : row[column.key] !== null && row[column.key] !== undefined
-                    ? String(row[column.key])
-                    : ""}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className="rounded-md border overflow-hidden">
+        <TableVirtuoso
+          style={{ height }}
+          totalCount={rows.length}
+          components={{
+            Table: TableComponent,
+            TableRow: TableRowComponent(rows),
+          }}
+          fixedHeaderContent={() =>
+            table.getHeaderGroups().map((headerGroup) => (
+              <TableRow className="bg-card hover:bg-muted" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta as any;
+                  return (
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      data-slot="table-head"
+                      className={cn(
+                        meta?.sticky && styles.stickyLeft,
+                        "bg-background",
+                        meta?.className
+                      )}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div
+                          className="flex items-center justify-between w-full"
+                          {...{
+                            style: header.column.getCanSort()
+                              ? {
+                                  cursor: "pointer",
+                                  userSelect: "none",
+                                }
+                              : {},
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
+                        >
+                          <span>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </span>
+                          <SortingIndicator
+                            isSorted={header.column.getIsSorted()}
+                          />
+                        </div>
+                      )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))
+          }
+        />
+      </div>
     </motion.div>
   );
-} 
+}

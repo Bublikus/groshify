@@ -1,6 +1,6 @@
 # DataTable Component
 
-A generic, reusable data table component with support for custom rendering, sticky columns, and animations.
+A virtualized, generic, reusable data table component with support for custom rendering, sticky columns, sorting, and animations.
 
 ## Usage
 
@@ -44,6 +44,7 @@ function MyComponent() {
       data={data}
       stickyFirstColumn={true}
       rowKey="id"
+      height="600px"
     />
   );
 }
@@ -56,6 +57,7 @@ function MyComponent() {
 - `stickyFirstColumn` (boolean, optional): Makes the first column sticky
 - `className` (string, optional): Additional CSS classes
 - `rowKey` (keyof TData | function, optional): Key for React list rendering (default: "id")
+- `height` (string, optional): Height of the table container (default: "400px")
 
 ## DataTableColumn Interface
 
@@ -67,6 +69,8 @@ function MyComponent() {
 
 ## Features
 
+- **Virtualization**: Efficient rendering of large datasets using react-virtuoso
+- **Sorting**: Click column headers to sort data (ascending/descending)
 - **Full TypeScript Support**: Generic types ensure type safety for your data
 - **Type Inference**: Column keys are validated against your data type
 - **Custom Rendering**: Type-safe render functions with proper value and row typing
@@ -74,4 +78,5 @@ function MyComponent() {
 - **Support for sticky columns**
 - **Responsive design**
 - **Flexible row key configuration**
-- **Built-in null/undefined handling** 
+- **Built-in null/undefined handling**
+- **Performance optimized** for large datasets 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { TabsProps } from "./types";
+import { TabsProps } from "../types";
 
 export const useTabs = ({
   value,

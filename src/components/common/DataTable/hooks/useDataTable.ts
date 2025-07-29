@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { DataTableProps } from "./types";
+import { DataTableProps } from "../types";
 
 export const useDataTable = <TData extends Record<string, unknown>>({
   columns,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { DragDropState, UploadInputProps } from "./types";
+import { DragDropState, UploadInputProps } from "../types";
 
 // Utility function to format file size
 const formatFileSize = (bytes: number): string => {

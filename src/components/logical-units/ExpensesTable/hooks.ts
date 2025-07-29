@@ -13,21 +13,20 @@ export const useExpensesTable = () => {
     isCategorizing: false,
     error: null,
     fileInfo: null,
+    selectedFile: null,
     selectedMonth: "all",
     isFileInfoOpen: false,
     headerTitles: [],
     categories: {},
   });
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
+  const handleFileUpload = async (file: File) => {
     setState((prev) => ({
       ...prev,
       isLoading: true,
       error: null,
       fileInfo: null,
+      selectedFile: file,
     }));
 
     try {
@@ -110,6 +109,19 @@ export const useExpensesTable = () => {
         isLoading: false,
       }));
     }
+  };
+
+  const handleFileRemove = () => {
+    setState((prev) => ({
+      ...prev,
+      data: [],
+      headers: [],
+      headerTitles: [],
+      fileInfo: null,
+      selectedFile: null,
+      categories: {},
+      error: null,
+    }));
   };
 
   const handleCategoryChange = (rowId: string, category: ExpenseCategory) => {
@@ -314,6 +326,7 @@ export const useExpensesTable = () => {
     state,
     setState,
     handleFileUpload,
+    handleFileRemove,
     handleCategoryChange,
     monthlyData,
     currentMonthData,

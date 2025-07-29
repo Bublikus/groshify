@@ -1,0 +1,254 @@
+/* UploadInput component styles */
+.container {
+  width: 100%;
+}
+
+.uploadCard {
+  border: 2px dashed var(--border);
+  background: transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.uploadCard:hover {
+  border-color: var(--primary);
+  background: hsl(var(--primary) / 0.05);
+}
+
+.uploadCard.dragActive {
+  border-color: var(--primary);
+  background: hsl(var(--primary) / 0.1);
+  transform: scale(1.02);
+}
+
+.uploadCard.dragReject {
+  border-color: var(--destructive);
+  background: hsl(var(--destructive) / 0.1);
+}
+
+.uploadCard.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.uploadCard.disabled:hover {
+  border-color: var(--border);
+  background: transparent;
+  transform: none;
+}
+
+.cardContent {
+  padding: 2rem;
+  text-align: center;
+}
+
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.uploadArea {
+  border: 2px dashed var(--border);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  transition: all 0.2s ease;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadAreaDragActive {
+  border-color: var(--primary);
+}
+
+.uploadAreaDragReject {
+  border-color: var(--destructive);
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--border);
+  border-top: 2px solid var(--primary);
+  border-radius: 50%;
+}
+
+.defaultState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fileState {
+  width: 100%;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.fileIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.375rem;
+  background: hsl(var(--primary) / 0.1);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.fileIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.fileDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileName {
+  margin: 0;
+  font-weight: 500;
+  color: var(--foreground);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.fileSize {
+  margin: 0;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.removeButton:hover:not(:disabled) {
+  background: hsl(var(--destructive) / 0.1);
+  border-color: hsl(var(--destructive));
+  color: var(--destructive);
+}
+
+.removeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.removeIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.1);
+  color: var(--primary);
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--foreground);
+}
+
+.supportedTypes {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.errorContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: hsl(var(--destructive) / 0.1);
+  border: 1px solid hsl(var(--destructive) / 0.2);
+  border-radius: 0.375rem;
+}
+
+.errorIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--destructive);
+  flex-shrink: 0;
+}
+
+.errorText {
+  margin: 0;
+  color: var(--destructive);
+  font-size: 0.875rem;
+}
+
+.children {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .cardContent {
+    padding: 1.5rem;
+  }
+
+  .uploadArea {
+    padding: 1.5rem;
+    min-height: 100px;
+  }
+
+  .iconContainer {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

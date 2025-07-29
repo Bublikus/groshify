@@ -4,9 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CollapsibleCard } from "@/components/common/CollapsibleCard";
 import { DataTable } from "@/components/common/DataTable";
 import { Tabs } from "@/components/common/Tabs";
+import { UploadInput } from "@/components/common/UploadInput";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -25,6 +24,7 @@ export function ExpensesTable() {
     state,
     setState,
     handleFileUpload,
+    handleFileRemove,
     handleCategoryChange,
     monthlyData,
     currentMonthData,
@@ -46,42 +46,37 @@ export function ExpensesTable() {
             <CardTitle>Upload Data File</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <UploadInput
+              onFileSelect={handleFileUpload}
+              acceptedFileTypes={supportedExtensions}
+              disabled={state.isLoading || state.isCategorizing}
+              isLoading={state.isLoading}
+              error={state.error}
+              selectedFile={state.selectedFile}
+              onFileRemove={handleFileRemove}
+              dragDropText="Drag and drop your data file here, or click to browse"
+              supportedExtensionsText={`Supported: ${supportedExtensions.join(", ")}`}
+            >
               <div className="space-y-2">
-                <Label htmlFor="file-upload">Upload File ({supportedExtensions.join(", ")})</Label>
-                <Input
-                  id="file-upload"
-                  type="file"
-                  accept={supportedExtensions.join(",")}
-                  onChange={handleFileUpload}
-                  disabled={state.isLoading || state.isCategorizing}
-                  className="cursor-pointer"
-                />
+                {state.isCategorizing && (
+                  <Typography variant="muted">
+                    🤖 AI is categorizing the first 10 transactions...
+                  </Typography>
+                )}
+                <div className="text-sm text-muted-foreground">
+                  <Typography variant="muted">
+                    Upload any supported file to display its contents in a table format.
+                  </Typography>
+                  <Typography variant="muted">
+                    All columns and data will be displayed exactly as they appear in your file.
+                  </Typography>
+                  <Typography variant="muted">
+                    <strong>Note:</strong> AI categorization is applied to the first 10 transactions
+                    only to ensure fast processing.
+                  </Typography>
+                </div>
               </div>
-              {state.isLoading && <Typography variant="muted">Processing file...</Typography>}
-              {state.isCategorizing && (
-                <Typography variant="muted">
-                  🤖 AI is categorizing the first 10 transactions...
-                </Typography>
-              )}
-              {state.error && (
-                <Typography variant="muted" className="text-destructive">
-                  {state.error}
-                </Typography>
-              )}
-              <div className="text-sm text-muted-foreground">
-                <Typography variant="muted">
-                  Upload any supported file to display its contents in a table format.
-                </Typography>
-                <Typography variant="muted">
-                  All columns and data will be displayed exactly as they appear in your file.
-                </Typography>
-                <Typography variant="muted">
-                  <strong>Note:</strong> AI categorization is applied to the first 10 transactions
-                  only to ensure fast processing.
-                </Typography>
-              </div>
-            </div>
+            </UploadInput>
           </CardContent>
         </Card>
       </motion.div>

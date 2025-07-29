@@ -105,6 +105,8 @@ src/
 │   │   ├── ComponentName/
 │   │   │   ├── ComponentName.tsx
 │   │   │   ├── ComponentName.module.css
+│   │   │   ├── hooks/
+│   │   │   │   └── useComponentName.ts
 │   │   │   ├── types.ts
 │   │   │   ├── index.ts
 │   │   │   └── README.md
@@ -134,6 +136,7 @@ src/
 │   └── ui/                # shadcn/ui components
 ├── lib/                   # Utilities and services
 ├── constants/             # App constants
+├── utils/                 # App utils
 └── config/                # Configuration files
 ```
 

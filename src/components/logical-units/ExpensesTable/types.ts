@@ -31,6 +31,7 @@ export interface ExpensesTableState {
   isCategorizing: boolean;
   error: string | null;
   fileInfo: ParseResult["fileInfo"] | null;
+  selectedFile: File | null;
   selectedMonth: string;
   isFileInfoOpen: boolean;
   categories: Record<string, ExpenseCategory>;

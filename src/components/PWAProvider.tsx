@@ -5,6 +5,7 @@ import { PWAInstallGuide } from './PWAInstallGuide';
 import { isPWAEnabled, isPWAFeatureEnabled } from '@/config/pwa';
 import { getAssetUrl } from '@/config/env';
 import { AlertTriangle, Smartphone, X } from 'lucide-react';
+import { Typography } from '@/components/ui/typography';
 
 interface PWAProviderProps {
   children: React.ReactNode;
@@ -104,7 +105,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
         <div className="fixed top-0 left-0 right-0 bg-amber-500 text-amber-900 text-center py-3 px-4 z-50 shadow-lg border-b border-amber-600">
           <div className="flex items-center justify-center space-x-2">
             <AlertTriangle className="w-5 h-5" />
-            <span className="font-semibold">You are currently offline. Some features may be limited.</span>
+            <Typography variant="large" className="font-semibold">You are currently offline. Some features may be limited.</Typography>
           </div>
         </div>
       )}
@@ -118,8 +119,8 @@ export function PWAProvider({ children }: PWAProviderProps) {
                 <Smartphone className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">Install Groshify</h3>
-                <p className="text-blue-100 text-sm">Add to home screen for quick access</p>
+                <Typography variant="h3" className="font-bold text-lg">Install Groshify</Typography>
+                <Typography variant="muted" className="text-blue-100 text-sm">Add to home screen for quick access</Typography>
               </div>
             </div>
             <div className="flex gap-3">

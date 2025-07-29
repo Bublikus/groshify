@@ -18,6 +18,7 @@ import { Tabs } from "@/components/common/Tabs";
 import { ParsedRow } from "@/lib/parsers/types";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
+import { Typography } from "@/components/ui/typography";
 
 export function ExpensesTable() {
   const {
@@ -62,31 +63,31 @@ export function ExpensesTable() {
                 />
               </div>
               {state.isLoading && (
-                <p className="text-sm text-muted-foreground">
+                <Typography variant="muted">
                   Processing file...
-                </p>
+                </Typography>
               )}
               {state.isCategorizing && (
-                <p className="text-sm text-muted-foreground">
+                <Typography variant="muted">
                   🤖 AI is categorizing the first 10 transactions...
-                </p>
+                </Typography>
               )}
               {state.error && (
-                <p className="text-sm text-destructive">{state.error}</p>
+                <Typography variant="muted" className="text-destructive">{state.error}</Typography>
               )}
               <div className="text-sm text-muted-foreground">
-                <p>
+                <Typography variant="muted">
                   Upload any supported file to display its contents in a table
                   format.
-                </p>
-                <p>
+                </Typography>
+                <Typography variant="muted">
                   All columns and data will be displayed exactly as they appear
                   in your file.
-                </p>
-                <p>
+                </Typography>
+                <Typography variant="muted">
                   <strong>Note:</strong> AI categorization is applied to the
                   first 10 transactions only to ensure fast processing.
-                </p>
+                </Typography>
               </div>
             </div>
           </CardContent>
@@ -104,21 +105,21 @@ export function ExpensesTable() {
           >
             <div className="space-y-4">
               <div>
-                <p className="font-medium">
+                <Typography variant="large">
                   Columns ({state.fileInfo.headers.length}):
-                </p>
-                <p className="text-sm text-muted-foreground">
+                </Typography>
+                <Typography variant="muted">
                   {state.fileInfo.headers.join(", ")}
-                </p>
+                </Typography>
               </div>
               <div>
-                <p className="font-medium">
+                <Typography variant="large">
                   Total Rows: {state.fileInfo.totalRows}
-                </p>
+                </Typography>
               </div>
               {state.fileInfo.sampleData.length > 0 && (
                 <div>
-                  <p className="font-medium">Sample Data:</p>
+                  <Typography variant="large">Sample Data:</Typography>
                   <div className="mt-2 space-y-2">
                     {state.fileInfo.sampleData.map((row, index) => (
                       <motion.div
@@ -189,14 +190,14 @@ export function ExpensesTable() {
                         transition={{ delay: 0.4 }}
                         className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground mb-1">
+                        <Typography variant="muted" className="mb-1">
                           Column 5 Positive Sum
-                        </p>
-                        <p className="text-lg font-bold text-green-600">
+                        </Typography>
+                        <Typography variant="large" className="text-green-600 font-bold">
                           {formatCurrency(currentSums.positiveSum, {
                             showPositiveSign: true,
                           })}
-                        </p>
+                        </Typography>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -204,12 +205,12 @@ export function ExpensesTable() {
                         transition={{ delay: 0.5 }}
                         className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground mb-1">
+                        <Typography variant="muted" className="mb-1">
                           Column 5 Negative Sum
-                        </p>
-                        <p className="text-lg font-bold text-red-600">
+                        </Typography>
+                        <Typography variant="large" className="text-red-600 font-bold">
                           {formatCurrency(currentSums.negativeSum)}
-                        </p>
+                        </Typography>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -217,11 +218,12 @@ export function ExpensesTable() {
                         transition={{ delay: 0.6 }}
                         className="p-3 bg-background/50 rounded-lg border flex flex-col justify-between"
                       >
-                        <p className="text-sm font-medium text-muted-foreground mb-1">
+                        <Typography variant="muted" className="mb-1">
                           Column 5 Total
-                        </p>
-                        <p
-                          className={`text-lg font-bold ${
+                        </Typography>
+                        <Typography
+                          variant="large"
+                          className={`font-bold ${
                             currentSums.totalSum >= 0
                               ? "text-green-600"
                               : "text-red-600"
@@ -230,7 +232,7 @@ export function ExpensesTable() {
                           {formatCurrency(currentSums.totalSum, {
                             showPositiveSign: currentSums.totalSum >= 0,
                           })}
-                        </p>
+                        </Typography>
                       </motion.div>
                     </div>
                   </motion.div>
@@ -244,9 +246,9 @@ export function ExpensesTable() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                    <Typography variant="muted" className="mb-3">
                       Category Breakdown
-                    </h3>
+                    </Typography>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {categorySummaries.map(([category, summary], index) => (
                         <motion.div
@@ -256,18 +258,18 @@ export function ExpensesTable() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.5 + index * 0.05 }}
                         >
-                          <p className="text-sm font-medium text-muted-foreground truncate mb-1">
+                          <Typography variant="muted" className="truncate mb-1">
                             {category}
-                          </p>
-                          <p className="text-base font-bold mb-1">
+                          </Typography>
+                          <Typography variant="large" className="mb-1">
                             {formatCurrency(summary.total, {
                               showPositiveSign: summary.total >= 0,
                             })}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
+                          </Typography>
+                          <Typography variant="small" className="text-muted-foreground">
                             {summary.count}{" "}
                             {summary.count === 1 ? "item" : "items"}
-                          </p>
+                          </Typography>
                         </motion.div>
                       ))}
                     </div>

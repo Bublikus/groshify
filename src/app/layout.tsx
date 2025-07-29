@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { PWAProvider } from "@/components/PWAProvider";
-import { ThemeProvider } from "@/components/theme-provider";
+import { PWAProvider, ThemeProvider } from "@/components/providers";
 import { getAssetUrl } from "@/config/env";
 import { isPWAEnabled } from "@/config/pwa";
 import "./globals.css";

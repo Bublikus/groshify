@@ -70,6 +70,32 @@ EntityName/
 - Keep entity types separate from common types
 - Document entity-specific patterns and usage
 
+### Providers Directory
+The `src/components/providers/` directory contains app-wide provider components that provide global functionality and context to the application:
+
+#### Structure for Each Provider Type:
+```
+ProviderType/
+├── index.ts              # Provider exports
+├── ProviderComponent.tsx # Main provider component
+├── RelatedComponent.tsx  # Related components (e.g., toggles, guides)
+└── README.md             # Documentation
+```
+
+#### Examples:
+- `theme/` - Theme management (ThemeProvider, ThemeToggle)
+- `pwa/` - Progressive Web App functionality (PWAProvider, PWAInstallGuide)
+- `auth/` - Authentication providers (future)
+- `notifications/` - Notification providers (future)
+
+#### Guidelines:
+- Each provider type should have its own folder
+- Include related components (providers, toggles, guides, etc.)
+- Use React Context for global state management
+- Keep provider logic separate from UI components
+- Document provider-specific patterns and usage
+- Export all components through index.ts for clean imports
+
 ### File Organization
 ```
 src/
@@ -95,6 +121,16 @@ src/
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
+│   ├── providers/         # App-wide provider components
+│   │   ├── index.ts       # Main provider exports
+│   │   ├── theme/         # Theme-related providers
+│   │   │   ├── index.ts   # Theme exports
+│   │   │   ├── theme-provider.tsx
+│   │   │   └── theme-toggle.tsx
+│   │   └── pwa/           # PWA-related providers
+│   │       ├── index.ts   # PWA exports
+│   │       ├── PWAProvider.tsx
+│   │       └── PWAInstallGuide.tsx
 │   └── ui/                # shadcn/ui components
 ├── lib/                   # Utilities and services
 ├── constants/             # App constants
@@ -412,5 +448,48 @@ export const useCustomHook = () => {
 - React DevTools Profiler
 - Bundle analyzer
 - Performance monitoring tools
+
+## Documentation & Maintenance Rules
+
+### Adding New Packages & Modules
+When adding new packages or important modules to the project:
+
+#### **Required Documentation:**
+- **Add package description** to the Core Technologies section if it's a major dependency
+- **Update import patterns** in Common Patterns section if it introduces new patterns
+- **Add usage guidelines** if the package requires specific setup or configuration
+- **Document any breaking changes** or migration steps
+
+#### **Examples of What to Document:**
+- **Major UI libraries** (e.g., new component libraries, styling solutions)
+- **State management solutions** (Redux, Zustand, etc.)
+- **Data fetching libraries** (React Query, SWR, etc.)
+- **Build tools** (Vite, Webpack configurations)
+- **Testing frameworks** (Jest, Vitest, Playwright, etc.)
+- **Performance monitoring** tools
+- **Authentication libraries** (NextAuth, Auth0, etc.)
+
+#### **Documentation Format:**
+```markdown
+### New Package Name
+- **Purpose**: Brief description of what it does
+- **Usage**: How it's used in the project
+- **Configuration**: Any specific setup required
+- **Best Practices**: Project-specific guidelines
+```
+
+#### **When to Update Rules:**
+- **New architectural patterns** emerge
+- **Breaking changes** in major dependencies
+- **Performance optimizations** are discovered
+- **Security considerations** are identified
+- **Team conventions** change
+
+### Keeping Rules Current
+- **Review rules quarterly** for relevance and accuracy
+- **Update immediately** when major architectural changes occur
+- **Remove outdated patterns** and replace with current best practices
+- **Add examples** for new patterns that become common
+- **Validate rules** against current codebase patterns
 
 This document should be updated as the project evolves and new patterns emerge. 

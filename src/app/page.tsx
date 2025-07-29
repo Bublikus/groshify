@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ExpensesTable } from "@/components/logical-units/ExpensesTable";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/providers";
 import { Typography } from "@/components/ui/typography";
 import icon from "@/public/favicon/android-chrome-192x192.png";
 

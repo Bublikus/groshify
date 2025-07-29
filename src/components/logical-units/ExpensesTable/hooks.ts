@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { documentParserService } from "@/lib/parsers";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
 import {

@@ -98,7 +98,7 @@ export class ExcelParser implements DocumentParser {
             bookSheets: false,
             bookProps: false
           });
-        } catch (fallbackError) {
+        } catch {
           // If fallback also fails, provide specific error message
           const errorMessage = this.getErrorMessage(error, filename);
           throw new Error(errorMessage);

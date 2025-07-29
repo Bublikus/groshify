@@ -48,7 +48,7 @@ const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
         {...props}
       >
         {row.getVisibleCells().map((cell) => {
-          const meta = cell.column.columnDef.meta as any;
+          const meta = cell.column.columnDef.meta as { sticky?: boolean; className?: string };
           return (
             <TableCell
               key={cell.id}
@@ -94,7 +94,6 @@ export interface DataTableProps<TData = Record<string, unknown>> {
   data: TData[];
   stickyFirstColumn?: boolean;
   className?: string;
-  rowKey?: keyof TData | ((row: TData) => string);
   height?: string;
 }
 
@@ -103,7 +102,6 @@ export function DataTable<TData extends Record<string, unknown>>({
   data,
   stickyFirstColumn = false,
   className = "",
-  rowKey = "id" as keyof TData,
   height = "400px",
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -116,7 +114,7 @@ export function DataTable<TData extends Record<string, unknown>>({
   });
 
   // Convert our column format to TanStack Table format
-  const tableColumns: ColumnDef<TData, any>[] = columns.map((column, index) => {
+  const tableColumns: ColumnDef<TData, unknown>[] = columns.map((column, index) => {
     const safeKey = `col_${index}`;
     const isSticky =
       column.sticky || (stickyFirstColumn && column === columns[0]);
@@ -171,7 +169,7 @@ export function DataTable<TData extends Record<string, unknown>>({
             table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="bg-card hover:bg-muted" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as any;
+                  const meta = header.column.columnDef.meta as { sticky?: boolean; className?: string };
                   return (
                     <TableHead
                       key={header.id}

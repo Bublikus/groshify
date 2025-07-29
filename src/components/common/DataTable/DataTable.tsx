@@ -1,21 +1,29 @@
 "use client";
 
-import {
-  ColumnDef,
-  Row,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { Row, flexRender } from "@tanstack/react-table";
 import { motion } from "framer-motion";
 import { TableVirtuoso } from "react-virtuoso";
-import { HTMLAttributes, forwardRef, useState } from "react";
+import { HTMLAttributes, forwardRef } from "react";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import styles from "./DataTable.module.css";
-import { ColumnMeta, DataTableProps, SortingIndicatorProps } from "./types";
+import { useDataTable } from "./hooks";
+import { ColumnMeta, DataTableProps } from "./types";
+
+// Sorting indicator component
+function SortingIndicator({ isSorted }: { isSorted: false | "asc" | "desc" }) {
+  if (!isSorted) return null;
+  return (
+    <div className="ml-2">
+      {
+        {
+          asc: "↑",
+          desc: "↓",
+        }[isSorted]
+      }
+    </div>
+  );
+}
 
 // Original Table is wrapped with a <div> (see https://ui.shadcn.com/docs/components/table#radix-:r24:-content-manual),
 // but here we don't want it, so let's use a new component with only <table> tag
@@ -61,20 +69,6 @@ const TableRowComponent = <TData,>(rows: Row<TData>[]) =>
     );
   };
 
-function SortingIndicator({ isSorted }: SortingIndicatorProps) {
-  if (!isSorted) return null;
-  return (
-    <div className="ml-2">
-      {
-        {
-          asc: "↑",
-          desc: "↓",
-        }[isSorted]
-      }
-    </div>
-  );
-}
-
 export function DataTable<TData extends Record<string, unknown>>({
   columns,
   data,
@@ -82,47 +76,10 @@ export function DataTable<TData extends Record<string, unknown>>({
   className = "",
   height = "400px",
 }: DataTableProps<TData>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  // Create a mapping from original keys to safe keys for TanStack Table
-  const keyMapping = new Map<string, string>();
-  columns.forEach((column, index) => {
-    const safeKey = `col_${index}`;
-    keyMapping.set(String(column.key), safeKey);
-  });
-
-  // Convert our column format to TanStack Table format
-  const tableColumns: ColumnDef<TData, unknown>[] = columns.map((column, index) => {
-    const safeKey = `col_${index}`;
-    const isSticky = column.sticky || (stickyFirstColumn && column === columns[0]);
-
-    return {
-      id: safeKey,
-      accessorFn: (row: TData) => row[column.key],
-      header: column.title,
-      cell: ({ row }) => {
-        const value = row.original[column.key];
-        if (column.render) {
-          return column.render(value, row.original);
-        }
-        return value !== null && value !== undefined ? String(value) : "";
-      },
-      meta: {
-        className: column.className,
-        sticky: isSticky,
-      },
-    };
-  });
-
-  const table = useReactTable({
+  const { table } = useDataTable({
+    columns,
     data,
-    columns: tableColumns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    stickyFirstColumn,
   });
 
   const { rows } = table.getRowModel();

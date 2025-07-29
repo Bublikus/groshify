@@ -99,7 +99,7 @@ ProviderType/
 ### File Organization
 ```
 src/
-├── app/                    # Next.js App Router pages
+├── app/                   # Next.js App Router pages
 ├── components/
 │   ├── common/            # Reusable components
 │   │   ├── ComponentName/

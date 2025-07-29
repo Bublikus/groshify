@@ -2,10 +2,10 @@
 
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useRef } from "react";
 import { TabsList, TabsTrigger, Tabs as UITabs } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import styles from "./Tabs.module.css";
+import { useTabs } from "./hooks";
 import { TabsProps } from "./types";
 
 export function Tabs({
@@ -17,50 +17,11 @@ export function Tabs({
   tabsListClassName = "",
   tabTriggerClassName = "",
 }: TabsProps) {
-  const tabsRef = useRef<HTMLDivElement>(null);
-
-  const canNavigateLeft = tabs.findIndex((tab) => tab.value === value) > 0;
-  const canNavigateRight = tabs.findIndex((tab) => tab.value === value) < tabs.length - 1;
-
-  const scrollLeft = useCallback(() => {
-    const currentIndex = tabs.findIndex((tab) => tab.value === value);
-    if (currentIndex > 0) {
-      const prevTab = tabs[currentIndex - 1];
-      onValueChange(prevTab.value);
-
-      // Scroll the previous tab into view
-      if (tabsRef.current) {
-        const tabElement = tabsRef.current.querySelector(`[data-value="${prevTab.value}"]`);
-        if (tabElement instanceof HTMLElement) {
-          tabElement.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
-        }
-      }
-    }
-  }, [tabs, value, onValueChange]);
-
-  const scrollRight = useCallback(() => {
-    const currentIndex = tabs.findIndex((tab) => tab.value === value);
-    if (currentIndex < tabs.length - 1) {
-      const nextTab = tabs[currentIndex + 1];
-      onValueChange(nextTab.value);
-
-      // Scroll the next tab into view
-      if (tabsRef.current) {
-        const tabElement = tabsRef.current.querySelector(`[data-value="${nextTab.value}"]`);
-        if (tabElement instanceof HTMLElement) {
-          tabElement.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
-        }
-      }
-    }
-  }, [tabs, value, onValueChange]);
+  const { tabsRef, canNavigateLeft, canNavigateRight, scrollLeft, scrollRight } = useTabs({
+    value,
+    onValueChange,
+    tabs,
+  });
 
   return (
     <motion.div

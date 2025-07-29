@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,7 @@ import {
 import { formatCurrency } from "@/lib/utils/number-format";
 import { CollapsibleCard } from "@/components/common/CollapsibleCard";
 import { DataTable } from "@/components/common/DataTable";
+import { Tabs } from "@/components/common/Tabs";
 import { ParsedRow } from "@/lib/parsers/types";
 import { useExpensesTable } from "./hooks";
 import { ExpenseCategory } from "./types";
@@ -70,7 +70,9 @@ export function ExpensesTable() {
                   🤖 AI is categorizing the first 10 transactions...
                 </p>
               )}
-              {state.error && <p className="text-sm text-destructive">{state.error}</p>}
+              {state.error && (
+                <p className="text-sm text-destructive">{state.error}</p>
+              )}
               <div className="text-sm text-muted-foreground">
                 <p>
                   Upload any supported file to display its contents in a table
@@ -81,7 +83,8 @@ export function ExpensesTable() {
                   in your file.
                 </p>
                 <p>
-                  <strong>Note:</strong> AI categorization is applied to the first 10 transactions only to ensure fast processing.
+                  <strong>Note:</strong> AI categorization is applied to the
+                  first 10 transactions only to ensure fast processing.
                 </p>
               </div>
             </div>
@@ -94,7 +97,9 @@ export function ExpensesTable() {
           <CollapsibleCard
             title="File Information"
             isOpen={state.isFileInfoOpen}
-            onOpenChange={(open) => setState(prev => ({ ...prev, isFileInfoOpen: open }))}
+            onOpenChange={(open) =>
+              setState((prev) => ({ ...prev, isFileInfoOpen: open }))
+            }
           >
             <div className="space-y-4">
               <div>
@@ -153,104 +158,19 @@ export function ExpensesTable() {
               <CardContent>
                 {/* Month Tabs */}
                 {monthlyData.length > 0 && (
-                  <motion.div
-                    className="mb-4"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <Tabs
-                      value={state.selectedMonth}
-                      onValueChange={(value) => setState(prev => ({ ...prev, selectedMonth: value }))}
-                      className="w-full"
-                    >
-                      <div className="relative flex items-center">
-                        {/* Left Arrow Button */}
-                        <motion.button
-                          onClick={() => scrollToMonth("left")}
-                          disabled={
-                            state.selectedMonth === "all" ||
-                            monthlyData.findIndex(
-                              (month) => month.month === state.selectedMonth
-                            ) === 0
-                          }
-                          className="absolute left-0 z-10 flex h-8 w-8 items-center justify-center rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 15 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94627 8.84182 3.13514Z"
-                              fill="currentColor"
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </motion.button>
-
-                        {/* Right Arrow Button */}
-                        <motion.button
-                          onClick={() => scrollToMonth("right")}
-                          disabled={
-                            state.selectedMonth === "all" ||
-                            monthlyData.findIndex(
-                              (month) => month.month === state.selectedMonth
-                            ) ===
-                              monthlyData.length - 1
-                          }
-                          className="absolute right-0 z-10 flex h-8 w-8 items-center justify-center rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 15 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6758 5.94673 11.3594 6.1356 11.1579L9.56501 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z"
-                              fill="currentColor"
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </motion.button>
-
-                        {/* Scrollable Tabs Container */}
-                        <div
-                          ref={tabsRef}
-                          className="flex-1 overflow-x-auto scrollbar-hide mx-10"
-                          style={{
-                            scrollbarWidth: "none",
-                            msOverflowStyle: "none",
-                          }}
-                        >
-                          <TabsList className="flex w-max h-8">
-                            <TabsTrigger value="all" className="shrink-0 px-6">
-                              All
-                            </TabsTrigger>
-                            {monthlyData.map((monthData) => (
-                              <TabsTrigger
-                                key={monthData.month}
-                                value={monthData.month}
-                                className="shrink-0 px-6"
-                              >
-                                {monthData.month}
-                              </TabsTrigger>
-                            ))}
-                          </TabsList>
-                        </div>
-                      </div>
-                    </Tabs>
-                  </motion.div>
+                  <Tabs
+                    value={state.selectedMonth}
+                    onValueChange={(value) =>
+                      setState((prev) => ({ ...prev, selectedMonth: value }))
+                    }
+                    tabs={[
+                      { value: "all", label: "All" },
+                      ...monthlyData.map((monthData) => ({
+                        value: monthData.month,
+                        label: monthData.month,
+                      })),
+                    ]}
+                  />
                 )}
 
                 {/* Summary Row */}
@@ -344,7 +264,8 @@ export function ExpensesTable() {
                             })}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {summary.count} {summary.count === 1 ? 'item' : 'items'}
+                            {summary.count}{" "}
+                            {summary.count === 1 ? "item" : "items"}
                           </p>
                         </motion.div>
                       ))}
@@ -361,14 +282,22 @@ export function ExpensesTable() {
                       render: (_, row) => (
                         <Select
                           value={state.categories[row.id] || "Other Expenses"}
-                          onValueChange={(value) => handleCategoryChange(row.id, value as ExpenseCategory)}
+                          onValueChange={(value) =>
+                            handleCategoryChange(
+                              row.id,
+                              value as ExpenseCategory
+                            )
+                          }
                         >
                           <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
                             <SelectValue className="truncate" />
                           </SelectTrigger>
                           <SelectContent>
                             {EXPENSE_CATEGORIES.map((category) => (
-                              <SelectItem key={category.name} value={category.name}>
+                              <SelectItem
+                                key={category.name}
+                                value={category.name}
+                              >
                                 {category.name}
                               </SelectItem>
                             ))}
@@ -378,7 +307,9 @@ export function ExpensesTable() {
                     },
                     ...state.headers.map((header) => ({
                       key: header as keyof ParsedRow,
-                      title: state.headerTitles[state.headers.indexOf(header)] || header,
+                      title:
+                        state.headerTitles[state.headers.indexOf(header)] ||
+                        header,
                     })),
                   ]}
                   data={currentMonthData}
@@ -391,4 +322,4 @@ export function ExpensesTable() {
       </AnimatePresence>
     </div>
   );
-} 
+}

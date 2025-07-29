@@ -43,7 +43,7 @@ export function CollapsibleCard({
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4 cursor-pointer" />
                 </motion.div>
               </motion.button>
             </CollapsibleTrigger>

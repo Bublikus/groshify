@@ -58,6 +58,7 @@ export function ExpensesTable() {
                   accept={supportedExtensions.join(",")}
                   onChange={handleFileUpload}
                   disabled={state.isLoading || state.isCategorizing}
+                  className="cursor-pointer"
                 />
               </div>
               {state.isLoading && (
@@ -289,7 +290,7 @@ export function ExpensesTable() {
                             )
                           }
                         >
-                          <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3">
+                          <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3 cursor-pointer">
                             <SelectValue className="truncate" />
                           </SelectTrigger>
                           <SelectContent>
@@ -297,6 +298,7 @@ export function ExpensesTable() {
                               <SelectItem
                                 key={category.name}
                                 value={category.name}
+                                className="cursor-pointer"
                               >
                                 {category.name}
                               </SelectItem>

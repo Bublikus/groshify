@@ -59,6 +59,7 @@
   vertical-align: middle;
   font-weight: 500;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .tableHead:has([role="checkbox"]) {

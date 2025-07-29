@@ -4,6 +4,7 @@ import { Row, flexRender } from "@tanstack/react-table";
 import { motion } from "framer-motion";
 import { TableVirtuoso } from "react-virtuoso";
 import { HTMLAttributes, forwardRef } from "react";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import styles from "./DataTable.module.css";
@@ -85,63 +86,65 @@ export function DataTable<TData extends Record<string, unknown>>({
   const { rows } = table.getRowModel();
 
   return (
-    <motion.div
-      className={cn(styles.stickyTableContainer, className)}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4 }}
-    >
-      <div className="rounded-md border overflow-hidden">
-        <TableVirtuoso
-          style={{ height }}
-          totalCount={rows.length}
-          components={{
-            Table: TableComponent,
-            TableRow: TableRowComponent(rows),
-          }}
-          fixedHeaderContent={() =>
-            table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-card hover:bg-muted" key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as ColumnMeta | undefined;
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      data-slot="table-head"
-                      className={cn(
-                        meta?.sticky && styles.stickyLeft,
-                        "bg-background",
-                        meta?.className
-                      )}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div
-                          className="flex items-center justify-between w-full"
-                          {...{
-                            style: header.column.getCanSort()
-                              ? {
-                                  cursor: "pointer",
-                                  userSelect: "none",
-                                }
-                              : {},
-                            onClick: header.column.getToggleSortingHandler(),
-                          }}
-                        >
-                          <span>
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                          </span>
-                          <SortingIndicator isSorted={header.column.getIsSorted()} />
-                        </div>
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))
-          }
-        />
-      </div>
-    </motion.div>
+    <ErrorBoundary>
+      <motion.div
+        className={cn(styles.stickyTableContainer, className)}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <div className="rounded-md border overflow-hidden">
+          <TableVirtuoso
+            style={{ height }}
+            totalCount={rows.length}
+            components={{
+              Table: TableComponent,
+              TableRow: TableRowComponent(rows),
+            }}
+            fixedHeaderContent={() =>
+              table.getHeaderGroups().map((headerGroup) => (
+                <TableRow className="bg-card hover:bg-muted" key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const meta = header.column.columnDef.meta as ColumnMeta | undefined;
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        data-slot="table-head"
+                        className={cn(
+                          meta?.sticky && styles.stickyLeft,
+                          "bg-background",
+                          meta?.className
+                        )}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <div
+                            className="flex items-center justify-between w-full"
+                            {...{
+                              style: header.column.getCanSort()
+                                ? {
+                                    cursor: "pointer",
+                                    userSelect: "none",
+                                  }
+                                : {},
+                              onClick: header.column.getToggleSortingHandler(),
+                            }}
+                          >
+                            <span>
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </span>
+                            <SortingIndicator isSorted={header.column.getIsSorted()} />
+                          </div>
+                        )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))
+            }
+          />
+        </div>
+      </motion.div>
+    </ErrorBoundary>
   );
 }

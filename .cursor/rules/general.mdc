@@ -39,6 +39,7 @@ This is a Next.js 14+ TypeScript project with shadcn/ui components, focusing on 
 - Prefer composition over inheritance
 - Use proper prop interfaces with optional properties
 - Implement proper error boundaries and loading states
+- Always wrap the content in all common and logical-units components with ErrorBoundary for robust error handling
 
 ### Logical Units Directory
 The `src/components/logical-units/` directory contains entity-related components that represent business logic entities:

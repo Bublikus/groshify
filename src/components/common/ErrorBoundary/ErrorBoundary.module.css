@@ -1,0 +1,128 @@
+/* ErrorBoundary component styles */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  padding: 1rem;
+}
+
+.errorCard {
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid hsl(var(--destructive) / 0.2);
+  background: hsl(var(--background));
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  gap: 1.5rem;
+}
+
+.errorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.errorTitle {
+  margin: 0;
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.errorMessage {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  max-width: 400px;
+}
+
+.errorDetails {
+  width: 100%;
+  max-width: 400px;
+}
+
+.errorStack {
+  display: block;
+  width: 100%;
+  max-height: 120px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: hsl(var(--muted) / 0.3);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  margin: 0;
+}
+
+.retryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.retryIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .overlay {
+    padding: 0.5rem;
+  }
+
+  .errorContent {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .errorIcon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .errorStack {
+    font-size: 0.7rem;
+    max-height: 100px;
+  }
+}

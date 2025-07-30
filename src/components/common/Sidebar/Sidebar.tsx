@@ -51,8 +51,8 @@ function SidebarContent({ className }: { className?: string }) {
   return (
     <div className={cn(styles.sidebarContent, className)}>
       {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
+      <div className={cn(styles.header, "border-b")}>
+        <Link href="/dashboard" className={styles.headerContent}>
           <div className={styles.logo}>
             <span className={styles.logoText}>G</span>
           </div>
@@ -60,13 +60,13 @@ function SidebarContent({ className }: { className?: string }) {
             <h1 className={styles.appName}>{APP_CONFIG.name}</h1>
             <p className={styles.appDescription}>{APP_CONFIG.description}</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}
       <ScrollArea className={styles.navigation}>
         <nav className={styles.navigationList}>
-          <div className={styles.navigationSection}>
+          <div className={cn(styles.navigationSection, "pb-2 border-b")}>
             <h3 className={styles.sectionTitle}>Main Navigation</h3>
             {navigationItems.map((item) => (
               <NavigationItemComponent
@@ -77,7 +77,7 @@ function SidebarContent({ className }: { className?: string }) {
             ))}
           </div>
 
-          <div className={styles.navigationSection}>
+          <div className={cn(styles.navigationSection, "pb-2 border-b")}>
             <h3 className={styles.sectionTitle}>Quick Actions</h3>
             {quickActions.map((item) => (
               <NavigationItemComponent
@@ -91,7 +91,7 @@ function SidebarContent({ className }: { className?: string }) {
       </ScrollArea>
 
       {/* Footer */}
-      <div className={styles.footer}>
+      <div className={cn(styles.footer, "border-t")}>
         <div className={styles.footerText}>v{APP_CONFIG.version}</div>
       </div>
     </div>
@@ -105,7 +105,7 @@ export function Sidebar({ className }: SidebarProps) {
     <ErrorBoundary>
       <div className={cn(styles.sidebar, className)}>
         {/* Desktop Sidebar */}
-        <div className={styles.desktopSidebar}>
+        <div className={cn(styles.desktopSidebar, "border-r")}>
           <SidebarContent />
         </div>
 

@@ -18,19 +18,19 @@ export const navigationItems: NavigationItem[] = [
     title: "Transactions",
     href: "/transactions",
     icon: CreditCard,
-    description: "View and manage transactions",
+    description: "Manage transactions",
   },
   {
     title: "Categories",
     href: "/categories",
     icon: Tags,
-    description: "Manage categories and rules",
+    description: "Manage categories",
   },
   {
     title: "Reports",
     href: "/reports",
     icon: FileText,
-    description: "Financial insights and analytics",
+    description: "Financial analytics",
   },
   {
     title: "Profile",

@@ -29,9 +29,7 @@ function Layout() {
   return (
     <div>
       <Sidebar />
-      <main>
-        {/* Main content */}
-      </main>
+      <main>{/* Main content */}</main>
     </div>
   );
 }
@@ -39,19 +37,22 @@ function Layout() {
 
 ## Props
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop        | Type     | Description             |
+| ----------- | -------- | ----------------------- |
 | `className` | `string` | Optional CSS class name |
 
 ## Components
 
 ### Sidebar
+
 The main sidebar component that handles both desktop and mobile layouts.
 
 ### SidebarContent
+
 Internal component that renders the sidebar content (header, navigation, footer).
 
 ### NavigationItemComponent
+
 Internal component that renders individual navigation items with active state handling.
 
 ## Styling
@@ -80,4 +81,4 @@ The component uses CSS modules for styling with the following key classes:
 - `@/components/ui/sheet` - Mobile sheet overlay
 - `@/constants/app` - App configuration
 - `@/constants/navigation` - Navigation items
-- `@/utils/cn` - Class name utility 
+- `@/utils/cn` - Class name utility

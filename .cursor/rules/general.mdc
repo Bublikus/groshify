@@ -107,7 +107,8 @@ src/
 │   │   │   ├── ComponentName.tsx
 │   │   │   ├── ComponentName.module.css
 │   │   │   ├── hooks/
-│   │   │   │   └── useComponentName.ts
+│   │   │   │   ├── useComponentName.ts
+│   │   │   │   └── index.ts
 │   │   │   ├── components/
 │   │   │   │   └── SubComponent
 │   │   │   │       ├── SubComponent.tsx
@@ -124,7 +125,8 @@ src/
 │   │   │   ├── EntityNameForm.tsx
 │   │   │   ├── EntityNameCard.tsx
 │   │   │   ├── hooks/
-│   │   │   │   └── useEntityName.ts
+│   │   │   │   ├── useEntityName.ts
+│   │   │   │   └── index.ts
 │   │   │   ├── components/
 │   │   │   │   └── SubComponent
 │   │   │   │       ├── SubComponent.tsx

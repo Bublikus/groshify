@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
 import { documentParserService } from "@/parsers";
-import { CategorySummary, ExpenseCategory, ExpensesTableState, MonthData } from "./types";
+import { CategorySummary, ExpenseCategory, ExpensesTableState, MonthData } from "../types";
 
 export const useExpensesTable = () => {
   const [state, setState] = useState<ExpensesTableState>({

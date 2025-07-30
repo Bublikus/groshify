@@ -1,9 +1,7 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
 import { motion } from "framer-motion";
 import {
-  ArrowUpDown,
   Edit3,
   Eye,
   Filter,
@@ -31,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
+import { DataTableColumn } from "@/components/common/DataTable/types";
 
 // Types
 interface CategoryRule {
@@ -40,7 +39,7 @@ interface CategoryRule {
   isActive: boolean;
 }
 
-interface Category {
+interface Category extends Record<string, unknown> {
   id: number;
   name: string;
   color: string;
@@ -48,21 +47,6 @@ interface Category {
   totalAmount: number;
   isActive: boolean;
   rules: CategoryRule[];
-  [key: string]: unknown; // Add index signature
-}
-
-interface TableRow {
-  column: {
-    toggleSorting: (ascending: boolean) => void;
-    getIsSorted: () => false | "asc" | "desc";
-  };
-}
-
-interface TableCell {
-  row: {
-    original: Category;
-    getValue: (key: string) => unknown;
-  };
 }
 
 // Mock data - in real app this would come from API
@@ -266,78 +250,45 @@ function CategoryFilters() {
 }
 
 function CategoryTable() {
-  const columns: ColumnDef<Category>[] = [
+  const columns: DataTableColumn<Category>[] = [
     {
-      accessorKey: "name",
-      header: ({ column }: TableRow) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 flex items-center gap-1"
-        >
-          <Tag className="h-4 w-4" />
-          Category
-          <ArrowUpDown className="h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }: TableCell) => {
-        const category = row.original;
-        return (
-          <div className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
-            <div>
-              <Typography variant="small" className="font-medium">
-                {category.name}
-              </Typography>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  {category.rules.length} rules
+      key: "name",
+      title: "Category",
+      render: (_, category) => (
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
+          <div>
+            <Typography variant="small" className="font-medium">
+              {category.name}
+            </Typography>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {category.rules.length} rules
+              </Badge>
+              {!category.isActive && (
+                <Badge variant="secondary" className="text-xs">
+                  Inactive
                 </Badge>
-                {!category.isActive && (
-                  <Badge variant="secondary" className="text-xs">
-                    Inactive
-                  </Badge>
-                )}
-              </div>
+              )}
             </div>
           </div>
-        );
-      },
+        </div>
+      ),
     },
     {
-      accessorKey: "transactionCount",
-      header: ({ column }: TableRow) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 flex items-center gap-1"
-        >
-          <Hash className="h-4 w-4" />
-          Transactions
-          <ArrowUpDown className="h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }: TableCell) => (
+      key: "transactionCount",
+      title: "Transactions",
+      render: (value) => (
         <Typography variant="small" className="font-medium">
-          {String(row.getValue("transactionCount"))}
+          {String(value)}
         </Typography>
       ),
     },
     {
-      accessorKey: "totalAmount",
-      header: ({ column }: TableRow) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 flex items-center gap-1"
-        >
-          <Hash className="h-4 w-4" />
-          Total Amount
-          <ArrowUpDown className="h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }: TableCell) => {
-        const amount = row.getValue("totalAmount") as number;
+      key: "totalAmount",
+      title: "Total Amount",
+      render: (value) => {
+        const amount = value as number;
         return (
           <Typography
             variant="small"
@@ -349,10 +300,10 @@ function CategoryTable() {
       },
     },
     {
-      accessorKey: "rules",
-      header: "Auto Rules",
-      cell: ({ row }: TableCell) => {
-        const rules = row.getValue("rules") as CategoryRule[];
+      key: "rules",
+      title: "Auto Rules",
+      render: (value) => {
+        const rules = value as CategoryRule[];
         return (
           <div className="space-y-1">
             {rules.slice(0, 2).map((rule: CategoryRule) => (
@@ -375,21 +326,21 @@ function CategoryTable() {
       },
     },
     {
-      accessorKey: "isActive",
-      header: "Status",
-      cell: ({ row }: TableCell) => (
+      key: "isActive",
+      title: "Status",
+      render: (value) => (
         <div className="flex items-center gap-2">
-          <Switch checked={Boolean(row.getValue("isActive"))} />
+          <Switch checked={Boolean(value)} />
           <Typography variant="small" className="text-muted-foreground">
-            {Boolean(row.getValue("isActive")) ? "Active" : "Inactive"}
+            {Boolean(value) ? "Active" : "Inactive"}
           </Typography>
         </div>
       ),
     },
     {
-      accessorKey: "actions",
-      header: "",
-      cell: () => (
+      key: "actions",
+      title: "",
+      render: () => (
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm">
             <Edit3 className="h-4 w-4" />
@@ -402,8 +353,6 @@ function CategoryTable() {
           </Button>
         </div>
       ),
-      enableSorting: false,
-      enableHiding: false,
     },
   ];
 
@@ -424,7 +373,7 @@ function CategoryTable() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={mockCategories} searchKey="name" />
+        <DataTable columns={columns} data={mockCategories} />
       </CardContent>
     </Card>
   );

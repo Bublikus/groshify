@@ -1,0 +1,195 @@
+/* Sidebar Container */
+.sidebar {
+  display: flex;
+}
+
+/* Desktop Sidebar */
+.desktopSidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktopSidebar {
+    display: flex;
+    width: 16rem; /* 64 * 0.25rem = 16rem */
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 50;
+    background-color: hsl(var(--background));
+    border-right: 1px solid hsl(var(--border));
+  }
+}
+
+/* Mobile Menu Button */
+.mobileMenuButton {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+}
+
+@media (min-width: 1024px) {
+  .mobileMenuButton {
+    display: none;
+  }
+}
+
+/* Main Content Offset */
+.mainContentOffset {
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .mainContentOffset {
+    padding-left: 16rem; /* 64 * 0.25rem = 16rem */
+  }
+}
+
+/* Sidebar Content */
+.sidebarContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header */
+.header {
+  padding: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  width: 2rem;
+  height: 2rem;
+  background-color: hsl(var(--primary));
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoText {
+  color: hsl(var(--primary-foreground));
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.appInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.appName {
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.appDescription {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Navigation */
+.navigation {
+  flex: 1;
+  padding: 1rem;
+}
+
+.navigationSection {
+  margin-bottom: 1rem;
+}
+
+.navigationSection:last-child {
+  margin-bottom: 0;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.sectionTitle {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.navigationList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Navigation Item */
+.navigationItem {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  height: auto;
+  padding: 0.75rem 1rem;
+}
+
+.navigationItemActive {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.navigationItemContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navigationItemTitle {
+  font-weight: 500;
+}
+
+.navigationItemDescription {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.navigationItemIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+/* Footer */
+.footer {
+  padding: 1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.footerText {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+}
+
+/* Mobile Sheet Header */
+.mobileSheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.mobileSheetHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobileCloseButton {
+  /* Styles for the close button in mobile sheet */
+}

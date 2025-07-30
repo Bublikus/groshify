@@ -1,13 +1,19 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { APP_CONFIG } from "@/constants/app";
 import { navigationItems, quickActions } from "@/constants/navigation";
 import type { NavigationItem } from "@/constants/navigation";
@@ -112,6 +118,9 @@ export function Sidebar({ className }: SidebarProps) {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <SheetDescription className="sr-only">
+              Navigate through the main sections and quick actions of the application
+            </SheetDescription>
             <SidebarContent />
           </SheetContent>
         </Sheet>

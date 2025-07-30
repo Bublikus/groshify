@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { Sidebar } from "@/components/common/Sidebar";
 import { PWAProvider, ThemeProvider } from "@/components/providers";
 import { getAssetUrl } from "@/config/env";
 import { isPWAEnabled } from "@/config/pwa";
@@ -126,14 +128,21 @@ export default function RootLayout({
         <link rel="manifest" href={`${getAssetUrl("/favicon/site.webmanifest")}`} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {isPWAEnabled() ? <PWAProvider>{children}</PWAProvider> : children}
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <PWAProvider>
+              <div className="min-h-screen bg-background">
+                <Sidebar />
+                <main className="lg:pl-64">{children}</main>
+              </div>
+            </PWAProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

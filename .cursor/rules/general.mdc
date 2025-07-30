@@ -108,7 +108,12 @@ src/
 │   │   │   ├── ComponentName.module.css
 │   │   │   ├── hooks/
 │   │   │   │   └── useComponentName.ts
+│   │   │   ├── components/
+│   │   │   │   └── SubComponent
+│   │   │   │       ├── SubComponent.tsx
+│   │   │   │       └── index.ts
 │   │   │   ├── types.ts
+│   │   │   ├── constants.ts
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
@@ -120,7 +125,12 @@ src/
 │   │   │   ├── EntityNameCard.tsx
 │   │   │   ├── hooks/
 │   │   │   │   └── useEntityName.ts
+│   │   │   ├── components/
+│   │   │   │   └── SubComponent
+│   │   │   │       ├── SubComponent.tsx
+│   │   │   │       └── index.ts
 │   │   │   ├── types.ts
+│   │   │   ├── constants.ts
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
@@ -139,6 +149,7 @@ src/
 ├── parsers/               # App parsers
 ├── constants/             # App constants
 ├── utils/                 # App utilities
+├── types/                 # App global types
 └── config/                # Configuration files
 ```
 

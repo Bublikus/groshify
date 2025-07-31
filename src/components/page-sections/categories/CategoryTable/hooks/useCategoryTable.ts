@@ -1,5 +1,11 @@
 import { useCallback, useState } from "react";
 import type { Category } from "../../types";
+import {
+  collapseAllCategories,
+  expandAllCategories,
+  isCategoryExpanded,
+  toggleCategoryExpanded,
+} from "../helpers";
 
 interface UseCategoryTableProps {
   categories: Category[];
@@ -17,28 +23,19 @@ export function useCategoryTable({ categories }: UseCategoryTableProps): UseCate
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
   const toggleCategory = useCallback((categoryId: number) => {
-    setExpandedCategories((prev) => {
-      const newExpanded = new Set(prev);
-      if (newExpanded.has(categoryId)) {
-        newExpanded.delete(categoryId);
-      } else {
-        newExpanded.add(categoryId);
-      }
-      return newExpanded;
-    });
+    setExpandedCategories((prev) => toggleCategoryExpanded(prev, categoryId));
   }, []);
 
   const expandAll = useCallback(() => {
-    const allCategoryIds = categories.map((cat) => cat.id);
-    setExpandedCategories(new Set(allCategoryIds));
+    setExpandedCategories(expandAllCategories(categories));
   }, [categories]);
 
   const collapseAll = useCallback(() => {
-    setExpandedCategories(new Set());
+    setExpandedCategories(collapseAllCategories());
   }, []);
 
   const isExpanded = useCallback(
-    (categoryId: number) => expandedCategories.has(categoryId),
+    (categoryId: number) => isCategoryExpanded(expandedCategories, categoryId),
     [expandedCategories]
   );
 

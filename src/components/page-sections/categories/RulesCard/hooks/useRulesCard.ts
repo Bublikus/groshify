@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Category } from "../../types";
+import { calculateActiveRules, calculateTotalRules, getDisplayCategories } from "../helpers";
 
 interface UseRulesCardProps {
   categories: Category[];
@@ -12,21 +13,11 @@ interface UseRulesCardReturn {
 }
 
 export function useRulesCard({ categories }: UseRulesCardProps): UseRulesCardReturn {
-  const displayCategories = useMemo(() => categories.slice(0, 3), [categories]);
+  const displayCategories = useMemo(() => getDisplayCategories(categories), [categories]);
 
-  const totalRules = useMemo(
-    () => displayCategories.reduce((sum, cat) => sum + cat.rules.length, 0),
-    [displayCategories]
-  );
+  const totalRules = useMemo(() => calculateTotalRules(displayCategories), [displayCategories]);
 
-  const activeRules = useMemo(
-    () =>
-      displayCategories.reduce(
-        (sum, cat) => sum + cat.rules.filter((rule) => rule.isActive).length,
-        0
-      ),
-    [displayCategories]
-  );
+  const activeRules = useMemo(() => calculateActiveRules(displayCategories), [displayCategories]);
 
   return {
     displayCategories,

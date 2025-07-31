@@ -136,6 +136,22 @@ src/
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
+│   ├── page-sections/     # page-related sections
+│   │   ├── pageName/
+│   │   │   ├── SectionyName/
+│   │   │   │   ├── SectionName.tsx
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── useSectionName.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── components/
+│   │   │   │   │   └── SubComponent
+│   │   │   │   │       ├── SubComponent.tsx
+│   │   │   │   │       └── index.ts
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── constants.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── README.md
+│   │   │   └── ...
 │   ├── providers/         # App-wide provider components
 │   │   ├── index.ts       # Main provider exports
 │   │   ├── theme/         # Theme-related providers

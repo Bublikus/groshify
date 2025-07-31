@@ -5,6 +5,14 @@
 // Core utilities
 export { cn } from "./cn";
 
+// Search and sort utilities
+export {
+  sortBySearchRelevance,
+  type SearchableItem,
+  type SearchField,
+  type SearchSortOptions,
+} from "./search-sort";
+
 // Number formatting
 export {
   formatNumber,

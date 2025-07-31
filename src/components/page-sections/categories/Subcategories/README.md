@@ -25,9 +25,11 @@ import { SubcategoriesContainer } from "@/components/page-sections/categories";
 ## Props
 
 ### SubcategoriesContainer Props
+
 - `categories` - Array of Category objects to display
 
 ### Subcategories Props
+
 - `categories` - Array of Category objects
 - `totalCategories` (optional) - Total number of categories
 - `totalSubcategories` (optional) - Total number of subcategories
@@ -54,18 +56,21 @@ When expanded, each subcategory shows:
 ## Technical Implementation
 
 ### VirtualizedList Integration
+
 - Uses `react-virtuoso` for efficient rendering of large datasets
 - Dynamic item height calculation based on expansion state
 - Adaptive height container that adjusts to content
 - Optimized performance for large category lists
 
 ### Animation Features
+
 - Staggered entrance animations for categories
 - Smooth expand/collapse transitions
 - Height animations for subcategory lists
 - Framer Motion integration for fluid interactions
 
 ### State Management
+
 - Local expansion state per category item
 - Optimized re-rendering with useCallback
 - Proper TypeScript typing throughout

@@ -8,6 +8,7 @@ This directory contains all formatting utilities organized by type for better ma
 src/utils/
 ├── index.ts              # Main exports for all utilities
 ├── cn.ts                 # CSS class name utility
+├── search-sort.ts        # Search result sorting utilities
 ├── number-format.ts      # Number formatting utilities
 ├── currency-format.ts    # Currency formatting utilities
 ├── date-format.ts        # Date formatting utilities
@@ -29,6 +30,8 @@ import {
   formatLanguage,
   formatNumber,
   formatText,
+  sortBySearchRelevance,
+  sortCategoriesBySearchRelevance,
 } from "@/utils";
 ```
 
@@ -37,10 +40,19 @@ import {
 ```typescript
 import { formatDate, formatDateHuman } from "@/utils/date-format";
 import { formatCurrency, formatNumber } from "@/utils/number-format";
+import { sortBySearchRelevance } from "@/utils/search-sort";
 import { capitalizeWords, formatText } from "@/utils/text-format";
 ```
 
 ## Available Utilities
+
+### Search and Sort (`search-sort.ts`)
+
+- `sortBySearchRelevance()` - Sort items by search relevance (exact > starts with > contains)
+- `sortCategoriesBySearchRelevance()` - Sort categories specifically by search relevance
+- `SearchableItem` - Interface for searchable items
+- `SearchField` - Type for search field definitions
+- `SearchSortOptions` - Interface for search sort options
 
 ### Number Formatting (`number-format.ts`)
 
@@ -217,4 +229,23 @@ formatLanguage("uk"); // "🇺🇦 Українська"
 
 // Browser language detection
 getPreferredLanguage(); // "en" or "uk" based on browser settings
+```
+
+### Search and Sort
+
+```typescript
+import { sortBySearchRelevance } from "@/utils";
+
+// Generic search sorting
+const items = [
+  { name: "Apple", description: "A fruit" },
+  { name: "Banana", description: "A yellow fruit" },
+  { name: "Orange", description: "A citrus fruit" },
+];
+
+const sorted = sortBySearchRelevance(items, {
+  searchQuery: "apple",
+  fields: ["name", "description"],
+});
+// Returns: [{ name: "Apple", description: "A fruit" }, ...]
 ```

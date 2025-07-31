@@ -48,4 +48,3 @@ export const MONTH_ORDER = [
   "November",
   "December",
 ] as const;
-

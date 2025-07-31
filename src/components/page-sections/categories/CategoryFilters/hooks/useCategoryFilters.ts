@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
-
-export type FilterStatus = "All" | "Active" | "Inactive";
+import type { FilterStatus } from "@/hooks/page-hooks/categories";
 
 interface UseCategoryFiltersReturn {
   searchQuery: string;

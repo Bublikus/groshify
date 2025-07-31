@@ -103,9 +103,9 @@ ProviderType/
 ### File Organization
 ```
 src/
-├── app/                   # Next.js App Router pages
+├── app/                                        # Next.js App Router pages
 ├── components/
-│   ├── common/            # Reusable components
+│   ├── common/                                 # Reusable components
 │   │   ├── ComponentName/
 │   │   │   ├── ComponentName.tsx
 │   │   │   ├── ComponentName.module.css
@@ -122,15 +122,15 @@ src/
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
-│   ├── logical-units/     # Entity-related components
+│   ├── logical-units/                          # Entity-related components
 │   │   ├── EntityName/
-│   │   │   ├── EntityNameContainer.tsx   # Combines stateless EntityName component with useEntityName logic
-│   │   │   ├── EntityName.tsx            # Stateless component
+│   │   │   ├── EntityNameContainer.tsx         # Combines stateless EntityName component with useEntityName logic
+│   │   │   ├── EntityName.tsx                  # Stateless component
 │   │   │   ├── EntityNameList.tsx
 │   │   │   ├── EntityNameForm.tsx
 │   │   │   ├── EntityNameCard.tsx
 │   │   │   ├── hooks/
-│   │   │   │   ├── useEntityName.ts      # Logic for shateless component
+│   │   │   │   ├── useEntityName.ts            # Logic for shateless component
 │   │   │   │   └── index.ts
 │   │   │   ├── components/
 │   │   │   │   └── SubComponent
@@ -142,13 +142,13 @@ src/
 │   │   │   ├── index.ts
 │   │   │   └── README.md
 │   │   └── ...
-│   ├── page-sections/     # page-related sections
+│   ├── page-sections/                          # page-related sections
 │   │   ├── pageName/
 │   │   │   ├── SectionName/
-│   │   │   │   ├── SectionNameContainer.tsx   # Combines stateless SectionName component with useSectionName logic
-│   │   │   │   ├── SectionName.tsx            # Stateless component
+│   │   │   │   ├── SectionNameContainer.tsx    # Combines stateless SectionName component with useSectionName logic
+│   │   │   │   ├── SectionName.tsx             # Stateless component
 │   │   │   │   ├── hooks/
-│   │   │   │   │   ├── useSectionName.ts      # Logic for shateless component
+│   │   │   │   │   ├── useSectionName.ts        # Logic for shateless component
 │   │   │   │   │   └── index.ts
 │   │   │   │   ├── components/
 │   │   │   │   │   └── SubComponent
@@ -160,24 +160,32 @@ src/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── README.md
 │   │   │   └── ...
-│   ├── providers/         # App-wide provider components
-│   │   ├── index.ts       # Main provider exports
-│   │   ├── theme/         # Theme-related providers
-│   │   │   ├── index.ts   # Theme exports
+│   ├── providers/                              # App-wide provider components
+│   │   ├── index.ts                            # Main provider exports
+│   │   ├── theme/                              # Theme-related providers
+│   │   │   ├── index.ts                        # Theme exports
 │   │   │   ├── theme-provider.tsx
 │   │   │   └── theme-toggle.tsx
-│   │   └── pwa/           # PWA-related providers
-│   │       ├── index.ts   # PWA exports
+│   │   └── pwa/                                # PWA-related providers
+│   │       ├── index.ts                        # PWA exports
 │   │       ├── PWAProvider.tsx
 │   │       └── PWAInstallGuide.tsx
-│   └── ui/                # shadcn/ui components
-├── services/              # App services
-├── parsers/               # App parsers
-├── constants/             # App constants
-├── hooks/                 # App hooks
-├── utils/                 # App utilities
-├── types/                 # App global types
-└── config/                # Configuration files
+│   └── ui/                                     # shadcn/ui components
+├── services/                                   # App services
+├── parsers/                                    # App parsers
+├── constants/                                  # App constants
+├── hooks/                                      # App hooks
+│   └── page-hooks                              # Main hooks to manage pages' logic
+│   │   └── pageName
+│   │       ├── useEntityPage.ts
+│   │       ├── helpers.ts
+│   │       ├── constants.ts
+│   │       ├── types.ts
+│   │       └── index.ts
+│   └── ...other global hooks
+├── utils/                                      # App utilities
+├── types/                                      # App global types
+└── config/                                     # Configuration files
 ```
 
 ## Component Guidelines

@@ -1,4 +1,4 @@
-import type { FilterStatus } from "./hooks";
+import type { FilterStatus } from "@/hooks/page-hooks/categories";
 
 export interface CategoryFiltersProps {
   searchQuery: string;

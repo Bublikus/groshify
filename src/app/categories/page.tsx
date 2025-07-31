@@ -2,35 +2,17 @@
 
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import {
-  type Category,
   CategoryFiltersContainer,
   CategoryStatsContainer,
   CategoryTableContainer,
   SubcategoriesContainer,
 } from "@/components/page-sections/categories";
 import { Typography } from "@/components/ui/typography";
-import { TRANSACTION_CATEGORIES } from "@/constants/categories";
-
-// Transform TRANSACTION_CATEGORIES to match Category interface
-const categories: Category[] = TRANSACTION_CATEGORIES.map((cat, index) => ({
-  id: index + 1,
-  name: cat.name,
-  description: cat.description,
-  icon: cat.icon,
-  color: cat.color,
-  transactionCount: 0, // Will be calculated from subcategories
-  totalAmount: 0, // Will be calculated from subcategories
-  isActive: true,
-  subcategories: cat.subcategories.map((subcat, subIndex) => ({
-    id: subIndex + 1,
-    name: subcat,
-    transactionCount: 0,
-    totalAmount: 0,
-    isActive: true,
-  })),
-}));
+import { useCategoriesPage } from "@/hooks/page-hooks/categories";
 
 export default function CategoriesPage() {
+  const { categories, filteredCategories, filters, setFilters } = useCategoriesPage();
+
   return (
     <ErrorBoundary>
       <div className="container mx-auto p-6 space-y-6">
@@ -48,13 +30,13 @@ export default function CategoriesPage() {
         <CategoryStatsContainer categories={categories} />
 
         {/* Filters */}
-        <CategoryFiltersContainer />
+        <CategoryFiltersContainer filters={filters} onFiltersChange={setFilters} />
 
         {/* Categories Table */}
-        <CategoryTableContainer categories={categories} />
+        <CategoryTableContainer categories={filteredCategories} />
 
         {/* Subcategories */}
-        <SubcategoriesContainer categories={categories} />
+        <SubcategoriesContainer categories={filteredCategories} />
       </div>
     </ErrorBoundary>
   );

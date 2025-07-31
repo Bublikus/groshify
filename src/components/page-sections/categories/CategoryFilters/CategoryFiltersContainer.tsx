@@ -1,17 +1,33 @@
 "use client";
 
-import { CategoryFilters } from "./CategoryFilters";
-import { useCategoryFilters } from "./hooks";
+import type { CategoryFilters } from "@/hooks/page-hooks/categories";
+import { CategoryFilters as CategoryFiltersComponent } from "./CategoryFilters";
 
-export function CategoryFiltersContainer() {
-  const { searchQuery, statusFilter, setSearchQuery, setStatusFilter } = useCategoryFilters();
+interface CategoryFiltersContainerProps {
+  filters: CategoryFilters;
+  onFiltersChange: (filters: CategoryFilters) => void;
+}
+
+export function CategoryFiltersContainer({
+  filters,
+  onFiltersChange,
+}: CategoryFiltersContainerProps) {
+  const handleSearchChange = (query: string) => {
+    const newFilters = { ...filters, searchQuery: query };
+    onFiltersChange(newFilters);
+  };
+
+  const handleStatusChange = (status: CategoryFilters["statusFilter"]) => {
+    const newFilters = { ...filters, statusFilter: status };
+    onFiltersChange(newFilters);
+  };
 
   return (
-    <CategoryFilters
-      searchQuery={searchQuery}
-      statusFilter={statusFilter}
-      onSearchChange={setSearchQuery}
-      onStatusChange={setStatusFilter}
+    <CategoryFiltersComponent
+      searchQuery={filters.searchQuery}
+      statusFilter={filters.statusFilter}
+      onSearchChange={handleSearchChange}
+      onStatusChange={handleStatusChange}
     />
   );
 }

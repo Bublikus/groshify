@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
+import { TABLE_CONSTANTS } from "../constants";
 import { DataTableProps } from "../types";
 
 export const useDataTable = <TData extends Record<string, unknown>>({
@@ -20,13 +21,13 @@ export const useDataTable = <TData extends Record<string, unknown>>({
   // Create a mapping from original keys to safe keys for TanStack Table
   const keyMapping = new Map<string, string>();
   columns.forEach((column, index) => {
-    const safeKey = `col_${index}`;
+    const safeKey = `${TABLE_CONSTANTS.SAFE_KEY_PREFIX}${index}`;
     keyMapping.set(String(column.key), safeKey);
   });
 
   // Convert our column format to TanStack Table format
   const tableColumns: ColumnDef<TData, unknown>[] = columns.map((column, index) => {
-    const safeKey = `col_${index}`;
+    const safeKey = `${TABLE_CONSTANTS.SAFE_KEY_PREFIX}${index}`;
     const isSticky = column.sticky || (stickyFirstColumn && column === columns[0]);
 
     return {

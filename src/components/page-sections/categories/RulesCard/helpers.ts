@@ -1,9 +1,13 @@
 import type { Category, CategoryRule } from "../types";
+import { DISPLAY_LIMITS } from "./constants";
 
 /**
  * Get categories to display in the rules card (limited to first N)
  */
-export function getDisplayCategories(categories: Category[], limit: number = 3): Category[] {
+export function getDisplayCategories(
+  categories: Category[],
+  limit: number = DISPLAY_LIMITS.DEFAULT_CATEGORIES
+): Category[] {
   return categories.slice(0, limit);
 }
 
@@ -81,7 +85,10 @@ export function calculateRulesEffectiveness(categories: Category[]): number {
 /**
  * Get categories with the most rules
  */
-export function getCategoriesWithMostRules(categories: Category[], limit: number = 5): Category[] {
+export function getCategoriesWithMostRules(
+  categories: Category[],
+  limit: number = DISPLAY_LIMITS.MOST_RULES_CATEGORIES
+): Category[] {
   return [...categories].sort((a, b) => b.rules.length - a.rules.length).slice(0, limit);
 }
 

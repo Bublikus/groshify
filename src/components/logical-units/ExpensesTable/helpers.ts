@@ -1,4 +1,11 @@
 import type { ParsedRow } from "@/parsers/types";
+import {
+  COLUMN_INDICES,
+  DATE_FORMAT_OPTIONS,
+  DEFAULT_CATEGORY,
+  FILE_SIZE_CONSTANTS,
+  MONTH_ORDER,
+} from "./constants";
 import type { CategorySummary, CurrentSums, MonthData } from "./types";
 
 /**
@@ -41,13 +48,13 @@ export function groupDataByMonth(data: ParsedRow[], headers: string[]): Map<stri
 
   data.forEach((row) => {
     // Extract date from column 3 (0-indexed)
-    const dateValue = row[headers[2]];
+    const dateValue = row[headers[COLUMN_INDICES.DATE_COLUMN]];
     if (!dateValue) return;
 
     const date = new Date(String(dateValue));
     if (isNaN(date.getTime())) return;
 
-    const month = date.toLocaleDateString("en-US", { month: "long" });
+    const month = date.toLocaleDateString("en-US", DATE_FORMAT_OPTIONS);
     const year = date.getFullYear();
     const monthKey = `${month} ${year}`;
 
@@ -67,7 +74,7 @@ export function groupDataByMonth(data: ParsedRow[], headers: string[]): Map<stri
 
     // Calculate column 5 sums
     if (headers.length >= 5) {
-      const column5Value = row[headers[4]];
+      const column5Value = row[headers[COLUMN_INDICES.AMOUNT_COLUMN]];
       const numValue = extractNumericValue(column5Value);
 
       if (numValue > 0) {
@@ -86,25 +93,10 @@ export function groupDataByMonth(data: ParsedRow[], headers: string[]): Map<stri
  * Sort month data chronologically
  */
 export function sortMonthData(monthData: MonthData[]): MonthData[] {
-  const monthOrder = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   return monthData.sort((a, b) => {
     if (a.year !== b.year) return a.year - b.year;
-    const aMonthIndex = monthOrder.findIndex((month) => a.month.startsWith(month));
-    const bMonthIndex = monthOrder.findIndex((month) => b.month.startsWith(month));
+    const aMonthIndex = MONTH_ORDER.findIndex((month) => a.month.startsWith(month));
+    const bMonthIndex = MONTH_ORDER.findIndex((month) => b.month.startsWith(month));
     return aMonthIndex - bMonthIndex;
   });
 }
@@ -127,7 +119,7 @@ export function calculateOverallSums(data: ParsedRow[], headers: string[]): Curr
   }
 
   const column5Data = data.map((row) => {
-    const column5Value = row[headers[4]];
+    const column5Value = row[headers[COLUMN_INDICES.AMOUNT_COLUMN]];
     return extractNumericValue(column5Value);
   });
 
@@ -181,11 +173,11 @@ export function calculateCategorySummaries(
   const summaries: Record<string, CategorySummary> = {};
 
   data.forEach((row) => {
-    const category = categories[row.id] || "Other Expenses";
+    const category = categories[row.id] || DEFAULT_CATEGORY;
     let amount = 0;
 
     if (headers.length >= 5) {
-      const column5Value = row[headers[4]];
+      const column5Value = row[headers[COLUMN_INDICES.AMOUNT_COLUMN]];
       amount = extractNumericValue(column5Value);
     }
 
@@ -213,11 +205,13 @@ export function validateFileExtension(filename: string, supportedExtensions: str
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
 
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(FILE_SIZE_CONSTANTS.KILOBYTE));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  return (
+    parseFloat((bytes / Math.pow(FILE_SIZE_CONSTANTS.KILOBYTE, i)).toFixed(2)) +
+    " " +
+    FILE_SIZE_CONSTANTS.SIZE_UNITS[i]
+  );
 }
 
 /**

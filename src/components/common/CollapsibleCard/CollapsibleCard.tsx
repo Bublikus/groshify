@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/utils/cn";
 import styles from "./CollapsibleCard.module.css";
+import { ANIMATION_CONSTANTS, INITIAL_ANIMATION_VALUES } from "./constants";
 import { CollapsibleCardProps } from "./types";
 
 export function CollapsibleCard({
@@ -19,10 +20,10 @@ export function CollapsibleCard({
   return (
     <ErrorBoundary>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: INITIAL_ANIMATION_VALUES.OPACITY, y: INITIAL_ANIMATION_VALUES.Y_ENTER }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
+        exit={{ opacity: INITIAL_ANIMATION_VALUES.OPACITY, y: INITIAL_ANIMATION_VALUES.Y_EXIT }}
+        transition={{ duration: ANIMATION_CONSTANTS.CARD_ENTER_DURATION }}
       >
         <Collapsible open={isOpen} onOpenChange={onOpenChange}>
           <Card className={cn(styles.card, className)}>
@@ -32,8 +33,12 @@ export function CollapsibleCard({
                   <CardTitle>{title}</CardTitle>
                   <motion.div
                     className={styles.triggerIcon}
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
+                    animate={{
+                      rotate: isOpen
+                        ? INITIAL_ANIMATION_VALUES.ROTATION_OPEN
+                        : INITIAL_ANIMATION_VALUES.ROTATION_CLOSED,
+                    }}
+                    transition={{ duration: ANIMATION_CONSTANTS.ICON_ROTATION_DURATION }}
                   >
                     <ChevronDown className="h-4 w-4 cursor-pointer" />
                   </motion.div>
@@ -43,10 +48,13 @@ export function CollapsibleCard({
             <AnimatePresence>
               {isOpen && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
+                  initial={{ opacity: INITIAL_ANIMATION_VALUES.OPACITY, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  exit={{ opacity: INITIAL_ANIMATION_VALUES.OPACITY, height: 0 }}
+                  transition={{
+                    duration: ANIMATION_CONSTANTS.CONTENT_ANIMATION_DURATION,
+                    ease: "easeInOut",
+                  }}
                   style={{ overflow: "hidden" }}
                 >
                   <CardContent className={styles.content}>{children}</CardContent>

@@ -1,15 +1,18 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { FILE_SIZE_CONSTANTS } from "../constants";
 import { DragDropState, UploadInputProps } from "../types";
 
 // Utility function to format file size
 const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  const i = Math.floor(Math.log(bytes) / Math.log(FILE_SIZE_CONSTANTS.KILOBYTE));
+  return (
+    parseFloat((bytes / Math.pow(FILE_SIZE_CONSTANTS.KILOBYTE, i)).toFixed(2)) +
+    " " +
+    FILE_SIZE_CONSTANTS.SIZE_UNITS[i]
+  );
 };
 
 export const useUploadInput = ({
@@ -46,7 +49,7 @@ export const useUploadInput = ({
 
       // Check file size
       if (maxFileSize && file.size > maxFileSize) {
-        const maxSizeMB = (maxFileSize / (1024 * 1024)).toFixed(1);
+        const maxSizeMB = (maxFileSize / FILE_SIZE_CONSTANTS.MEGABYTE).toFixed(1);
         return {
           isValid: false,
           error: `File too large. Maximum size: ${maxSizeMB}MB`,

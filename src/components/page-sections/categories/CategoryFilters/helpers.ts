@@ -1,4 +1,5 @@
 import type { Category } from "../types";
+import { DEBOUNCE_DELAY, PROBLEMATIC_CHARS_REGEX, SEARCH_QUERY_LIMITS } from "./constants";
 import type { FilterStatus } from "./hooks";
 
 /**
@@ -81,13 +82,12 @@ export function getStatusFilterOptions(): Array<{ value: FilterStatus; label: st
  * Validate search query (e.g., minimum length, special characters)
  */
 export function validateSearchQuery(query: string): { isValid: boolean; error?: string } {
-  if (query.length > 100) {
+  if (query.length > SEARCH_QUERY_LIMITS.MAX_LENGTH) {
     return { isValid: false, error: "Search query too long" };
   }
 
   // Check for potentially problematic characters
-  const problematicChars = /[<>{}]/;
-  if (problematicChars.test(query)) {
+  if (PROBLEMATIC_CHARS_REGEX.test(query)) {
     return { isValid: false, error: "Invalid characters in search query" };
   }
 
@@ -97,7 +97,10 @@ export function validateSearchQuery(query: string): { isValid: boolean; error?: 
 /**
  * Debounce search query to avoid excessive filtering
  */
-export function debounceSearchQuery(query: string, delay: number = 300): Promise<string> {
+export function debounceSearchQuery(
+  query: string,
+  delay: number = DEBOUNCE_DELAY
+): Promise<string> {
   return new Promise((resolve) => {
     setTimeout(() => resolve(query), delay);
   });

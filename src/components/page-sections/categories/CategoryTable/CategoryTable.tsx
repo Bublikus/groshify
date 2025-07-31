@@ -10,11 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
-import type { Category, CategoryRule } from "./types";
-
-interface CategoryTableProps {
-  categories: Category[];
-}
+import type { Category, CategoryRule } from "../types";
+import type { CategoryTableProps } from "./types";
 
 export function CategoryTable({ categories }: CategoryTableProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());

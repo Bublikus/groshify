@@ -120,12 +120,13 @@ src/
 │   │   └── ...
 │   ├── logical-units/     # Entity-related components
 │   │   ├── EntityName/
-│   │   │   ├── EntityName.tsx
+│   │   │   ├── EntityNameContainer.tsx   # Combines stateless EntityName component with useEntityName logic
+│   │   │   ├── EntityName.tsx            # Stateless component
 │   │   │   ├── EntityNameList.tsx
 │   │   │   ├── EntityNameForm.tsx
 │   │   │   ├── EntityNameCard.tsx
 │   │   │   ├── hooks/
-│   │   │   │   ├── useEntityName.ts
+│   │   │   │   ├── useEntityName.ts      # Logic for shateless component
 │   │   │   │   └── index.ts
 │   │   │   ├── components/
 │   │   │   │   └── SubComponent
@@ -138,10 +139,11 @@ src/
 │   │   └── ...
 │   ├── page-sections/     # page-related sections
 │   │   ├── pageName/
-│   │   │   ├── SectionyName/
-│   │   │   │   ├── SectionName.tsx
+│   │   │   ├── SectionName/
+│   │   │   │   ├── SectionNameContainer.tsx   # Combines stateless SectionName component with useSectionName logic
+│   │   │   │   ├── SectionName.tsx            # Stateless component
 │   │   │   │   ├── hooks/
-│   │   │   │   │   ├── useSectionName.ts
+│   │   │   │   │   ├── useSectionName.ts      # Logic for shateless component
 │   │   │   │   │   └── index.ts
 │   │   │   │   ├── components/
 │   │   │   │   │   └── SubComponent

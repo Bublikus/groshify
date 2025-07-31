@@ -8,19 +8,23 @@ import { Typography } from "@/components/ui/typography";
 import type { Category } from "../types";
 
 interface RulesCardProps {
-  categories: Category[];
+  displayCategories: Category[];
+  totalRules: number;
+  activeRules: number;
 }
 
-export function RulesCard({ categories }: RulesCardProps) {
+export function RulesCard({ displayCategories, totalRules, activeRules }: RulesCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Auto-Categorization Rules</CardTitle>
-        <CardDescription>Rules are applied in order. First matching rule wins.</CardDescription>
+        <CardDescription>
+          Rules are applied in order. First matching rule wins. ({activeRules}/{totalRules} active)
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {categories.slice(0, 3).map((category) => (
+          {displayCategories.map((category) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 20 }}

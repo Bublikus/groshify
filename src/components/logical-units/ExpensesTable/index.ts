@@ -1,9 +1,8 @@
-export { ExpensesTable } from "./ExpensesTable";
-export { useExpensesTable } from "./hooks";
+export { ExpensesTableContainer } from "./ExpensesTableContainer";
 export type {
+  ExpenseCategory,
   MonthData,
   CategorySummary,
   CurrentSums,
   ExpensesTableState,
-  ExpenseCategory,
 } from "./types";

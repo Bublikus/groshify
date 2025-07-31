@@ -1,7 +1,6 @@
 "use client";
 
 import { Filter, Search } from "lucide-react";
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,11 +10,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { FilterStatus } from "./hooks";
 
-export function CategoryFilters() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+interface CategoryFiltersProps {
+  searchQuery: string;
+  statusFilter: FilterStatus;
+  onSearchChange: (query: string) => void;
+  onStatusChange: (status: FilterStatus) => void;
+}
 
+export function CategoryFilters({
+  searchQuery,
+  statusFilter,
+  onSearchChange,
+  onStatusChange,
+}: CategoryFiltersProps) {
   return (
     <Card>
       <CardHeader>
@@ -32,12 +41,12 @@ export function CategoryFilters() {
             <Input
               placeholder="Search categories..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
               className="pl-10"
             />
           </div>
 
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={onStatusChange}>
             <SelectTrigger>
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>

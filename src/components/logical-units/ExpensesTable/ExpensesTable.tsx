@@ -17,24 +17,47 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { ParsedRow } from "@/parsers/types";
 import { formatCurrency } from "@/utils/number-format";
-import { useExpensesTable } from "./hooks";
-import { ExpenseCategory } from "./types";
+import {
+  CategorySummary,
+  CurrentSums,
+  ExpenseCategory,
+  ExpensesTableState,
+  MonthData,
+} from "./types";
 
-export function ExpensesTable() {
-  const {
-    state,
-    setState,
-    handleFileUpload,
-    handleFileRemove,
-    handleCategoryChange,
-    monthlyData,
-    currentMonthData,
-    currentSums,
-    categorySummaries,
-    supportedExtensions,
-    EXPENSE_CATEGORIES,
-  } = useExpensesTable();
+interface ExpensesTableProps {
+  state: ExpensesTableState;
+  setState: React.Dispatch<React.SetStateAction<ExpensesTableState>>;
+  handleFileUpload: (file: File) => Promise<void>;
+  handleFileRemove: () => void;
+  handleCategoryChange: (rowId: string, category: ExpenseCategory) => void;
+  monthlyData: MonthData[];
+  currentMonthData: ParsedRow[];
+  currentSums: CurrentSums;
+  categorySummaries: [string, CategorySummary][];
+  supportedExtensions: string[];
+  EXPENSE_CATEGORIES: Array<{
+    name: string;
+    description: string;
+    icon: string;
+    color: string;
+    subcategories: string[];
+  }>;
+}
 
+export function ExpensesTable({
+  state,
+  setState,
+  handleFileUpload,
+  handleFileRemove,
+  handleCategoryChange,
+  monthlyData,
+  currentMonthData,
+  currentSums,
+  categorySummaries,
+  supportedExtensions,
+  EXPENSE_CATEGORIES,
+}: ExpensesTableProps) {
   return (
     <ErrorBoundary>
       <div className="space-y-4 sm:space-y-6">

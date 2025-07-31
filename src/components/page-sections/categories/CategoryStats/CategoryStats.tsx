@@ -5,20 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 
 interface CategoryStatsProps {
-  totalCategories: number;
-  activeCategories: number;
-  totalRules: number;
-  totalTransactions: number;
-  totalSubcategories: number;
+  stats: {
+    totalCategories: number;
+    activeCategories: number;
+    totalRules: number;
+    totalTransactions: number;
+    totalSubcategories: number;
+    accuracy: number;
+  };
 }
 
-export function CategoryStats({
-  totalCategories,
-  activeCategories,
-  totalRules,
-  totalTransactions,
-  totalSubcategories,
-}: CategoryStatsProps) {
+export function CategoryStats({ stats }: CategoryStatsProps) {
+  const {
+    totalCategories,
+    activeCategories,
+    totalRules,
+    totalTransactions,
+    totalSubcategories,
+    accuracy,
+  } = stats;
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
@@ -73,7 +79,7 @@ export function CategoryStats({
         </CardHeader>
         <CardContent>
           <Typography variant="h3" className="font-bold">
-            94%
+            {accuracy}%
           </Typography>
           <Typography variant="small" className="text-muted-foreground">
             Auto-categorization accuracy

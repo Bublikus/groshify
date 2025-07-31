@@ -1,0 +1,1 @@
+export { useRulesCard } from "./useRulesCard";

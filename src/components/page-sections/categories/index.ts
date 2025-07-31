@@ -1,5 +1,5 @@
-export { CategoryStats } from "./CategoryStats";
-export { CategoryFilters } from "./CategoryFilters";
-export { CategoryTable } from "./CategoryTable";
-export { RulesCard } from "./RulesCard";
+export { CategoryStatsContainer } from "./CategoryStats";
+export { CategoryFiltersContainer } from "./CategoryFilters";
+export { CategoryTableContainer } from "./CategoryTable";
+export { RulesCardContainer } from "./RulesCard";
 export type { Category, CategoryRule, Subcategory } from "./types";

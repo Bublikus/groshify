@@ -1,0 +1,1 @@
+export { useCategoryTable } from "./useCategoryTable";

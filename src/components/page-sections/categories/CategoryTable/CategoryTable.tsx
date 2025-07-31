@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Edit3, MoreHorizontal, Plus, Settings } from "lucide-react";
-import { useState } from "react";
 import { DataTable } from "@/components/common/DataTable";
 import { DataTableColumn } from "@/components/common/DataTable/types";
 import { Badge } from "@/components/ui/badge";
@@ -11,21 +10,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
 import type { Category, CategoryRule } from "../types";
-import type { CategoryTableProps } from "./types";
 
-export function CategoryTable({ categories }: CategoryTableProps) {
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+interface CategoryTableProps {
+  categories: Category[];
+  expandedCategories: Set<number>;
+  onToggleCategory: (categoryId: number) => void;
+}
 
-  const toggleCategory = (categoryId: number) => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
-    } else {
-      newExpanded.add(categoryId);
-    }
-    setExpandedCategories(newExpanded);
-  };
-
+export function CategoryTable({
+  categories,
+  expandedCategories,
+  onToggleCategory,
+}: CategoryTableProps) {
   const columns: DataTableColumn<Category>[] = [
     {
       key: "name",
@@ -36,7 +32,7 @@ export function CategoryTable({ categories }: CategoryTableProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => toggleCategory(category.id)}
+              onClick={() => onToggleCategory(category.id)}
               className="h-6 w-6 p-0"
             >
               {expandedCategories.has(category.id) ? (

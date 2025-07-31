@@ -3,10 +3,10 @@
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import {
   type Category,
-  CategoryFilters,
-  CategoryStats,
-  CategoryTable,
-  RulesCard,
+  CategoryFiltersContainer,
+  CategoryStatsContainer,
+  CategoryTableContainer,
+  RulesCardContainer,
 } from "@/components/page-sections/categories";
 import { Typography } from "@/components/ui/typography";
 import { EXPENSE_CATEGORIES } from "@/constants/categories";
@@ -69,12 +69,6 @@ const transformCategories = (): Category[] => {
 const categories = transformCategories();
 
 export default function CategoriesPage() {
-  const totalCategories = categories.length;
-  const activeCategories = categories.filter((cat) => cat.isActive).length;
-  const totalRules = categories.reduce((sum, cat) => sum + cat.rules.length, 0);
-  const totalTransactions = categories.reduce((sum, cat) => sum + cat.transactionCount, 0);
-  const totalSubcategories = categories.reduce((sum, cat) => sum + cat.subcategories.length, 0);
-
   return (
     <ErrorBoundary>
       <div className="container mx-auto p-6 space-y-6">
@@ -89,22 +83,16 @@ export default function CategoriesPage() {
         </div>
 
         {/* Stats */}
-        <CategoryStats
-          totalCategories={totalCategories}
-          activeCategories={activeCategories}
-          totalRules={totalRules}
-          totalTransactions={totalTransactions}
-          totalSubcategories={totalSubcategories}
-        />
+        <CategoryStatsContainer categories={categories} />
 
         {/* Filters */}
-        <CategoryFilters />
+        <CategoryFiltersContainer />
 
         {/* Categories Table */}
-        <CategoryTable categories={categories} />
+        <CategoryTableContainer categories={categories} />
 
         {/* Rules Card */}
-        <RulesCard categories={categories} />
+        <RulesCardContainer categories={categories} />
       </div>
     </ErrorBoundary>
   );

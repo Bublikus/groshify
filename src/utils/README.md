@@ -32,7 +32,7 @@ import {
   formatText,
   sortBySearchRelevance,
   sortCategoriesBySearchRelevance,
-} from "@/utils";
+} from "@/utils/language-format";
 ```
 
 ### Import specific utilities
@@ -129,14 +129,15 @@ If you were using formatting utilities from component-specific files, update you
 **Before:**
 
 ```typescript
-import { formatCurrency } from "@/utils/number-format";
-import { formatFileSize } from "../helpers";
+import { formatCurrency } from "@/utils/currency-format";
+import { formatFileSize } from "@/utils/file-format";
 ```
 
 **After:**
 
 ```typescript
-import { formatCurrency, formatFileSize } from "@/utils";
+import { formatCurrency } from "@/utils/currency-format";
+import { formatFileSize } from "@/utils/file-format";
 ```
 
 ### Constants Migration
@@ -152,12 +153,12 @@ import { FILE_SIZE_CONSTANTS } from "./constants";
 **After:**
 
 ```typescript
-import { FILE_SIZE_CONSTANTS } from "@/utils";
+import { FILE_SIZE_CONSTANTS } from "@/utils/file-format";
 ```
 
 ## Best Practices
 
-1. **Use the main index**: Import from `@/utils` for better tree-shaking
+1. **Use direct imports**: Import directly from specific utility files for better tree-shaking
 2. **Type safety**: All utilities include proper TypeScript types
 3. **Consistent options**: All formatting functions use similar option patterns
 4. **Error handling**: All utilities handle null/undefined values gracefully
@@ -168,7 +169,8 @@ import { FILE_SIZE_CONSTANTS } from "@/utils";
 ### Number Formatting
 
 ```typescript
-import { formatCurrency, formatNumber } from "@/utils";
+import { formatCurrency } from "@/utils/currency-format";
+import { formatNumber } from "@/utils/number-format";
 
 // Basic number formatting
 formatNumber(1234567.89); // "1.234.567,89"
@@ -181,7 +183,7 @@ formatCurrency(1234567.89, { currency: "EUR" }); // "€1,234,567.89"
 ### Date Formatting
 
 ```typescript
-import { formatDate, formatRelativeTime } from "@/utils";
+import { formatDate, formatRelativeTime } from "@/utils/date-format";
 
 // Date formatting
 formatDate(new Date("2024-01-15")); // "01/15/2024"
@@ -194,7 +196,7 @@ formatRelativeTime(new Date(Date.now() - 3600000)); // "1 hour ago"
 ### Text Formatting
 
 ```typescript
-import { capitalizeWords, formatText, generateSlug } from "@/utils";
+import { capitalizeWords, formatText, generateSlug } from "@/utils/text-format";
 
 // Text formatting
 formatText("hello world", { capitalize: true }); // "Hello World"
@@ -208,7 +210,7 @@ generateSlug("Hello World!"); // "hello-world"
 ### File Formatting
 
 ```typescript
-import { formatFileSize, validateFileExtension } from "@/utils";
+import { formatFileSize, validateFileExtension } from "@/utils/file-format";
 
 // File size formatting
 formatFileSize(1024); // "1 KB"
@@ -221,7 +223,7 @@ validateFileExtension("document.pdf", [".pdf", ".doc"]); // true
 ### Language Formatting
 
 ```typescript
-import { formatLanguage, getPreferredLanguage } from "@/utils";
+import { formatLanguage, getPreferredLanguage } from "@/utils/language-format";
 
 // Language formatting
 formatLanguage("en"); // "🇺🇸 English"
@@ -234,7 +236,7 @@ getPreferredLanguage(); // "en" or "uk" based on browser settings
 ### Search and Sort
 
 ```typescript
-import { sortBySearchRelevance } from "@/utils";
+import { sortBySearchRelevance } from "@/utils/search-sort";
 
 // Generic search sorting
 const items = [

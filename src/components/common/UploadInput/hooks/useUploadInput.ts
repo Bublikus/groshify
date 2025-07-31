@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { FILE_SIZE_CONSTANTS } from "@/utils";
-import { formatFileSize } from "@/utils";
+import { FILE_SIZE_CONSTANTS, formatFileSize } from "@/utils/file-format";
 import { DragDropState, UploadInputProps } from "../types";
 
 export const useUploadInput = ({

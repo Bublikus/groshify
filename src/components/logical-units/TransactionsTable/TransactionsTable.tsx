@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Typography } from "@/components/ui/typography";
 import { ParsedRow } from "@/parsers/types";
-import { formatCurrency } from "@/utils";
+import { formatCurrency } from "@/utils/currency-format";
 import { TransactionCategory, TransactionsTableProps } from "./types";
 
 export function TransactionsTable({

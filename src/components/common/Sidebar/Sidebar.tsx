@@ -63,7 +63,9 @@ function SidebarContent({ className }: SidebarContentProps) {
       <ScrollArea className={styles.navigation}>
         <nav className={styles.navigationList}>
           <div className={cn(styles.navigationSection, "pb-2 border-b")}>
-            <h3 className={styles.sectionTitle}>Main Navigation</h3>
+            <div className={styles.sectionTitle} role="heading" aria-level={2}>
+              Main Navigation
+            </div>
             {navigationItems.map((item) => (
               <NavigationItemComponent
                 key={item.href}
@@ -74,7 +76,9 @@ function SidebarContent({ className }: SidebarContentProps) {
           </div>
 
           <div className={cn(styles.navigationSection, "pb-2 border-b")}>
-            <h3 className={styles.sectionTitle}>Quick Actions</h3>
+            <div className={styles.sectionTitle} role="heading" aria-level={2}>
+              Quick Actions
+            </div>
             {quickActions.map((item) => (
               <NavigationItemComponent
                 key={item.href}

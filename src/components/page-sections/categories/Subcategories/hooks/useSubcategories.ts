@@ -2,17 +2,17 @@ import { useMemo } from "react";
 import type { Category } from "../../types";
 import { calculateActiveSubcategories, calculateTotalSubcategories } from "../helpers";
 
-interface UseRulesCardProps {
+interface UseSubcategoriesProps {
   categories: Category[];
 }
 
-interface UseRulesCardReturn {
+interface UseSubcategoriesReturn {
   categories: Category[];
   totalSubcategories: number;
   activeSubcategories: number;
 }
 
-export function useRulesCard({ categories }: UseRulesCardProps): UseRulesCardReturn {
+export function useSubcategories({ categories }: UseSubcategoriesProps): UseSubcategoriesReturn {
   const totalSubcategories = useMemo(() => calculateTotalSubcategories(categories), [categories]);
   const activeSubcategories = useMemo(() => calculateActiveSubcategories(categories), [categories]);
 

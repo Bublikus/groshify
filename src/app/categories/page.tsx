@@ -6,7 +6,7 @@ import {
   CategoryFiltersContainer,
   CategoryStatsContainer,
   CategoryTableContainer,
-  RulesCardContainer,
+  SubcategoriesContainer,
 } from "@/components/page-sections/categories";
 import { Typography } from "@/components/ui/typography";
 import { TRANSACTION_CATEGORIES } from "@/constants/categories";
@@ -53,8 +53,8 @@ export default function CategoriesPage() {
         {/* Categories Table */}
         <CategoryTableContainer categories={categories} />
 
-        {/* Rules Card */}
-        <RulesCardContainer categories={categories} />
+        {/* Subcategories */}
+        <SubcategoriesContainer categories={categories} />
       </div>
     </ErrorBoundary>
   );

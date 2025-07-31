@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Edit3, MoreHorizontal, Plus, Settings } from "lucide-react";
 import { DataTable } from "@/components/common/DataTable";
 import { DataTableColumn } from "@/components/common/DataTable/types";
@@ -55,34 +55,36 @@ export function CategoryTable({
           </div>
 
           {/* Subcategories */}
-          {expandedCategories.has(category.id) && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="ml-8 space-y-2 border-l-2 border-muted pl-4"
-            >
-              {category.subcategories.map((subcategory) => (
-                <div key={subcategory.id} className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                    <Typography variant="small" className="text-muted-foreground">
-                      {subcategory.name}
-                    </Typography>
+          <AnimatePresence>
+            {expandedCategories.has(category.id) && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="ml-8 space-y-2 border-l-2 border-muted pl-4"
+              >
+                {category.subcategories.map((subcategory) => (
+                  <div key={subcategory.id} className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                      <Typography variant="small" className="text-muted-foreground">
+                        {subcategory.name}
+                      </Typography>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>{subcategory.transactionCount} transactions</span>
+                      <span
+                        className={subcategory.totalAmount > 0 ? "text-green-600" : "text-red-600"}
+                      >
+                        {subcategory.totalAmount > 0 ? "+" : ""}$
+                        {Math.abs(subcategory.totalAmount).toFixed(2)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span>{subcategory.transactionCount} transactions</span>
-                    <span
-                      className={subcategory.totalAmount > 0 ? "text-green-600" : "text-red-600"}
-                    >
-                      {subcategory.totalAmount > 0 ? "+" : ""}$
-                      {Math.abs(subcategory.totalAmount).toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          )}
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ),
     },

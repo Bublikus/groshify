@@ -1,11 +1,11 @@
 import type { Category } from "../types";
 
-export interface RulesCardProps {
+export interface SubcategoriesProps {
   categories: Category[];
   totalCategories?: number;
   totalSubcategories?: number;
 }
 
-export interface RulesCardContainerProps {
+export interface SubcategoriesContainerProps {
   categories: Category[];
 }

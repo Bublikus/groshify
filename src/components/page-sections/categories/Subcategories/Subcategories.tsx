@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Edit3, Plus, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { VirtualizedList } from "@/components/common/VirtualizedList";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import type { Category } from "../types";
-import type { RulesCardProps } from "./types";
+import type { SubcategoriesProps } from "./types";
 
 // Category item component for VirtualizedList
 function CategoryItem({ category }: { category: Category }) {
@@ -22,7 +22,7 @@ function CategoryItem({ category }: { category: Category }) {
       animate={{ opacity: 1, y: 0 }}
       className="border rounded-lg p-4 bg-background"
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="text-xl">{category.icon}</div>
           <Typography variant="small" className="font-medium">
@@ -47,44 +47,50 @@ function CategoryItem({ category }: { category: Category }) {
         </div>
       </div>
 
-      {isExpanded && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="space-y-2"
-        >
-          {category.subcategories.map((subcategory) => (
-            <div
-              key={subcategory.id}
-              className="flex items-center justify-between p-2 bg-muted rounded ml-4"
-            >
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-2 h-2 rounded-full ${subcategory.isActive ? "bg-green-500" : "bg-gray-300"}`}
-                />
-                <Typography variant="small">{subcategory.name}</Typography>
-                <Typography variant="muted" className="text-xs">
-                  {subcategory.transactionCount} transactions
-                </Typography>
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-2 pt-2"
+          >
+            {category.subcategories.map((subcategory) => (
+              <div
+                key={subcategory.id}
+                className="flex items-center justify-between p-2 bg-muted rounded ml-4"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-2 h-2 rounded-full ${subcategory.isActive ? "bg-green-500" : "bg-gray-300"}`}
+                  />
+                  <Typography variant="small">{subcategory.name}</Typography>
+                  <Typography variant="muted" className="text-xs">
+                    {subcategory.transactionCount} transactions
+                  </Typography>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm">
+                    <Edit3 className="h-3 w-3" />
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="sm">
-                  <Edit3 className="h-3 w-3" />
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      )}
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
 
-export function RulesCard({ categories, totalCategories, totalSubcategories }: RulesCardProps) {
+export function Subcategories({
+  categories,
+  totalCategories,
+  totalSubcategories,
+}: SubcategoriesProps) {
   // Calculate dynamic item height based on category content and expansion state
   const calculateItemHeight = (index: number) => {
     const category = categories[index];

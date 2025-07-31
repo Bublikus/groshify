@@ -10,10 +10,10 @@ import {
   getCurrentMonthData,
   getCurrentSums,
 } from "../helpers";
-import { ExpenseCategory, ExpensesTableState } from "../types";
+import { TransactionCategory, TransactionsTableState } from "../types";
 
-export const useExpensesTable = () => {
-  const [state, setState] = useState<ExpensesTableState>({
+export const useTransactionsTable = () => {
+  const [state, setState] = useState<TransactionsTableState>({
     data: [],
     headers: [],
     isLoading: false,
@@ -91,18 +91,14 @@ export const useExpensesTable = () => {
       const { categorizedTransactions } = await categorizationResponse.json();
 
       // Initialize categories with AI-determined values for first 10 transactions
-      const initialCategories: Record<string, ExpenseCategory> = {};
+      const initialCategories: Record<string, TransactionCategory> = {};
 
       // Add AI-categorized transactions
       categorizedTransactions.forEach((categorized: { id: string; category: string }) => {
-        initialCategories[categorized.id] = categorized.category as ExpenseCategory;
+        initialCategories[categorized.id] = categorized.category as TransactionCategory;
       });
 
-      // Set default category for remaining transactions
-      dataRows.slice(10).forEach((row) => {
-        initialCategories[row.id] = "Інше";
-      });
-
+      // Set final state with categorized data
       setState((prev) => ({
         ...prev,
         categories: initialCategories,
@@ -113,7 +109,7 @@ export const useExpensesTable = () => {
         ...prev,
         isLoading: false,
         isCategorizing: false,
-        error: error instanceof Error ? error.message : "An error occurred",
+        error: error instanceof Error ? error.message : "An unknown error occurred",
       }));
     }
   };
@@ -132,7 +128,7 @@ export const useExpensesTable = () => {
     }));
   };
 
-  const handleCategoryChange = (rowId: string, category: ExpenseCategory) => {
+  const handleCategoryChange = (rowId: string, category: TransactionCategory) => {
     setState((prev) => ({
       ...prev,
       categories: {
@@ -142,30 +138,25 @@ export const useExpensesTable = () => {
     }));
   };
 
-  // Calculate monthly data
   const monthlyData = useMemo(() => {
     return calculateMonthlyData(state.data, state.headers);
   }, [state.data, state.headers]);
 
-  // Calculate overall sums for all data
   const overallSums = useMemo(() => {
     return calculateOverallSums(state.data, state.headers);
   }, [state.data, state.headers]);
 
-  // Get current month data or all data
   const currentMonthData = useMemo(() => {
     return getCurrentMonthData(state.data, monthlyData, state.selectedMonth);
-  }, [state.selectedMonth, monthlyData, state.data]);
+  }, [state.data, monthlyData, state.selectedMonth]);
 
-  // Get current sums
   const currentSums = useMemo(() => {
     return getCurrentSums(overallSums, monthlyData, state.selectedMonth);
-  }, [state.selectedMonth, monthlyData, overallSums]);
+  }, [overallSums, monthlyData, state.selectedMonth]);
 
-  // Calculate category summaries
   const categorySummaries = useMemo(() => {
     return calculateCategorySummaries(currentMonthData, state.headers, state.categories);
-  }, [currentMonthData, state.categories, state.headers]);
+  }, [currentMonthData, state.headers, state.categories]);
 
   const supportedExtensions = documentParserService.getSupportedExtensions();
 
@@ -180,6 +171,5 @@ export const useExpensesTable = () => {
     currentSums,
     categorySummaries,
     supportedExtensions,
-    EXPENSE_CATEGORIES,
   };
 };

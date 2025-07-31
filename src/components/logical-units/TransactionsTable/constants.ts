@@ -1,5 +1,5 @@
 /**
- * Constants for ExpensesTable component
+ * Constants for TransactionsTable component
  */
 
 export const MONTH_ORDER = [
@@ -22,7 +22,7 @@ export const FILE_SIZE_CONSTANTS = {
   SIZE_UNITS: ["Bytes", "KB", "MB", "GB"] as const,
 } as const;
 
-export const DEFAULT_CATEGORY = "Other Expenses" as const;
+export const DEFAULT_CATEGORY = "Other Transactions" as const;
 
 export const DATE_FORMAT_OPTIONS = {
   month: "long",

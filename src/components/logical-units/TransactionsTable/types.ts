@@ -2,7 +2,7 @@ import { EXPENSE_CATEGORIES } from "@/constants/categories";
 import { ParseResult } from "@/parsers";
 import { ParsedRow } from "@/parsers/types";
 
-export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
+export type TransactionCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
 
 export interface MonthData {
   month: string;
@@ -24,7 +24,7 @@ export interface CurrentSums {
   totalSum: number;
 }
 
-export interface ExpensesTableState {
+export interface TransactionsTableState {
   data: ParseResult["data"];
   headers: string[];
   headerTitles: string[];
@@ -35,21 +35,21 @@ export interface ExpensesTableState {
   selectedFile: File | null;
   selectedMonth: string;
   isFileInfoOpen: boolean;
-  categories: Record<string, ExpenseCategory>;
+  categories: Record<string, TransactionCategory>;
 }
 
-export interface ExpensesTableProps {
-  state: ExpensesTableState;
-  setState: React.Dispatch<React.SetStateAction<ExpensesTableState>>;
+export interface TransactionsTableProps {
+  state: TransactionsTableState;
+  setState: React.Dispatch<React.SetStateAction<TransactionsTableState>>;
   handleFileUpload: (file: File) => Promise<void>;
   handleFileRemove: () => void;
-  handleCategoryChange: (rowId: string, category: ExpenseCategory) => void;
+  handleCategoryChange: (rowId: string, category: TransactionCategory) => void;
   monthlyData: MonthData[];
   currentMonthData: ParsedRow[];
   currentSums: CurrentSums;
   categorySummaries: [string, CategorySummary][];
   supportedExtensions: string[];
-  EXPENSE_CATEGORIES: Array<{
+  expenseCategories: Array<{
     name: string;
     description: string;
     icon: string;

@@ -3,7 +3,7 @@
 import { Download, Edit3, Filter, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import { ExpensesTableContainer } from "@/components/logical-units/ExpensesTable";
+import { TransactionsTableContainer } from "@/components/logical-units/TransactionsTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,7 +135,7 @@ function BulkActions() {
 }
 
 function TransactionTable() {
-  return <ExpensesTableContainer />;
+  return <TransactionsTableContainer />;
 }
 
 export default function TransactionsPage() {

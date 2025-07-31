@@ -17,9 +17,9 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { ParsedRow } from "@/parsers/types";
 import { formatCurrency } from "@/utils/number-format";
-import { ExpenseCategory, ExpensesTableProps } from "./types";
+import { TransactionCategory, TransactionsTableProps } from "./types";
 
-export function ExpensesTable({
+export function TransactionsTable({
   state,
   setState,
   handleFileUpload,
@@ -30,8 +30,8 @@ export function ExpensesTable({
   currentSums,
   categorySummaries,
   supportedExtensions,
-  EXPENSE_CATEGORIES,
-}: ExpensesTableProps) {
+  expenseCategories,
+}: TransactionsTableProps) {
   return (
     <ErrorBoundary>
       <div className="space-y-4 sm:space-y-6">
@@ -257,16 +257,16 @@ export function ExpensesTable({
                         sticky: true,
                         render: (_, row) => (
                           <Select
-                            value={state.categories[row.id] || "Other Expenses"}
+                            value={state.categories[row.id] || "Other Transactions"}
                             onValueChange={(value) =>
-                              handleCategoryChange(row.id, value as ExpenseCategory)
+                              handleCategoryChange(row.id, value as TransactionCategory)
                             }
                           >
                             <SelectTrigger className="w-full h-7 sm:h-8 text-xs px-2 sm:px-3 cursor-pointer">
                               <SelectValue className="truncate" />
                             </SelectTrigger>
                             <SelectContent>
-                              {EXPENSE_CATEGORIES.map((category) => (
+                              {expenseCategories.map((category) => (
                                 <SelectItem
                                   key={category.name}
                                   value={category.name}

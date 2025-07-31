@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import {
+  ChevronDown,
+  ChevronRight,
   Edit3,
   Eye,
   Filter,
@@ -15,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { DataTable } from "@/components/common/DataTable";
+import { DataTableColumn } from "@/components/common/DataTable/types";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
-import { DataTableColumn } from "@/components/common/DataTable/types";
+import { EXPENSE_CATEGORIES } from "@/constants/categories";
 
 // Types
 interface CategoryRule {
@@ -39,109 +42,90 @@ interface CategoryRule {
   isActive: boolean;
 }
 
+interface Subcategory {
+  id: number;
+  name: string;
+  transactionCount: number;
+  totalAmount: number;
+  isActive: boolean;
+}
+
 interface Category extends Record<string, unknown> {
   id: number;
   name: string;
+  description: string;
+  icon: string;
   color: string;
   transactionCount: number;
   totalAmount: number;
   isActive: boolean;
+  subcategories: Subcategory[];
   rules: CategoryRule[];
 }
 
-// Mock data - in real app this would come from API
-const mockCategories: Category[] = [
-  {
-    id: 1,
-    name: "Food",
-    color: "#FF6B6B",
-    transactionCount: 45,
-    totalAmount: -1250.5,
-    isActive: true,
-    rules: [
-      { id: 1, condition: "contains", value: "grocery", isActive: true },
-      { id: 2, condition: "contains", value: "supermarket", isActive: true },
-    ],
-  },
-  {
-    id: 2,
-    name: "Dining",
-    color: "#4ECDC4",
-    transactionCount: 23,
-    totalAmount: -890.3,
-    isActive: true,
-    rules: [
-      { id: 3, condition: "contains", value: "restaurant", isActive: true },
-      { id: 4, condition: "contains", value: "cafe", isActive: true },
-    ],
-  },
-  {
-    id: 3,
-    name: "Transportation",
-    color: "#45B7D1",
-    transactionCount: 18,
-    totalAmount: -450.2,
-    isActive: true,
-    rules: [
-      { id: 5, condition: "contains", value: "gas", isActive: true },
-      { id: 6, condition: "contains", value: "uber", isActive: true },
-    ],
-  },
-  {
-    id: 4,
-    name: "Entertainment",
-    color: "#96CEB4",
-    transactionCount: 12,
-    totalAmount: -320.75,
-    isActive: true,
-    rules: [
-      { id: 7, condition: "contains", value: "netflix", isActive: true },
-      { id: 8, condition: "contains", value: "spotify", isActive: true },
-    ],
-  },
-  {
-    id: 5,
-    name: "Shopping",
-    color: "#FFEAA7",
-    transactionCount: 31,
-    totalAmount: -2100.45,
-    isActive: true,
-    rules: [
-      { id: 9, condition: "contains", value: "amazon", isActive: true },
-      { id: 10, condition: "contains", value: "walmart", isActive: true },
-    ],
-  },
-  {
-    id: 6,
-    name: "Utilities",
-    color: "#DDA0DD",
-    transactionCount: 8,
-    totalAmount: -650.8,
-    isActive: true,
-    rules: [
-      { id: 11, condition: "contains", value: "electricity", isActive: true },
-      { id: 12, condition: "contains", value: "water", isActive: true },
-    ],
-  },
-  {
-    id: 7,
-    name: "Income",
-    color: "#98D8C8",
-    transactionCount: 4,
-    totalAmount: 26000.0,
-    isActive: true,
-    rules: [
-      { id: 13, condition: "contains", value: "salary", isActive: true },
-      { id: 14, condition: "contains", value: "deposit", isActive: true },
-    ],
-  },
-];
+// Deterministic random number generator
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
+// Transform EXPENSE_CATEGORIES into the format needed for the page
+const transformCategories = (): Category[] => {
+  return EXPENSE_CATEGORIES.map((cat, index) => {
+    // Generate deterministic mock data for subcategories
+    const subcategories: Subcategory[] = cat.subcategories.map((subcat, subIndex) => {
+      const seed = index * 100 + subIndex;
+      const transactionCount = Math.floor(seededRandom(seed) * 20) + 1;
+      const totalAmount = -(seededRandom(seed + 1) * 1000 + 100);
+
+      return {
+        id: subIndex + 1,
+        name: subcat,
+        transactionCount,
+        totalAmount,
+        isActive: true,
+      };
+    });
+
+    // Generate mock rules based on category name
+    const rules: CategoryRule[] = [
+      {
+        id: index * 2 + 1,
+        condition: "contains",
+        value: cat.name.toLowerCase().split(" ")[0],
+        isActive: true,
+      },
+      {
+        id: index * 2 + 2,
+        condition: "contains",
+        value: cat.subcategories[0]?.toLowerCase().split(" ")[0] || "other",
+        isActive: true,
+      },
+    ];
+
+    return {
+      id: index + 1,
+      name: cat.name,
+      description: cat.description,
+      icon: cat.icon,
+      color: cat.color,
+      transactionCount: subcategories.reduce((sum, sub) => sum + sub.transactionCount, 0),
+      totalAmount: subcategories.reduce((sum, sub) => sum + sub.totalAmount, 0),
+      isActive: true,
+      subcategories,
+      rules,
+    };
+  });
+};
+
+const categories = transformCategories();
 
 function CategoryStats() {
-  const totalCategories = mockCategories.length;
-  const activeCategories = mockCategories.filter((cat) => cat.isActive).length;
-  const totalRules = mockCategories.reduce((sum, cat) => sum + cat.rules.length, 0);
-  const totalTransactions = mockCategories.reduce((sum, cat) => sum + cat.transactionCount, 0);
+  const totalCategories = categories.length;
+  const activeCategories = categories.filter((cat) => cat.isActive).length;
+  const totalRules = categories.reduce((sum, cat) => sum + cat.rules.length, 0);
+  const totalTransactions = categories.reduce((sum, cat) => sum + cat.transactionCount, 0);
+  const totalSubcategories = categories.reduce((sum, cat) => sum + cat.subcategories.length, 0);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -155,7 +139,7 @@ function CategoryStats() {
             {totalCategories}
           </Typography>
           <Typography variant="small" className="text-muted-foreground">
-            {activeCategories} active
+            {activeCategories} active, {totalSubcategories} subcategories
           </Typography>
         </CardContent>
       </Card>
@@ -250,28 +234,87 @@ function CategoryFilters() {
 }
 
 function CategoryTable() {
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+
+  const toggleCategory = (categoryId: number) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId);
+    } else {
+      newExpanded.add(categoryId);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
   const columns: DataTableColumn<Category>[] = [
     {
       key: "name",
       title: "Category",
       render: (_, category) => (
-        <div className="flex items-center gap-3">
-          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: category.color }} />
-          <div>
-            <Typography variant="small" className="font-medium">
-              {category.name}
-            </Typography>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                {category.rules.length} rules
-              </Badge>
-              {!category.isActive && (
-                <Badge variant="secondary" className="text-xs">
-                  Inactive
-                </Badge>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCategory(category.id)}
+              className="h-6 w-6 p-0"
+            >
+              {expandedCategories.has(category.id) ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
               )}
+            </Button>
+            <div className="text-2xl">{category.icon}</div>
+            <div>
+              <Typography variant="small" className="font-medium">
+                {category.name}
+              </Typography>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">
+                  {category.rules.length} rules
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {category.subcategories.length} subcategories
+                </Badge>
+                {!category.isActive && (
+                  <Badge variant="secondary" className="text-xs">
+                    Inactive
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Subcategories */}
+          {expandedCategories.has(category.id) && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="ml-8 space-y-2 border-l-2 border-muted pl-4"
+            >
+              {category.subcategories.map((subcategory) => (
+                <div key={subcategory.id} className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                    <Typography variant="small" className="text-muted-foreground">
+                      {subcategory.name}
+                    </Typography>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span>{subcategory.transactionCount} transactions</span>
+                    <span
+                      className={subcategory.totalAmount > 0 ? "text-green-600" : "text-red-600"}
+                    >
+                      {subcategory.totalAmount > 0 ? "+" : ""}$
+                      {Math.abs(subcategory.totalAmount).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
         </div>
       ),
     },
@@ -373,7 +416,7 @@ function CategoryTable() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={mockCategories} />
+        <DataTable columns={columns} data={categories} />
       </CardContent>
     </Card>
   );
@@ -388,7 +431,7 @@ function RulesCard() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {mockCategories.slice(0, 3).map((category) => (
+          {categories.slice(0, 3).map((category) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 20 }}
@@ -397,10 +440,7 @@ function RulesCard() {
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: category.color }}
-                  />
+                  <div className="text-xl">{category.icon}</div>
                   <Typography variant="small" className="font-medium">
                     {category.name}
                   </Typography>

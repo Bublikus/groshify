@@ -1,11 +1,6 @@
+import { MONTH_ORDER } from "@/constants/app";
 import type { ParsedRow } from "@/parsers/types";
-import {
-  COLUMN_INDICES,
-  DATE_FORMAT_OPTIONS,
-  DEFAULT_CATEGORY,
-  FILE_SIZE_CONSTANTS,
-  MONTH_ORDER,
-} from "./constants";
+import { COLUMN_INDICES, DATE_FORMAT_OPTIONS, DEFAULT_CATEGORY } from "./constants";
 import type { CategorySummary, CurrentSums, MonthData } from "./types";
 
 /**
@@ -197,21 +192,6 @@ export function calculateCategorySummaries(
 export function validateFileExtension(filename: string, supportedExtensions: string[]): boolean {
   const extension = filename.split(".").pop()?.toLowerCase();
   return extension ? supportedExtensions.includes(extension) : false;
-}
-
-/**
- * Format file size for display
- */
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
-
-  const i = Math.floor(Math.log(bytes) / Math.log(FILE_SIZE_CONSTANTS.KILOBYTE));
-
-  return (
-    parseFloat((bytes / Math.pow(FILE_SIZE_CONSTANTS.KILOBYTE, i)).toFixed(2)) +
-    " " +
-    FILE_SIZE_CONSTANTS.SIZE_UNITS[i]
-  );
 }
 
 /**

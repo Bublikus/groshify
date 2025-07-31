@@ -33,3 +33,19 @@ export const TRANSACTION_TYPES = {
   EXPENSE: "expense",
   TRANSFER: "transfer",
 } as const;
+
+export const MONTH_ORDER = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+

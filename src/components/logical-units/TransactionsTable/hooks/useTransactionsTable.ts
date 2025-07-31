@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EXPENSE_CATEGORIES } from "@/constants/categories";
+import { TRANSACTION_CATEGORIES } from "@/constants/categories";
 import { documentParserService } from "@/parsers";
 import {
   calculateCategorySummaries,
@@ -58,7 +58,7 @@ export const useTransactionsTable = () => {
       }));
 
       // Get category names for categorization
-      const categoryNames = EXPENSE_CATEGORIES.map((cat) => cat.name);
+      const categoryNames = TRANSACTION_CATEGORIES.map((cat) => cat.name);
 
       // Set categorizing state
       setState((prev) => ({

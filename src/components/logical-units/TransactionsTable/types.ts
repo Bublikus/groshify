@@ -1,8 +1,8 @@
-import { EXPENSE_CATEGORIES } from "@/constants/categories";
+import { TransactionCategory as BaseTransactionCategory } from "@/constants/categories";
 import { ParseResult } from "@/parsers";
 import { ParsedRow } from "@/parsers/types";
 
-export type TransactionCategory = (typeof EXPENSE_CATEGORIES)[number]["name"];
+export type TransactionCategory = BaseTransactionCategory["name"];
 
 export interface MonthData {
   month: string;

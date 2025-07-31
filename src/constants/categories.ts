@@ -1,4 +1,4 @@
-export type Category = {
+export type TransactionCategory = {
   name: string;
   description: string;
   icon: string;
@@ -6,7 +6,7 @@ export type Category = {
   subcategories: string[];
 };
 
-export const EXPENSE_CATEGORIES: Category[] = [
+export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
   {
     name: "Житло",
     description:

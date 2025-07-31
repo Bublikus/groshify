@@ -9,7 +9,7 @@ import {
   RulesCardContainer,
 } from "@/components/page-sections/categories";
 import { Typography } from "@/components/ui/typography";
-import { EXPENSE_CATEGORIES } from "@/constants/categories";
+import { TRANSACTION_CATEGORIES } from "@/constants/categories";
 
 // Deterministic random number generator
 const seededRandom = (seed: number) => {
@@ -17,9 +17,9 @@ const seededRandom = (seed: number) => {
   return x - Math.floor(x);
 };
 
-// Transform EXPENSE_CATEGORIES into the format needed for the page
+// Transform TRANSACTION_CATEGORIES into the format needed for the page
 const transformCategories = (): Category[] => {
-  return EXPENSE_CATEGORIES.map((cat, index) => {
+  return TRANSACTION_CATEGORIES.map((cat, index) => {
     // Generate deterministic mock data for subcategories
     const subcategories = cat.subcategories.map((subcat, subIndex) => {
       const seed = index * 100 + subIndex;

@@ -2,10 +2,10 @@
 
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/components/ui/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -24,19 +24,22 @@ function NavigationItemComponent({ item, isActive }: NavigationItemComponentProp
   const Icon = item.icon;
 
   return (
-    <Link href={item.href}>
-      <Button
-        variant={isActive ? "secondary" : "ghost"}
-        className={cn(styles.navigationItem, isActive && styles.navigationItemActive)}
-      >
-        <Icon className={styles.navigationItemIcon} />
-        <div className={styles.navigationItemContent}>
-          <span className={styles.navigationItemTitle}>{item.title}</span>
-          {item.description && (
-            <span className={styles.navigationItemDescription}>{item.description}</span>
-          )}
-        </div>
-      </Button>
+    <Link
+      href={item.href}
+      variant="button"
+      className={cn(
+        styles.navigationItem,
+        isActive && styles.navigationItemActive,
+        isActive ? "bg-secondary text-secondary-foreground hover:bg-secondary/80" : "hover:bg-accent hover:text-accent-foreground"
+      )}
+    >
+      <Icon className={styles.navigationItemIcon} />
+      <div className={styles.navigationItemContent}>
+        <span className={styles.navigationItemTitle}>{item.title}</span>
+        {item.description && (
+          <span className={styles.navigationItemDescription}>{item.description}</span>
+        )}
+      </div>
     </Link>
   );
 }

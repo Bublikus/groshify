@@ -1,12 +1,8 @@
 "use client";
 
-import type { Category } from "../types";
 import { RulesCard } from "./RulesCard";
 import { useRulesCard } from "./hooks";
-
-interface RulesCardContainerProps {
-  categories: Category[];
-}
+import type { RulesCardContainerProps } from "./types";
 
 export function RulesCardContainer({ categories }: RulesCardContainerProps) {
   const { displayCategories, totalRules, activeRules } = useRulesCard({ categories });

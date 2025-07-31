@@ -17,33 +17,7 @@ import {
 import { Typography } from "@/components/ui/typography";
 import { ParsedRow } from "@/parsers/types";
 import { formatCurrency } from "@/utils/number-format";
-import {
-  CategorySummary,
-  CurrentSums,
-  ExpenseCategory,
-  ExpensesTableState,
-  MonthData,
-} from "./types";
-
-interface ExpensesTableProps {
-  state: ExpensesTableState;
-  setState: React.Dispatch<React.SetStateAction<ExpensesTableState>>;
-  handleFileUpload: (file: File) => Promise<void>;
-  handleFileRemove: () => void;
-  handleCategoryChange: (rowId: string, category: ExpenseCategory) => void;
-  monthlyData: MonthData[];
-  currentMonthData: ParsedRow[];
-  currentSums: CurrentSums;
-  categorySummaries: [string, CategorySummary][];
-  supportedExtensions: string[];
-  EXPENSE_CATEGORIES: Array<{
-    name: string;
-    description: string;
-    icon: string;
-    color: string;
-    subcategories: string[];
-  }>;
-}
+import { ExpenseCategory, ExpensesTableProps } from "./types";
 
 export function ExpensesTable({
   state,

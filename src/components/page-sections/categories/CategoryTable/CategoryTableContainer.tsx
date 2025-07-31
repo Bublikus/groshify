@@ -1,12 +1,8 @@
 "use client";
 
-import type { Category } from "../types";
 import { CategoryTable } from "./CategoryTable";
 import { useCategoryTable } from "./hooks";
-
-interface CategoryTableContainerProps {
-  categories: Category[];
-}
+import type { CategoryTableContainerProps } from "./types";
 
 export function CategoryTableContainer({ categories }: CategoryTableContainerProps) {
   const { expandedCategories, toggleCategory } = useCategoryTable({ categories });

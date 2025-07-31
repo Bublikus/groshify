@@ -10,12 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
 import type { Category, CategoryRule } from "../types";
-
-interface CategoryTableProps {
-  categories: Category[];
-  expandedCategories: Set<number>;
-  onToggleCategory: (categoryId: number) => void;
-}
+import type { CategoryTableProps } from "./types";
 
 export function CategoryTable({
   categories,

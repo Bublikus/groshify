@@ -5,13 +5,7 @@ import { Edit3, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import type { Category } from "../types";
-
-interface RulesCardProps {
-  displayCategories: Category[];
-  totalRules: number;
-  activeRules: number;
-}
+import type { RulesCardProps } from "./types";
 
 export function RulesCard({ displayCategories, totalRules, activeRules }: RulesCardProps) {
   return (

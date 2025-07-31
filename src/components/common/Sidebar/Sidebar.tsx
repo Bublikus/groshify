@@ -16,15 +16,11 @@ import {
 } from "@/components/ui/sheet";
 import { APP_CONFIG } from "@/constants/app";
 import { navigationItems, quickActions } from "@/constants/navigation";
-import type { NavigationItem } from "@/constants/navigation";
 import { cn } from "@/utils/cn";
 import styles from "./Sidebar.module.css";
+import type { NavigationItemComponentProps, SidebarContentProps, SidebarProps } from "./types";
 
-interface SidebarProps {
-  className?: string;
-}
-
-function NavigationItemComponent({ item, isActive }: { item: NavigationItem; isActive: boolean }) {
+function NavigationItemComponent({ item, isActive }: NavigationItemComponentProps) {
   const Icon = item.icon;
 
   return (
@@ -45,7 +41,7 @@ function NavigationItemComponent({ item, isActive }: { item: NavigationItem; isA
   );
 }
 
-function SidebarContent({ className }: { className?: string }) {
+function SidebarContent({ className }: SidebarContentProps) {
   const pathname = usePathname();
 
   return (

@@ -1,12 +1,8 @@
 "use client";
 
-import type { Category } from "../types";
 import { CategoryStats } from "./CategoryStats";
 import { useCategoryStats } from "./hooks";
-
-interface CategoryStatsContainerProps {
-  categories: Category[];
-}
+import type { CategoryStatsContainerProps } from "./types";
 
 export function CategoryStatsContainer({ categories }: CategoryStatsContainerProps) {
   const stats = useCategoryStats({ categories });

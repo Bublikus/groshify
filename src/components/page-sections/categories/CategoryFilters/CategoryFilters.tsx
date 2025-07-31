@@ -10,14 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { FilterStatus } from "./hooks";
-
-interface CategoryFiltersProps {
-  searchQuery: string;
-  statusFilter: FilterStatus;
-  onSearchChange: (query: string) => void;
-  onStatusChange: (status: FilterStatus) => void;
-}
+import type { CategoryFiltersProps } from "./types";
 
 export function CategoryFilters({
   searchQuery,

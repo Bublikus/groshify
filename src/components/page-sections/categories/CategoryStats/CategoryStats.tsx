@@ -3,17 +3,7 @@
 import { Hash, Settings, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-
-interface CategoryStatsProps {
-  stats: {
-    totalCategories: number;
-    activeCategories: number;
-    totalRules: number;
-    totalTransactions: number;
-    totalSubcategories: number;
-    accuracy: number;
-  };
-}
+import type { CategoryStatsProps } from "./types";
 
 export function CategoryStats({ stats }: CategoryStatsProps) {
   const {

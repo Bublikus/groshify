@@ -1,3 +1,5 @@
+import type { Category } from "../types";
+
 export interface CategoryStatsProps {
   stats: {
     totalCategories: number;
@@ -10,5 +12,5 @@ export interface CategoryStatsProps {
 }
 
 export interface CategoryStatsContainerProps {
-  categories: import("../types").Category[];
+  categories: Category[];
 }

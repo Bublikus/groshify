@@ -6,16 +6,7 @@ import { Typography } from "@/components/ui/typography";
 import { getAssetUrl } from "@/config/env";
 import { isPWAEnabled, isPWAFeatureEnabled } from "@/config/pwa";
 import { PWAInstallGuide } from "./PWAInstallGuide";
-
-interface PWAProviderProps {
-  children: React.ReactNode;
-}
-
-// Type for the BeforeInstallPromptEvent
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
+import type { BeforeInstallPromptEvent, PWAProviderProps } from "./types";
 
 export function PWAProvider({ children }: PWAProviderProps) {
   const [isOnline, setIsOnline] = useState(true);

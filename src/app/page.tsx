@@ -95,18 +95,6 @@ export default function HomePage() {
               })}
             </div>
           </motion.div>
-
-          {/* Redirect Message */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="text-center mt-12 p-4 bg-muted rounded-lg"
-          >
-            <Typography variant="small" className="text-muted-foreground">
-              Redirecting to Dashboard in a few seconds...
-            </Typography>
-          </motion.div>
         </div>
       </div>
     </ErrorBoundary>

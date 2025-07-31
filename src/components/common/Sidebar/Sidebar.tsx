@@ -48,7 +48,7 @@ function SidebarContent({ className }: SidebarContentProps) {
     <div className={cn(styles.sidebarContent, className)}>
       {/* Header */}
       <div className={cn(styles.header, "border-b")}>
-        <Link href="/dashboard" className={styles.headerContent}>
+        <Link href="/" className={styles.headerContent}>
           <div className={styles.logo}>
             <span className={styles.logoText}>G</span>
           </div>

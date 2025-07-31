@@ -1,9 +1,9 @@
 import type { Category } from "../types";
 
 export interface RulesCardProps {
-  displayCategories: Category[];
-  totalRules: number;
-  activeRules: number;
+  categories: Category[];
+  totalCategories?: number;
+  totalSubcategories?: number;
 }
 
 export interface RulesCardContainerProps {

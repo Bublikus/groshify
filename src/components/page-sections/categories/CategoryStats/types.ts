@@ -4,10 +4,10 @@ export interface CategoryStatsProps {
   stats: {
     totalCategories: number;
     activeCategories: number;
-    totalRules: number;
-    totalTransactions: number;
     totalSubcategories: number;
-    accuracy: number;
+    activeSubcategories: number;
+    totalTransactions: number;
+    effectiveness: number;
   };
 }
 

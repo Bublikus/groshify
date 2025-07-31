@@ -1,0 +1,136 @@
+/* VirtualizedList component styles */
+.virtualizedListContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  flex: 1;
+  background: var(--background);
+  border: 1px solid var(--border);
+  transition: height 0.3s ease;
+}
+
+.virtualizedListContainer[data-adaptive="true"] {
+  height: auto !important;
+  min-height: var(--min-height, 200px);
+  max-height: var(--max-height, 80vh);
+}
+
+.virtualizedListContainer [data-slot="list"] {
+  width: 100%;
+  height: 100%;
+}
+
+.virtualizedListContainer [data-slot="list-item"] {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+  min-height: var(--item-height, 50px);
+}
+
+.virtualizedListContainer [data-slot="list-item"]:last-child {
+  border-bottom: none;
+}
+
+/* Variable height items */
+.virtualizedListContainer [data-slot="list-item"][data-variable-height="true"] {
+  height: auto !important;
+  min-height: var(--min-item-height, 30px);
+}
+
+/* Empty state styling */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Loading state styling */
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  padding: 2rem;
+}
+
+/* Error state styling */
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--destructive);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Mobile-specific styling */
+@media (max-width: 639px) {
+  .virtualizedListContainer [data-slot="list-item"] {
+    padding: 0.75rem;
+  }
+
+  .emptyState,
+  .loadingState,
+  .errorState {
+    min-height: 150px;
+    padding: 1rem;
+  }
+
+  .virtualizedListContainer[data-adaptive="true"] {
+    min-height: 150px;
+  }
+}
+
+/* Focus management for accessibility */
+.virtualizedListContainer:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+.virtualizedListContainer [data-slot="list"] {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling */
+.virtualizedListContainer [data-slot="list"]::-webkit-scrollbar {
+  width: 6px;
+}
+
+.virtualizedListContainer [data-slot="list"]::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+.virtualizedListContainer [data-slot="list"]::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.virtualizedListContainer [data-slot="list"]::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Responsive height adjustments */
+@media (max-height: 600px) {
+  .virtualizedListContainer[data-adaptive="true"] {
+    max-height: 70vh;
+  }
+}
+
+@media (min-height: 1000px) {
+  .virtualizedListContainer[data-adaptive="true"] {
+    max-height: 85vh;
+  }
+}

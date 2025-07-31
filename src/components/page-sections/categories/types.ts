@@ -1,10 +1,3 @@
-export interface CategoryRule {
-  id: number;
-  condition: string;
-  value: string;
-  isActive: boolean;
-}
-
 export interface Subcategory {
   id: number;
   name: string;
@@ -23,5 +16,4 @@ export interface Category extends Record<string, unknown> {
   totalAmount: number;
   isActive: boolean;
   subcategories: Subcategory[];
-  rules: CategoryRule[];
 }

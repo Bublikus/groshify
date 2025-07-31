@@ -1,27 +1,24 @@
 import { useMemo } from "react";
 import type { Category } from "../../types";
-import { calculateActiveRules, calculateTotalRules, getDisplayCategories } from "../helpers";
+import { calculateActiveSubcategories, calculateTotalSubcategories } from "../helpers";
 
 interface UseRulesCardProps {
   categories: Category[];
 }
 
 interface UseRulesCardReturn {
-  displayCategories: Category[];
-  totalRules: number;
-  activeRules: number;
+  categories: Category[];
+  totalSubcategories: number;
+  activeSubcategories: number;
 }
 
 export function useRulesCard({ categories }: UseRulesCardProps): UseRulesCardReturn {
-  const displayCategories = useMemo(() => getDisplayCategories(categories), [categories]);
-
-  const totalRules = useMemo(() => calculateTotalRules(displayCategories), [displayCategories]);
-
-  const activeRules = useMemo(() => calculateActiveRules(displayCategories), [displayCategories]);
+  const totalSubcategories = useMemo(() => calculateTotalSubcategories(categories), [categories]);
+  const activeSubcategories = useMemo(() => calculateActiveSubcategories(categories), [categories]);
 
   return {
-    displayCategories,
-    totalRules,
-    activeRules,
+    categories,
+    totalSubcategories,
+    activeSubcategories,
   };
 }

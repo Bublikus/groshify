@@ -3,10 +3,10 @@ import type { Category } from "../types";
 export interface CategoryStatsData {
   totalCategories: number;
   activeCategories: number;
-  totalRules: number;
-  totalTransactions: number;
   totalSubcategories: number;
-  accuracy: number;
+  activeSubcategories: number;
+  totalTransactions: number;
+  effectiveness: number;
 }
 
 /**
@@ -24,13 +24,6 @@ export function calculateActiveCategories(categories: Category[]): number {
 }
 
 /**
- * Calculate total number of rules across all categories
- */
-export function calculateTotalRules(categories: Category[]): number {
-  return categories.reduce((sum, cat) => sum + cat.rules.length, 0);
-}
-
-/**
  * Calculate total number of transactions across all categories
  */
 export function calculateTotalTransactions(categories: Category[]): number {
@@ -45,17 +38,25 @@ export function calculateTotalSubcategories(categories: Category[]): number {
 }
 
 /**
- * Calculate total number of active rules across all categories
+ * Calculate total number of active subcategories across all categories
  */
-export function calculateActiveRules(categories: Category[]): number {
-  return categories.reduce((sum, cat) => sum + cat.rules.filter((rule) => rule.isActive).length, 0);
+export function calculateActiveSubcategories(categories: Category[]): number {
+  return categories.reduce(
+    (sum, cat) => sum + cat.subcategories.filter((sub) => sub.isActive).length,
+    0
+  );
 }
 
 /**
- * Calculate accuracy percentage based on active rules vs total rules
+ * Calculate effectiveness percentage based on active subcategories vs total subcategories
  */
-export function calculateAccuracy(totalRules: number, activeRules: number): number {
-  return totalRules > 0 ? Math.round((activeRules / totalRules) * 100) : 100;
+export function calculateEffectiveness(
+  totalSubcategories: number,
+  activeSubcategories: number
+): number {
+  return totalSubcategories > 0
+    ? Math.round((activeSubcategories / totalSubcategories) * 100)
+    : 100;
 }
 
 /**
@@ -64,18 +65,17 @@ export function calculateAccuracy(totalRules: number, activeRules: number): numb
 export function calculateCategoryStats(categories: Category[]): CategoryStatsData {
   const totalCategories = calculateTotalCategories(categories);
   const activeCategories = calculateActiveCategories(categories);
-  const totalRules = calculateTotalRules(categories);
-  const totalTransactions = calculateTotalTransactions(categories);
   const totalSubcategories = calculateTotalSubcategories(categories);
-  const activeRules = calculateActiveRules(categories);
-  const accuracy = calculateAccuracy(totalRules, activeRules);
+  const activeSubcategories = calculateActiveSubcategories(categories);
+  const totalTransactions = calculateTotalTransactions(categories);
+  const effectiveness = calculateEffectiveness(totalSubcategories, activeSubcategories);
 
   return {
     totalCategories,
     activeCategories,
-    totalRules,
-    totalTransactions,
     totalSubcategories,
-    accuracy,
+    activeSubcategories,
+    totalTransactions,
+    effectiveness,
   };
 }

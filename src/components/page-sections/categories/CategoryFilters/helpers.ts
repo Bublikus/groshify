@@ -28,11 +28,6 @@ export function filterCategoriesBySearch(categories: Category[], searchQuery: st
       return true;
     }
 
-    // Search in rule values
-    if (category.rules.some((rule) => rule.value.toLowerCase().includes(query))) {
-      return true;
-    }
-
     return false;
   });
 }

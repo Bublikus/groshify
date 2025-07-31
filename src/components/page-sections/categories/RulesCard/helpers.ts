@@ -1,133 +1,114 @@
-import type { Category, CategoryRule } from "../types";
-import { DISPLAY_LIMITS } from "./constants";
+import type { Category } from "../types";
 
 /**
- * Get categories to display in the rules card (limited to first N)
+ * Calculate total number of subcategories across categories
  */
-export function getDisplayCategories(
-  categories: Category[],
-  limit: number = DISPLAY_LIMITS.DEFAULT_CATEGORIES
-): Category[] {
-  return categories.slice(0, limit);
+export function calculateTotalSubcategories(categories: Category[]): number {
+  return categories.reduce((sum, cat) => sum + cat.subcategories.length, 0);
 }
 
 /**
- * Calculate total number of rules across categories
+ * Calculate total number of active subcategories across categories
  */
-export function calculateTotalRules(categories: Category[]): number {
-  return categories.reduce((sum, cat) => sum + cat.rules.length, 0);
-}
-
-/**
- * Calculate total number of active rules across categories
- */
-export function calculateActiveRules(categories: Category[]): number {
-  return categories.reduce((sum, cat) => sum + cat.rules.filter((rule) => rule.isActive).length, 0);
-}
-
-/**
- * Calculate total number of inactive rules across categories
- */
-export function calculateInactiveRules(categories: Category[]): number {
+export function calculateActiveSubcategories(categories: Category[]): number {
   return categories.reduce(
-    (sum, cat) => sum + cat.rules.filter((rule) => !rule.isActive).length,
+    (sum, cat) => sum + cat.subcategories.filter((sub) => sub.isActive).length,
     0
   );
 }
 
 /**
- * Get all rules from categories
+ * Calculate total number of inactive subcategories across categories
  */
-export function getAllRules(categories: Category[]): CategoryRule[] {
-  return categories.flatMap((cat) => cat.rules);
-}
-
-/**
- * Get active rules from categories
- */
-export function getActiveRules(categories: Category[]): CategoryRule[] {
-  return categories.flatMap((cat) => cat.rules.filter((rule) => rule.isActive));
-}
-
-/**
- * Get inactive rules from categories
- */
-export function getInactiveRules(categories: Category[]): CategoryRule[] {
-  return categories.flatMap((cat) => cat.rules.filter((rule) => !rule.isActive));
-}
-
-/**
- * Get rules for a specific category
- */
-export function getCategoryRules(categories: Category[], categoryId: number): CategoryRule[] {
-  const category = categories.find((cat) => cat.id === categoryId);
-  return category ? category.rules : [];
-}
-
-/**
- * Get active rules for a specific category
- */
-export function getCategoryActiveRules(categories: Category[], categoryId: number): CategoryRule[] {
-  const category = categories.find((cat) => cat.id === categoryId);
-  return category ? category.rules.filter((rule) => rule.isActive) : [];
-}
-
-/**
- * Calculate rules effectiveness (percentage of active rules)
- */
-export function calculateRulesEffectiveness(categories: Category[]): number {
-  const totalRules = calculateTotalRules(categories);
-  const activeRules = calculateActiveRules(categories);
-
-  return totalRules > 0 ? Math.round((activeRules / totalRules) * 100) : 100;
-}
-
-/**
- * Get categories with the most rules
- */
-export function getCategoriesWithMostRules(
-  categories: Category[],
-  limit: number = DISPLAY_LIMITS.MOST_RULES_CATEGORIES
-): Category[] {
-  return [...categories].sort((a, b) => b.rules.length - a.rules.length).slice(0, limit);
-}
-
-/**
- * Get categories with no rules
- */
-export function getCategoriesWithNoRules(categories: Category[]): Category[] {
-  return categories.filter((cat) => cat.rules.length === 0);
-}
-
-/**
- * Get categories with only inactive rules
- */
-export function getCategoriesWithOnlyInactiveRules(categories: Category[]): Category[] {
-  return categories.filter(
-    (cat) => cat.rules.length > 0 && cat.rules.every((rule) => !rule.isActive)
+export function calculateInactiveSubcategories(categories: Category[]): number {
+  return categories.reduce(
+    (sum, cat) => sum + cat.subcategories.filter((sub) => !sub.isActive).length,
+    0
   );
 }
 
 /**
- * Validate rule data
+ * Get all subcategories from categories
  */
-export function validateRule(rule: CategoryRule): { isValid: boolean; errors: string[] } {
-  const errors: string[] = [];
+export function getAllSubcategories(categories: Category[]) {
+  return categories.flatMap((cat) => cat.subcategories);
+}
 
-  if (!rule.condition || rule.condition.trim() === "") {
-    errors.push("Rule condition is required");
-  }
+/**
+ * Get active subcategories from categories
+ */
+export function getActiveSubcategories(categories: Category[]) {
+  return categories.flatMap((cat) => cat.subcategories.filter((sub) => sub.isActive));
+}
 
-  if (!rule.value || rule.value.trim() === "") {
-    errors.push("Rule value is required");
-  }
+/**
+ * Get inactive subcategories from categories
+ */
+export function getInactiveSubcategories(categories: Category[]) {
+  return categories.flatMap((cat) => cat.subcategories.filter((sub) => !sub.isActive));
+}
 
-  if (rule.value && rule.value.length > 100) {
-    errors.push("Rule value too long (max 100 characters)");
-  }
+/**
+ * Get subcategories for a specific category
+ */
+export function getCategorySubcategories(categories: Category[], categoryId: number) {
+  const category = categories.find((cat) => cat.id === categoryId);
+  return category ? category.subcategories : [];
+}
 
-  return {
-    isValid: errors.length === 0,
-    errors,
-  };
+/**
+ * Get active subcategories for a specific category
+ */
+export function getCategoryActiveSubcategories(categories: Category[], categoryId: number) {
+  const category = categories.find((cat) => cat.id === categoryId);
+  return category ? category.subcategories.filter((sub) => sub.isActive) : [];
+}
+
+/**
+ * Calculate subcategories effectiveness (percentage of active subcategories)
+ */
+export function calculateSubcategoriesEffectiveness(categories: Category[]): number {
+  const totalSubcategories = calculateTotalSubcategories(categories);
+  const activeSubcategories = calculateActiveSubcategories(categories);
+
+  return totalSubcategories > 0
+    ? Math.round((activeSubcategories / totalSubcategories) * 100)
+    : 100;
+}
+
+/**
+ * Get categories with the most subcategories
+ */
+export function getCategoriesWithMostSubcategories(categories: Category[]): Category[] {
+  return [...categories].sort((a, b) => b.subcategories.length - a.subcategories.length);
+}
+
+/**
+ * Get categories with no subcategories
+ */
+export function getCategoriesWithNoSubcategories(categories: Category[]): Category[] {
+  return categories.filter((cat) => cat.subcategories.length === 0);
+}
+
+/**
+ * Get categories with only inactive subcategories
+ */
+export function getCategoriesWithOnlyInactiveSubcategories(categories: Category[]): Category[] {
+  return categories.filter(
+    (cat) => cat.subcategories.length > 0 && cat.subcategories.every((sub) => !sub.isActive)
+  );
+}
+
+/**
+ * Calculate total transaction count across all categories
+ */
+export function calculateTotalTransactions(categories: Category[]): number {
+  return categories.reduce((sum, cat) => sum + cat.transactionCount, 0);
+}
+
+/**
+ * Calculate total amount across all categories
+ */
+export function calculateTotalAmount(categories: Category[]): number {
+  return categories.reduce((sum, cat) => sum + cat.totalAmount, 0);
 }

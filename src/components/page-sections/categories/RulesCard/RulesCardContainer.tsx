@@ -1,17 +1,17 @@
 "use client";
 
 import { RulesCard } from "./RulesCard";
-import { useRulesCard } from "./hooks";
 import type { RulesCardContainerProps } from "./types";
 
 export function RulesCardContainer({ categories }: RulesCardContainerProps) {
-  const { displayCategories, totalRules, activeRules } = useRulesCard({ categories });
+  const totalCategories = categories.length;
+  const totalSubcategories = categories.reduce((sum, cat) => sum + cat.subcategories.length, 0);
 
   return (
     <RulesCard
-      displayCategories={displayCategories}
-      totalRules={totalRules}
-      activeRules={activeRules}
+      categories={categories}
+      totalCategories={totalCategories}
+      totalSubcategories={totalSubcategories}
     />
   );
 }

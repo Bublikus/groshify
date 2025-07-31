@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Typography } from "@/components/ui/typography";
-import type { Category, CategoryRule } from "../types";
+import type { Category } from "../types";
 import type { CategoryTableProps } from "./types";
 
 export function CategoryTable({
@@ -42,9 +42,6 @@ export function CategoryTable({
                 {category.name}
               </Typography>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  {category.rules.length} rules
-                </Badge>
                 <Badge variant="outline" className="text-xs">
                   {category.subcategories.length} subcategories
                 </Badge>
@@ -114,32 +111,6 @@ export function CategoryTable({
       },
     },
     {
-      key: "rules",
-      title: "Auto Rules",
-      render: (value) => {
-        const rules = value as CategoryRule[];
-        return (
-          <div className="space-y-1">
-            {rules.slice(0, 2).map((rule: CategoryRule) => (
-              <div key={rule.id} className="flex items-center gap-2">
-                <div
-                  className={`w-2 h-2 rounded-full ${rule.isActive ? "bg-green-500" : "bg-gray-300"}`}
-                />
-                <Typography variant="small" className="text-muted-foreground">
-                  {rule.condition} &quot;{rule.value}&quot;
-                </Typography>
-              </div>
-            ))}
-            {rules.length > 2 && (
-              <Typography variant="small" className="text-muted-foreground">
-                +{rules.length - 2} more rules
-              </Typography>
-            )}
-          </div>
-        );
-      },
-    },
-    {
       key: "isActive",
       title: "Status",
       render: (value) => (
@@ -176,9 +147,7 @@ export function CategoryTable({
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Categories</CardTitle>
-            <CardDescription>
-              Manage your transaction categories and auto-categorization rules
-            </CardDescription>
+            <CardDescription>Manage your transaction categories and subcategories</CardDescription>
           </div>
           <Button>
             <Plus className="h-4 w-4 mr-2" />

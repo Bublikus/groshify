@@ -9,10 +9,10 @@ export function CategoryStats({ stats }: CategoryStatsProps) {
   const {
     totalCategories,
     activeCategories,
-    totalRules,
-    totalTransactions,
     totalSubcategories,
-    accuracy,
+    activeSubcategories,
+    totalTransactions,
+    effectiveness,
   } = stats;
 
   return (
@@ -34,15 +34,15 @@ export function CategoryStats({ stats }: CategoryStatsProps) {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Auto Rules</CardTitle>
+          <CardTitle className="text-sm font-medium">Subcategories</CardTitle>
           <Settings className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <Typography variant="h3" className="font-bold">
-            {totalRules}
+            {totalSubcategories}
           </Typography>
           <Typography variant="small" className="text-muted-foreground">
-            Categorization rules
+            {activeSubcategories} active subcategories
           </Typography>
         </CardContent>
       </Card>
@@ -64,15 +64,15 @@ export function CategoryStats({ stats }: CategoryStatsProps) {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Accuracy</CardTitle>
+          <CardTitle className="text-sm font-medium">Effectiveness</CardTitle>
           <Hash className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <Typography variant="h3" className="font-bold">
-            {accuracy}%
+            {effectiveness}%
           </Typography>
           <Typography variant="small" className="text-muted-foreground">
-            Auto-categorization accuracy
+            Active subcategories rate
           </Typography>
         </CardContent>
       </Card>

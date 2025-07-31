@@ -26,21 +26,21 @@ interface TypographyProps {
 }
 
 const variantStyles = {
-  h1: "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl",
-  h2: "scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0",
-  h3: "scroll-m-20 text-2xl font-semibold tracking-tight",
-  h4: "scroll-m-20 text-xl font-semibold tracking-tight",
-  h5: "scroll-m-20 text-lg font-semibold tracking-tight",
-  h6: "scroll-m-20 text-base font-semibold tracking-tight",
-  p: "leading-7 [&:not(:first-child)]:mt-6",
-  lead: "text-xl text-muted-foreground",
-  large: "text-lg font-semibold",
-  small: "text-sm font-medium leading-none",
-  muted: "text-sm text-muted-foreground",
+  h1: "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl font-sans",
+  h2: "scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 font-sans",
+  h3: "scroll-m-20 text-2xl font-semibold tracking-tight font-sans",
+  h4: "scroll-m-20 text-xl font-semibold tracking-tight font-sans",
+  h5: "scroll-m-20 text-lg font-semibold tracking-tight font-sans",
+  h6: "scroll-m-20 text-base font-semibold tracking-tight font-sans",
+  p: "leading-7 [&:not(:first-child)]:mt-6 font-sans",
+  lead: "text-xl text-muted-foreground font-sans",
+  large: "text-lg font-semibold font-sans",
+  small: "text-sm font-medium leading-none font-sans",
+  muted: "text-sm text-muted-foreground font-sans",
   code: "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold",
-  blockquote: "mt-6 border-l-2 pl-6 italic",
-  list: "my-6 ml-6 list-disc [&>li]:mt-2",
-  listItem: "leading-7",
+  blockquote: "mt-6 border-l-2 pl-6 italic font-sans",
+  list: "my-6 ml-6 list-disc [&>li]:mt-2 font-sans",
+  listItem: "leading-7 font-sans",
 };
 
 const defaultElements = {

@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
 
   // Compress responses for better performance
   compress: true,
+
+  // Optimize font loading
+  optimizeFonts: true,
 };
 
 export default nextConfig;
